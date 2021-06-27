@@ -1,0 +1,27 @@
+{
+  "name": "peekaboo-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "env-cmd -f ./config/.env node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/prakharbhardwaj/peekaboo-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/prakharbhardwaj/peekaboo-backend/issues"
+  },
+  "homepage": "https://gitlab.com/prakharbhardwaj/peekaboo-backend#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "env-cmd": "^10.1.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "redis": "^3.1.2"
+  }
+}
