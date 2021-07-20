@@ -86,7 +86,7 @@ module.exports = buildSchema(`
     createdAt: String!
     updatedAt: String!
   }  
-
+ 
   input UserInput {
     first_name: String!
     last_name: String!
