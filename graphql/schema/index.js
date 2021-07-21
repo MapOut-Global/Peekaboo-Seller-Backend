@@ -78,7 +78,7 @@ module.exports = buildSchema(`
     deliveryRadius: Float
     deliveryType: Int
   }  
-
+ 
   type Speciality{
     _id: ID!
     name: String!
