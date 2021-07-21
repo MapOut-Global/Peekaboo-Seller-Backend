@@ -2,6 +2,8 @@ const User = require("../../models/user")
 const Profile = require("../../models/profile") 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const superagent = require('superagent');
+//const nodemailer = require('nodemailer');
 
 module.exports = {
   users: async () => {
@@ -81,6 +83,26 @@ module.exports = {
       })
       const newUser = await user.save()
       return { ...newUser._doc, _id: newUser.id }
+    } catch (error) {
+      throw error
+    }
+  },
+
+  verifyEmail: async args => {
+    try {
+      const { email } = args.verify
+      let checkUserExist = await User.countDocuments(
+        {
+          email: email
+        }
+      );  
+      if(checkUserExist){ 
+        return { status: 403, message: "Email already exists", otp: null};
+      }else{ 
+        //let randomOtp = Math.floor(1000 + Math.random() * 9999);
+        let randomOtp = 9999; 
+        return { status: 200, message: "Email sent successfully", otp: randomOtp};
+      }
     } catch (error) {
       throw error
     }

@@ -15,6 +15,12 @@ module.exports = buildSchema(`
     token: String
   } 
 
+  type EmailVerify{
+    status: Int!
+    otp: Int
+    message: String!
+  }
+
   type Profile { 
     userData: User
     flags: Flag
@@ -96,6 +102,10 @@ module.exports = buildSchema(`
     phone: String
   }
 
+  input EmailVerifyInput {
+    email: String!
+  }
+
   input FlagInput{
     termAccepted: Boolean
     active: Boolean
@@ -166,6 +176,7 @@ module.exports = buildSchema(`
   type Query {
     users:[User!]
     specialities:[Speciality!]
+    verifyEmail(verify:EmailVerifyInput): EmailVerify
   }
 
   type Mutation {

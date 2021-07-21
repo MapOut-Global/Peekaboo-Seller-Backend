@@ -4,5 +4,10 @@
       "MONGO_PASSWORD": "root",
       "MONGO_DB": "peekaboo",
       "JWT_SECRET": "secret"
+  },
+  "mailchimp": {
+    "apiKey" : "1c71405d6cbf4e94923c232a173da8f5-us6",
+    "listUniqueId": "87d4eb4f81",
+    "instance": "us6"
   }
 }
