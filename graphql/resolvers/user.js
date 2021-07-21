@@ -101,7 +101,7 @@ module.exports = {
       }else{ 
         //let randomOtp = Math.floor(1000 + Math.random() * 9999);
         let randomOtp = 9999; 
-        return { status: 200, message: "Email sent successfully", otp: randomOtp};
+         return { status: 200, message: "Email sent successfully", otp: randomOtp};
       }
     } catch (error) {
       throw error
