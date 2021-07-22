@@ -1,8 +1,8 @@
 {
   "env": {
-      "MONGO_USER": "root",
-      "MONGO_PASSWORD": "root",
-      "MONGO_DB": "peekaboo",
+      "MONGO_USER": "bharat-mapout",
+      "MONGO_PASSWORD": "mapout@123",
+      "MONGO_DB": "mapoutdb.hj2on.mongodb.net/myFirstDatabase",
       "JWT_SECRET": "secret"
   },
   "mailchimp": {
