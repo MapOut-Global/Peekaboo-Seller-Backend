@@ -12,9 +12,16 @@ module.exports = buildSchema(`
     phone: String
     createdAt: String!
     updatedAt: String!
-    token: String
+    status: Int
+    message: String
   } 
 
+  type LoginType {
+    userData: User
+    token: String
+    refreshToken: String
+    responseStatus: ResponseStatus
+  }
   type EmailVerify{
     status: Int!
     otp: Int
@@ -37,6 +44,7 @@ module.exports = buildSchema(`
     currency: String
     createdAt: String!
     updatedAt: String!
+    responseStatus: ResponseStatus
   }
   
   type Flag{
@@ -136,7 +144,7 @@ module.exports = buildSchema(`
   input AddressInput{ 
     address1: String
     address2: String
-    lattitude: Float
+    latitude: Float
     longitude: Float
   }
 
@@ -173,16 +181,27 @@ module.exports = buildSchema(`
     password: String! 
   }
 
-  type Query {
-    users:[User!]
+  type ResponseStatus{
+    status: Int
+    message: String
+  }
+
+  type RefreshToken{
+    token: String!
+    refreshToken: String!
+    responseStatus: ResponseStatus
+  }
+  
+  type Query { 
     specialities:[Speciality!]
     verifyEmail(verify:EmailVerifyInput): EmailVerify
+    renewJwtToken(refreshToken: String): RefreshToken
   }
 
   type Mutation {
     signUp(user:UserInput): User
     updateCookProfile(profile:ProfileInput): Profile
-    login(user:UserLoginInput): User
+    login(user:UserLoginInput): LoginType
   }
 
   schema {

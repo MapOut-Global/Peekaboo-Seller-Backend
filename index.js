@@ -17,8 +17,8 @@ app.use(
     graphiql: true,
   })
 );
-const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@mapoutdb.hj2on.mongodb.net/${process.env.MONGO_DB}`;
-const options = { useNewUrlParser: true, useUnifiedTopology: true };
+const uri = `mongodb+srv://peekaboo-user:peekaboo-user@cluster0.elid5.mongodb.net/peekaboo?retryWrites=true&w=majority`;
+const options = { useNewUrlParser: true, useUnifiedTopology: true  };
 mongoose.connect(uri, options)
 .then(() => app.listen(3000, console.log("Server is running")))
 .catch(error => {

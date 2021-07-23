@@ -2,7 +2,7 @@
   "env": {
       "MONGO_USER": "bharat-mapout",
       "MONGO_PASSWORD": "mapout@123",
-      "MONGO_DB": "mapoutdb.hj2on.mongodb.net/myFirstDatabase",
+      "MONGO_DB": "test",
       "JWT_SECRET": "secret"
   },
   "mailchimp": {
