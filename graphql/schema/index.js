@@ -22,6 +22,13 @@ module.exports = buildSchema(`
     responseStatus: ResponseStatus
   }
 
+  type SignupType {
+    userData: User
+    token: String
+    refreshToken: String
+    responseStatus: ResponseStatus
+  }
+
   type EmailVerify{
     otp: Int
     responseStatus: ResponseStatus
@@ -208,7 +215,7 @@ module.exports = buildSchema(`
   }
 
   type Mutation {
-    signUp(user:UserInput): SignUp
+    signUp(user:UserInput): SignupType
     updateCookProfile(profile:ProfileInput): Profile
     login(user:UserLoginInput): LoginType
   }

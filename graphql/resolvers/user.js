@@ -1,4 +1,5 @@
 const User = require("../../models/user") 
+const OtpVerification = require("../../models/otp_verification") 
 const Profile = require("../../models/profile") 
 const request = require('request');
 const jwkToPem = require('jwk-to-pem');
@@ -41,8 +42,7 @@ module.exports = {
         var cognitoUser = result.user; 
         console.log('user name is ' + cognitoUser.getUsername()); 
       });  
-      const newUser = user.save();
-      jwtToken = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+      const newUser = await user.save();
       return { ...newUser._doc, _id: newUser.id, token:jwtToken }
       
     } catch (error) {
@@ -58,7 +58,7 @@ module.exports = {
       }
       let { flags, aboutme, hoursOfOperation, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency } = args.profile;
       const profile = new Profile();
-      const cookProfile = await Profile.findOneAndUpdate(
+      const cookProfile = await Profile.findAndModify(
         {userId: userId},
         {
           flags: flags,
@@ -128,11 +128,40 @@ module.exports = {
         }
       );  
       if(checkUserExist){ 
-        return { status: 403, message: "Email already exists", otp: null};
+        return { responseStatus : {status: 403, message: "Email already exists"} };
       }else{ 
         //let randomOtp = Math.floor(1000 + Math.random() * 9999);
-        let randomOtp = 9999; 
-         return { status: 200, message: "Email sent successfully", otp: randomOtp};
+        let otp = 9999; 
+        await OtpVerification.findOneAndRemove(
+          {
+            email: email
+          }
+        );  
+        const otpDoc = new OtpVerification({
+          email,
+          otp, 
+        });
+        await otpDoc.save();
+        return { responseStatus : {status: 200, message: "Email sent successfully"} };
+      }
+    } catch (error) {
+      throw error
+    }
+  },
+
+  verifyOtp: async args => {
+    try {
+      const { otp, email } = args.verify
+      let checkUserOtp = await OtpVerification.countDocuments(
+        {
+          email: email,
+          otp: otp
+        }
+      );  
+      if(checkUserOtp){ 
+        return { responseStatus : {status: 200, message: "OTP verified"}};
+      }else{  
+        return { responseStatus : {status: 403, message: "Invalid OTP"}};
       }
     } catch (error) {
       throw error
