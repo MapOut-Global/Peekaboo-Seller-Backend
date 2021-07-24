@@ -7,22 +7,19 @@ const jwt = require('jsonwebtoken');
 const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 const CognitoUserPool = AmazonCognitoIdentity.CognitoUserPool;
 const poolData = {
-  UserPoolId: 'eu-west-2_BCKgWkbfG', // Your user pool id here
-  ClientId: 'u1ppqp4u1na016giknetf55lm', // Your client id here
+  UserPoolId: 'eu-west-2_SuZiAI3hl', // Your user pool id here
+  ClientId: '6t8n8rlmb4tn1omfuvlr2rirt4', // Your client id here
 };
 const pool_region = 'eu-west-2';
 module.exports = { 
-  signUp: async args => {
-    try {
-      let { first_name, last_name, middle_name, email, password, phone } = args.user  
+  signUp: async args => { 
+      let { full_name, email, password, phone } = args.user  
       const user = new User({
-        first_name,
-        last_name,
-        middle_name,
+        full_name,
         email, 
         phone
       }) 
-      var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData); 
+      var userPool = new CognitoUserPool(poolData); 
       var attributeList = [];   
 
       var dataEmail = {
@@ -31,23 +28,33 @@ module.exports = {
       };
       var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
       attributeList.push(attributeEmail);
-      await userPool.signUp(email, password, attributeList, null, function(
-        err,
-        result
-      ) {
-        if (err) {
-          console.log(err)
-          return;
+      try {  
+        let result = await asyncSignUp(userPool, email, password, attributeList); 
+        if(result !== undefined){
+          var authenticationData = {
+            Username: email,
+            Password: password,
+          };
+          var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(
+            authenticationData
+          ); 
+  
+          var userData = {
+            Username: email,
+            Pool: userPool,
+          };
+          var cognitoUserLogin = new AmazonCognitoIdentity.CognitoUser(userData);
+          let resultLogin = await asyncAuthenticateUser(cognitoUserLogin, authenticationDetails); 
+          var accessToken = resultLogin.getAccessToken().getJwtToken(); 
+          var refreshToken = resultLogin.getRefreshToken().getToken();  
+  
+          const newUser = await user.save();
+          return { userData: newUser._doc, token:accessToken, refreshToken: refreshToken, responseStatus : {status: 200, message: "Sign up successfully"} }  
         }
-        var cognitoUser = result.user; 
-        console.log('user name is ' + cognitoUser.getUsername()); 
-      });  
-      const newUser = await user.save();
-      return { ...newUser._doc, _id: newUser.id, token:jwtToken }
-      
-    } catch (error) {
-      throw error
-    }
+        
+      } catch (error) {
+        throw error
+      } 
   },
   
   updateCookProfile: async (args, req) => {
@@ -110,7 +117,7 @@ module.exports = {
       if ('idToken' in result) {
         var accessToken = result.getAccessToken().getJwtToken(); 
         var refreshToken = result.getRefreshToken().getToken();  
-        return { userData: user, token:accessToken, refreshToken: refreshToken, status: 200, message: "Login successfully" }  
+        return { userData: user, token:accessToken, refreshToken: refreshToken, responseStatus : {status: 200, message: "Login successfully"} }  
       } else {
         return {  status: 403, message: err.message }
       } 
@@ -256,4 +263,19 @@ function asyncAuthenticateUser(cognitoUser, cognitoAuthenticationDetails) {
       newPasswordRequired: resolve
     })
   })
+}
+
+function asyncSignUp(userPool, email, password, attribute_list) {
+  return new Promise((resolve, reject) => {
+    userPool.signUp(email, password, attribute_list, null, (err, result) => {
+      console.log('inside');
+      if (err) {
+        console.log(err.message);
+        reject(err);
+        return;
+      }
+      cognitoUser = result.user;
+      resolve(cognitoUser)
+    });
+  });
 }
