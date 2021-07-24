@@ -12,8 +12,7 @@ module.exports = buildSchema(`
     phone: String
     createdAt: String!
     updatedAt: String!
-    status: Int
-    message: String
+    responseStatus: ResponseStatus
   } 
 
   type LoginType {
@@ -22,10 +21,14 @@ module.exports = buildSchema(`
     refreshToken: String
     responseStatus: ResponseStatus
   }
+
   type EmailVerify{
-    status: Int!
     otp: Int
-    message: String!
+    responseStatus: ResponseStatus
+  }
+  
+  type OtpVerify{ 
+    responseStatus: ResponseStatus
   }
 
   type Profile { 
@@ -114,6 +117,11 @@ module.exports = buildSchema(`
     email: String!
   }
 
+  input OtpVerifyInput {
+    email: String!
+    otp: Int!
+  }
+
   input FlagInput{
     termAccepted: Boolean
     active: Boolean
@@ -195,11 +203,12 @@ module.exports = buildSchema(`
   type Query { 
     specialities:[Speciality!]
     verifyEmail(verify:EmailVerifyInput): EmailVerify
+    verifyOtp(verify:OtpVerifyInput): OtpVerify
     renewJwtToken(refreshToken: String): RefreshToken
   }
 
   type Mutation {
-    signUp(user:UserInput): User
+    signUp(user:UserInput): SignUp
     updateCookProfile(profile:ProfileInput): Profile
     login(user:UserLoginInput): LoginType
   }
