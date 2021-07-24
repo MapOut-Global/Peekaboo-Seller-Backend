@@ -49,7 +49,7 @@ module.exports = {
           var refreshToken = resultLogin.getRefreshToken().getToken();  
   
           const newUser = await user.save();
-          return { userData: newUser._doc, token:accessToken, refreshToken: refreshToken, responseStatus : {status: 200, message: "Sign up successfully"} }  
+          return { userData: newUser._doc, token:accessToken, refreshToken: refreshToken, responseStatus : {status: true, message: "Sign up successfully"} }  
         }
         
       } catch (error) {
@@ -117,7 +117,7 @@ module.exports = {
       if ('idToken' in result) {
         var accessToken = result.getAccessToken().getJwtToken(); 
         var refreshToken = result.getRefreshToken().getToken();  
-        return { userData: user, token:accessToken, refreshToken: refreshToken, responseStatus : {status: 200, message: "Login successfully"} }  
+        return { userData: user, token:accessToken, refreshToken: refreshToken, responseStatus : {status: true, message: "Login successfully"} }  
       } else {
         return {  status: 403, message: err.message }
       } 
@@ -135,7 +135,7 @@ module.exports = {
         }
       );  
       if(checkUserExist){ 
-        return { responseStatus : {status: 403, message: "Email already exists"} };
+        return { responseStatus : {status: false, message: "Email already exists"} };
       }else{ 
         //let randomOtp = Math.floor(1000 + Math.random() * 9999);
         let otp = 9999; 
@@ -149,7 +149,7 @@ module.exports = {
           otp, 
         });
         await otpDoc.save();
-        return { responseStatus : {status: 200, message: "Email sent successfully"} };
+        return { responseStatus : {status: true, message: "Email sent successfully"} };
       }
     } catch (error) {
       throw error
@@ -166,9 +166,9 @@ module.exports = {
         }
       );  
       if(checkUserOtp){ 
-        return { responseStatus : {status: 200, message: "OTP verified"}};
+        return { responseStatus : {status: true, message: "OTP verified"}};
       }else{  
-        return { responseStatus : {status: 403, message: "Invalid OTP"}};
+        return { responseStatus : {status: false, message: "Invalid OTP"}};
       }
     } catch (error) {
       throw error
@@ -200,7 +200,7 @@ module.exports = {
                     "refresh_token": session.refreshToken.token,
                 }
                 console.log(retObj);
-                return {  responseStatus: { status: 200, message: "Token renews"}, token: session.accessToken.jwtToken, refreshToken: session.refreshToken.jwtToken }
+                return {  responseStatus: { status: true, message: "Token renews"}, token: session.accessToken.jwtToken, refreshToken: session.refreshToken.jwtToken }
             }
         });
         console.log(response)

@@ -195,7 +195,7 @@ module.exports = buildSchema(`
   }
 
   type ResponseStatus{
-    status: Int
+    status: Boolean
     message: String
   }
 
