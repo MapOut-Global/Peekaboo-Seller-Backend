@@ -59,13 +59,12 @@ module.exports = {
   
   updateCookProfile: async (args, req) => {
     try {   
-      if(ValidateToken(req.headers.accesstoken)){
-        console.log("hii");
+      if(ValidateToken(req.headers.accesstoken)){ 
         return { status: 403, message: "Invalid token"}
       }
       let { flags, aboutme, hoursOfOperation, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency } = args.profile;
       const profile = new Profile();
-      const cookProfile = await Profile.findAndModify(
+      const cookProfile = await Profile.findOneAndUpdate(
         {userId: userId},
         {
           flags: flags,
