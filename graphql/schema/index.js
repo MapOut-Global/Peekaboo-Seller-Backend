@@ -4,13 +4,13 @@ module.exports = buildSchema(`
 
   type User {
     _id: ID!
-    full_name: String! 
+    full_name: String
     middle_name: String
-    email: String!
-    password: String!
+    email: String
+    password: String
     phone: String
-    createdAt: String!
-    updatedAt: String!
+    createdAt: String
+    updatedAt: String
     responseStatus: ResponseStatus
   } 
 
@@ -37,6 +37,8 @@ module.exports = buildSchema(`
     responseStatus: ResponseStatus
   }
 
+  scalar Upload
+
   type Profile { 
     userData: User
     flags: Flag
@@ -48,7 +50,7 @@ module.exports = buildSchema(`
     address: Address
     delivery: Delivery
     userId: ID!
-    speciality: Speciality
+    speciality: [Speciality]
     kitchenTourFile: String
     currency: String
     createdAt: String!
@@ -103,8 +105,8 @@ module.exports = buildSchema(`
   }  
  
   type Speciality{
-    _id: ID!
-    name: String!
+    _id: ID
+    name: String
     status: Boolean
     createdAt: String!
     updatedAt: String!
@@ -175,6 +177,7 @@ module.exports = buildSchema(`
   } 
  
   input ProfileInput {
+    avatar: Upload,
     flags: FlagInput
     aboutme: String 
     hoursOfOperation: [HoursOfOperationInput] 
@@ -205,11 +208,21 @@ module.exports = buildSchema(`
     responseStatus: ResponseStatus
   }
   
+  type ForgetPassword{
+    responseStatus: ResponseStatus
+  }
+  
+  type ResetPassword{
+    responseStatus: ResponseStatus
+  }
+
   type Query { 
     specialities:[Speciality!]
     verifyEmail(verify:EmailVerifyInput): EmailVerify
     verifyOtp(verify:OtpVerifyInput): OtpVerify
     renewJwtToken(refreshToken: String): RefreshToken
+    forgetPassword(email: String): ForgetPassword
+    resetPassword(email: String!, verificationCode: String!, newPassword: String!): ResetPassword
   }
 
   type Mutation {

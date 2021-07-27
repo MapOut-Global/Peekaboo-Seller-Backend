@@ -1,5 +1,6 @@
 const express = require("express");
 const graphqlHttp = require("express-graphql").graphqlHTTP;
+const { graphqlUploadExpress } = require('graphql-upload');
 const mongoose = require("mongoose");
 const graphqlSchema = require("./graphql/schema");
 const graphqlResolvers = require("./graphql/resolvers");
@@ -11,6 +12,7 @@ const app = express()
 app.get('/playground', expressPlayground({ endpoint: '/graphql' }))
 app.use(
   "/graphql",
+  graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
   graphqlHttp({
     schema: graphqlSchema,
     rootValue: graphqlResolvers,

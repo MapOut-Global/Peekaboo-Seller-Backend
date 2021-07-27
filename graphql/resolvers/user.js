@@ -1,9 +1,14 @@
 const User = require("../../models/user") 
 const OtpVerification = require("../../models/otp_verification") 
 const Profile = require("../../models/profile") 
+const Speciality = require("../../models/speciality") 
+
+
+//const fileUpload = require("../fileuploader/uploader") 
 const request = require('request');
 const jwkToPem = require('jwk-to-pem');
 const jwt = require('jsonwebtoken');
+const { GraphQLUpload } = require('graphql-upload');
 const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 const CognitoUserPool = AmazonCognitoIdentity.CognitoUserPool;
 const poolData = {
@@ -59,12 +64,30 @@ module.exports = {
   
   updateCookProfile: async (args, req) => {
     try {   
-      if(ValidateToken(req.headers.accesstoken)){ 
+      /*if(ValidateToken(req.headers.accesstoken)){ 
         return { status: 403, message: "Invalid token"}
+      }*/
+      var { flags, aboutme, hoursOfOperation, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency } = args.profile;
+      /*let { filename, mimetype, createReadStream } = await avatar.file; 
+      fileUpload({ filename, stream: createReadStream() }) */
+      userData = await User.findById(userId).exec(); 
+      if(userData == null){
+        return {  responseStatus : {status: false, message: "Invalid user id"}, userData : null, userId: userId }
       }
-      let { flags, aboutme, hoursOfOperation, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency } = args.profile;
-      const profile = new Profile();
-      const cookProfile = await Profile.findOneAndUpdate(
+      for(const [key, val] of Object.entries(speciality)) {
+        if(val._id === undefined){
+          let status = false;
+          let name = val.name;
+          const newSpeciality = new Speciality({
+            name,
+            status
+          });
+          await newSpeciality.save();
+          console.log(newSpeciality._doc._id);
+          speciality[key]['_id'] = newSpeciality._doc._id.toString();
+        }
+      } 
+      let cookProfileSave = await Profile.findOneAndUpdate(
         {userId: userId},
         {
           flags: flags,
@@ -83,9 +106,28 @@ module.exports = {
           new: true,
           upsert: true
         }
-      );
-      userData = await User.findById(userId).exec(); 
-      return { ...cookProfile._doc, userData: userData._doc}
+      ); 
+      let cookProfile = await Profile.findOne(
+        {
+          userId: userId
+        }
+      ).exec();  
+      console.log(cookProfile);
+      var { flags, aboutme, hoursOfOperation, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency } = cookProfile;
+      return { 
+        flags: flags, 
+        aboutme:aboutme, 
+        hoursOfOperation:hoursOfOperation, 
+        heading: heading, 
+        availibility:availibility, 
+        address:address, 
+        delivery:delivery, 
+        userId:userId, 
+        speciality:speciality,
+        kitchenTourFile:kitchenTourFile,
+        currency:currency, 
+        userData: userData, 
+        responseStatus: {status: true, message: "Profile saved"}};
     } catch (error) {
       throw error
     }
@@ -118,7 +160,7 @@ module.exports = {
         var refreshToken = result.getRefreshToken().getToken();  
         return { userData: user, token:accessToken, refreshToken: refreshToken, responseStatus : {status: true, message: "Login successfully"} }  
       } else {
-        return {  status: 403, message: err.message }
+        return {  responseStatus : {status: true, message: "Email sent successfully"} }
       } 
     } catch (error) {
       throw error
@@ -207,6 +249,50 @@ module.exports = {
       } catch (error) {
         throw error
       }
+  },
+
+  forgetPassword: async args => {
+    let { email } = args;
+    let checkUserExist = await User.countDocuments(
+      {
+        email: email
+      }
+    ); 
+    if(checkUserExist){ 
+      try { 
+        let result = await resetPassword(email);
+        if(result){
+          return { responseStatus : {status: true, message: "Please check your inbox for verification code"} };
+        }
+        
+      } catch (error) {
+        throw error
+      }
+    }else{
+      return { responseStatus : {status: false, message: "Email not found"} };
+    }
+  },
+
+  resetPassword: async args => {
+    let { email, verificationCode, newPassword } = args;
+    let checkUserExist = await User.countDocuments(
+      {
+        email: email
+      }
+    ); 
+    if(checkUserExist){ 
+      try { 
+        let result = await confirmPassword(email, verificationCode, newPassword );
+        if(result){
+          return { responseStatus : {status: true, message: "Password has been updated. Please login with new password."} };
+        }
+        
+      } catch (error) {
+        throw error
+      }
+    }else{
+      return { responseStatus : {status: false, message: "Email not found"} };
+    }
   }
 }
 
@@ -276,5 +362,50 @@ function asyncSignUp(userPool, email, password, attribute_list) {
       cognitoUser = result.user;
       resolve(cognitoUser)
     });
+  });
+}
+
+function resetPassword(username) {
+  // const poolData = { UserPoolId: xxxx, ClientId: xxxx };
+  // userPool is const userPool = new AWSCognito.CognitoUserPool(poolData);
+
+  // setup cognitoUser first
+  userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+  cognitoUser = new AmazonCognitoIdentity.CognitoUser({
+      Username: username,
+      Pool: userPool
+  });
+
+  // call forgotPassword on cognitoUser
+  return new Promise((resolve, reject) => {
+    cognitoUser.forgotPassword({
+      onSuccess: function(result) {
+          console.log(result)
+          resolve();
+        },
+        onFailure: function(err) {
+          reject(err);
+        }
+    }); 
+  });
+  
+}
+
+function confirmPassword(username, verificationCode, newPassword) {
+  userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+  cognitoUser = new AmazonCognitoIdentity.CognitoUser({
+      Username: username,
+      Pool: userPool
+  });
+  console.log(verificationCode);
+  return new Promise((resolve, reject) => {
+      cognitoUser.confirmPassword(verificationCode, newPassword, {
+          onFailure(err) { 
+              reject(err);
+          },
+          onSuccess() {
+              resolve();
+          },
+      });
   });
 }
