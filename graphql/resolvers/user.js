@@ -261,10 +261,7 @@ module.exports = {
     if(checkUserExist){ 
       try { 
         let result = await resetPassword(email);
-        if(result){
-          return { responseStatus : {status: true, message: "Please check your inbox for verification code"} };
-        }
-        
+        return { responseStatus : {status: true, message: "Please check your inbox for verification code"} };
       } catch (error) {
         throw error
       }
@@ -283,10 +280,7 @@ module.exports = {
     if(checkUserExist){ 
       try { 
         let result = await confirmPassword(email, verificationCode, newPassword );
-        if(result){
-          return { responseStatus : {status: true, message: "Password has been updated. Please login with new password."} };
-        }
-        
+        return { responseStatus : {status: true, message: "Password has been updated. Please login with new password."} };
       } catch (error) {
         throw error
       }
