@@ -3,10 +3,12 @@ const Category = require("../../models/category")
 module.exports = {
   categories: async args =>  {
     try {
-      let { parent_id } = args;
-      console.log(parent_id);
-      const categoriesFetched = await Category.find({parent_id:parent_id, status:true});
-      console.log(categoriesFetched);
+      let { parentIds } = args;
+      var searchById = [];
+      for(const [key, val] of Object.entries(parentIds)) {
+        searchById.push(val._id);
+      }  
+      const categoriesFetched = await Category.find({parent_id : { $in : searchById}, status:true}); 
       return categoriesFetched.map(category => {
         return {
           ...category._doc,

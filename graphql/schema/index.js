@@ -323,9 +323,13 @@ module.exports = buildSchema(`
     responseStatus: ResponseStatus
   }
 
+  input CategoryFindInput{
+    _id: String
+  }
+
   type Query { 
     specialities(type:String!):[Speciality!]
-    categories(parent_id:String):[Category!]
+    categories(parentIds:[CategoryFindInput]):[Category!]
     verifyEmail(verify:EmailVerifyInput): EmailVerify
     verifyOtp(verify:OtpVerifyInput): OtpVerify
     renewJwtToken(refreshToken: String): RefreshToken
