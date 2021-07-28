@@ -1,9 +1,10 @@
 const Speciality = require("../../models/speciality") 
 
 module.exports = {
-  specialities: async () => {
+  specialities: async args =>  {
     try {
-      const specialitiesFetched = await Speciality.find()
+      let { type } = args;
+      const specialitiesFetched = await Speciality.find({type:type, status:true});
       return specialitiesFetched.map(speciality => {
         return {
           ...speciality._doc,

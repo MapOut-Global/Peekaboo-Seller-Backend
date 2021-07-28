@@ -216,13 +216,18 @@ module.exports = buildSchema(`
     responseStatus: ResponseStatus
   }
 
+  type FbLogin{
+    responseStatus: ResponseStatus
+  }
+
   type Query { 
-    specialities:[Speciality!]
+    specialities(type:String!):[Speciality!]
     verifyEmail(verify:EmailVerifyInput): EmailVerify
     verifyOtp(verify:OtpVerifyInput): OtpVerify
     renewJwtToken(refreshToken: String): RefreshToken
     forgetPassword(email: String): ForgetPassword
     resetPassword(email: String!, verificationCode: String!, newPassword: String!): ResetPassword
+    fbLogin(fbAccessToken: String!, full_name:String, email:String): FbLogin
   }
 
   type Mutation {

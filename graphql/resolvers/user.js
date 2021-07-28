@@ -10,6 +10,7 @@ const jwkToPem = require('jwk-to-pem');
 const jwt = require('jsonwebtoken');
 const { GraphQLUpload } = require('graphql-upload');
 const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
+const Aws = require('aws-sdk');
 const CognitoUserPool = AmazonCognitoIdentity.CognitoUserPool;
 const poolData = {
   UserPoolId: 'eu-west-2_SuZiAI3hl', // Your user pool id here
@@ -287,6 +288,21 @@ module.exports = {
     }else{
       return { responseStatus : {status: false, message: "Email not found"} };
     }
+  },
+
+  fbLogin: async args => {
+    let { fbAccessToken, full_name, email } = args;
+    fbCognitoCredentials = new Aws.CognitoIdentityCredentials({
+      IdentityPoolId: 'eu-west-2:6ad6f321-7376-4f32-b390-f5cc1957eed0',
+      Logins: {
+        'graph.facebook.com': fbAccessToken
+      }
+      // Obtain AWS credentials 
+    });
+    let fbCognitoDetails = await fbCognitoCredentials.get(function(){
+      
+    });
+    console.log(fbCognitoDetails)
   }
 }
 
