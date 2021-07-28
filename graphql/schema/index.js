@@ -322,9 +322,10 @@ module.exports = buildSchema(`
     productData: Product
     responseStatus: ResponseStatus
   }
-  
+
   type Query { 
     specialities(type:String!):[Speciality!]
+    categories(parent_id:String):[Category!]
     verifyEmail(verify:EmailVerifyInput): EmailVerify
     verifyOtp(verify:OtpVerifyInput): OtpVerify
     renewJwtToken(refreshToken: String): RefreshToken
