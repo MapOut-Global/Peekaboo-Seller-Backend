@@ -173,6 +173,7 @@ module.exports = buildSchema(`
 
   input SpecialityInput{
     name: String
+    type: String
     _id: ID
   } 
  
@@ -220,6 +221,108 @@ module.exports = buildSchema(`
     responseStatus: ResponseStatus
   }
 
+  type Product {
+    name: String!, 
+    description: String 
+    categories: [Category] 
+    sub_categories: [Category] 
+    cuisines: [Speciality] 
+    dietary_need: [Speciality] 
+    pakaging_price: Packaging
+    product_availibility: ProductAvailibility
+    delivery_details: DeliveryDetail
+    desicount_details: DiscountDetail
+    userId: ID! 
+    stock: String 
+    createdAt: String
+    updatedAt: String
+  }
+  
+  input ProductInput {
+    name: String!, 
+    description: String 
+    categories: [CategoryInput] 
+    sub_categories: [CategoryInput] 
+    cuisines: [SpecialityInput] 
+    dietary_need: [SpecialityInput] 
+    packaging_price: PackagingInput
+    product_availibility: ProductAvailibilityInput
+    delivery_details: DeliveryDetailInput
+    discount_details: DiscountDetailInput 
+    userId: ID! 
+    stock: String 
+  }
+
+  input CategoryInput {
+    _id:String
+    name: String
+    parent_id: String
+  }
+
+  type Category {
+    _id:String
+    name: String
+    parent_id: String
+  }
+
+  input PackagingInput { 
+    packagin_type: String
+    weight: String
+    package_price: Float
+  }
+
+  type Packaging { 
+    packagin_type: String
+    weight: String
+    package_price: Float
+  }
+
+
+  input ProductAvailibilityInput { 
+    made_upon_order: Boolean
+    date: String
+    asap: Boolean
+    asap_prepration_time: String
+    preorder: Boolean
+    preorder_prepration_time: String
+  } 
+  type ProductAvailibility { 
+    made_upon_order: Boolean
+    date: String
+    asap: Boolean
+    asap_prepration_time: String
+    preorder: Boolean
+    preorder_prepration_time: String
+  }
+
+
+  input DeliveryDetailInput { 
+    delivery: Boolean 
+    pick_up: Boolean 
+  }
+  type DeliveryDetail { 
+    delivery: Boolean 
+    pick_up: Boolean 
+  }
+
+  input DiscountDetailInput { 
+    discount: Boolean
+    days: String 
+    available_date: String
+    available_time: String 
+  }
+  type DiscountDetail { 
+    discount: Boolean
+    days: String 
+    available_date: String
+    available_time: String 
+  }
+
+  type AddProduct{
+    productData: Product
+    responseStatus: ResponseStatus
+  }
+  
   type Query { 
     specialities(type:String!):[Speciality!]
     verifyEmail(verify:EmailVerifyInput): EmailVerify
@@ -234,6 +337,7 @@ module.exports = buildSchema(`
     signUp(user:UserInput): SignupType
     updateCookProfile(profile:ProfileInput): Profile
     login(user:UserLoginInput): LoginType
+    addProduct(productData:ProductInput): AddProduct
   }
 
   schema {

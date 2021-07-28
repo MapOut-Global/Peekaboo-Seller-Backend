@@ -78,9 +78,11 @@ module.exports = {
       for(const [key, val] of Object.entries(speciality)) {
         if(val._id === undefined){
           let status = false;
+          let type = "speciality";
           let name = val.name;
           const newSpeciality = new Speciality({
             name,
+            type,
             status
           });
           await newSpeciality.save();
@@ -112,8 +114,7 @@ module.exports = {
         {
           userId: userId
         }
-      ).exec();  
-      console.log(cookProfile);
+      ).exec();   
       var { flags, aboutme, hoursOfOperation, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency } = cookProfile;
       return { 
         flags: flags, 
