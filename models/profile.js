@@ -29,6 +29,9 @@ const profileSchema = new Schema(
     speciality: {
       type: Array,
     }, 
+    categories: {
+      type: Array,
+    }, 
     kitchenTourFile: {
       type: String, 
     },

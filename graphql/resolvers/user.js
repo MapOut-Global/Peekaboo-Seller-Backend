@@ -65,9 +65,9 @@ module.exports = {
   
   updateCookProfile: async (args, req) => {
     try {   
-      /*if(ValidateToken(req.headers.accesstoken)){ 
+      if(ValidateToken(req.headers.accesstoken)){ 
         return { status: 403, message: "Invalid token"}
-      }*/
+      }
       var { flags, aboutme, hoursOfOperation, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency } = args.profile;
       /*let { filename, mimetype, createReadStream } = await avatar.file; 
       fileUpload({ filename, stream: createReadStream() }) */
@@ -304,6 +304,33 @@ module.exports = {
       
     });
     console.log(fbCognitoDetails)
+  },
+
+  updateCookOffer: async args => {
+    let { categories, userId } = args;
+    for(const [key, val] of Object.entries(categories)) {
+      if(val._id === undefined){
+        let status = false;
+        let name = val.name;
+        const newCategories = new Category({
+          name,
+          status
+        });
+        await newCategories.save(); 
+        categories[key]['_id'] = newCategories._doc._id.toString();
+      }
+    } 
+    await Profile.findOneAndUpdate(
+      {userId: userId},
+      {
+        categories: categories
+      },
+      {
+        new: true,
+        upsert: true
+      }
+    ); 
+    return { responseStatus : {status: false, message: "Cook offer updated"} };
   }
 }
 

@@ -327,6 +327,15 @@ module.exports = buildSchema(`
     _id: String
   }
 
+  input CategoryOfferInput{
+    _id: String
+    name: String
+  }
+
+  type UpdatedOffer{ 
+    responseStatus: ResponseStatus
+  }
+
   type Query { 
     specialities(type:String!):[Speciality!]
     categories(parentIds:[CategoryFindInput]):[Category!]
@@ -336,6 +345,7 @@ module.exports = buildSchema(`
     forgetPassword(email: String): ForgetPassword
     resetPassword(email: String!, verificationCode: String!, newPassword: String!): ResetPassword
     fbLogin(fbAccessToken: String!, full_name:String, email:String): FbLogin
+    products(categoryId:String, userId:String!, subcategoryId:String): [Product]
   }
 
   type Mutation {
@@ -343,6 +353,7 @@ module.exports = buildSchema(`
     updateCookProfile(profile:ProfileInput): Profile
     login(user:UserLoginInput): LoginType
     addProduct(productData:ProductInput): AddProduct
+    updateCookOffer(categories:[CategoryOfferInput], userId:String): UpdatedOffer
   }
 
   schema {

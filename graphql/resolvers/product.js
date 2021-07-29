@@ -5,10 +5,6 @@ module.exports = {
     try {
       let { name, description, categories, sub_categories, cuisines, dietary_need, packaging_price, product_availibility, userId, delivery_details, stock, discount_details } = args.productData;
       
-      console.log(packaging_price);
-      console.log(product_availibility);
-      console.log(delivery_details);
-      console.log(discount_details);
       for(const [key, val] of Object.entries(categories)) {
         if(val._id === undefined){
           let status = false;
@@ -76,4 +72,22 @@ module.exports = {
       throw error
     }
   }, 
+
+  products: async args =>  {
+    try {
+      let { categoryId, userId, subcategoryId} = args
+      var condition = [];
+      condition['userId'] = userId
+      if(categoryId !== undefined){
+        condition['categories._id'] = categoryId
+      }
+      if(categoryId !== undefined){
+        condition['subcategoryId._id'] = subcategoryId
+      }
+      const productList = await Product.find({condition});
+      console.log(productList);
+    } catch (error) {
+      throw error
+    }
+  }
 }
