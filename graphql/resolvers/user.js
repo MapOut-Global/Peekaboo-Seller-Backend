@@ -1,13 +1,10 @@
 const User = require("../../models/user") 
 const OtpVerification = require("../../models/otp_verification") 
 const Profile = require("../../models/profile") 
-const Speciality = require("../../models/speciality") 
+const Speciality = require("../../models/speciality")  
 
-
+const CognitoExpress = require("cognito-express") 
 //const fileUpload = require("../fileuploader/uploader") 
-const request = require('request');
-const jwkToPem = require('jwk-to-pem');
-const jwt = require('jsonwebtoken');
 const { GraphQLUpload } = require('graphql-upload');
 const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 const Aws = require('aws-sdk');
@@ -64,8 +61,10 @@ module.exports = {
   },
   
   updateCookProfile: async (args, req) => {
-    try {   
-      if(ValidateToken(req.headers.accesstoken)){ 
+    try {    
+      let checkToken = await ValidateToken(req.headers.accesstoken);
+      console.log(checkToken);
+      if(!checkToken){ 
         return { status: 403, message: "Invalid token"}
       }
       var { flags, aboutme, hoursOfOperation, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency } = args.profile;
@@ -330,52 +329,8 @@ module.exports = {
         upsert: true
       }
     ); 
-    return { responseStatus : {status: false, message: "Cook offer updated"} };
+    return { responseStatus : {status: true, message: "Cook offer updated"} };
   }
-}
-
-function ValidateToken(token) { 
-  request({
-      url: `https://cognito-idp.${pool_region}.amazonaws.com/${poolData.UserPoolId}/.well-known/jwks.json`,
-      json: true
-  }, function (error, response, body) {
-      if (!error && response.statusCode === 200) {
-          pems = {};
-          var keys = body['keys'];
-          for(var i = 0; i < keys.length; i++) {
-              //Convert each key to PEM
-              var key_id = keys[i].kid;
-              var modulus = keys[i].n;
-              var exponent = keys[i].e;
-              var key_type = keys[i].kty;
-              var jwk = { kty: key_type, n: modulus, e: exponent};
-              var pem = jwkToPem(jwk);
-              pems[key_id] = pem;
-          }
-          //validate the token
-          var decodedJwt = jwt.decode(token, {complete: true});
-          if (!decodedJwt) { 
-            return false;
-          }
-
-          var kid = decodedJwt.header.kid;
-          var pem = pems[kid];
-          if (!pem) { 
-            return false;
-          }
-
-          console.log(jwt.verify(token, pem, function(err, payload) {
-            console.log(err);
-              if(err) {  
-                return false;
-              } else { 
-                return true;
-              }
-          }));
-      } else {
-        return false;
-      }
-  }); 
 }
 
 function asyncAuthenticateUser(cognitoUser, cognitoAuthenticationDetails) {
@@ -404,9 +359,7 @@ function asyncSignUp(userPool, email, password, attribute_list) {
 }
 
 function resetPassword(username) {
-  // const poolData = { UserPoolId: xxxx, ClientId: xxxx };
-  // userPool is const userPool = new AWSCognito.CognitoUserPool(poolData);
-
+   
   // setup cognitoUser first
   userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
   cognitoUser = new AmazonCognitoIdentity.CognitoUser({
@@ -434,8 +387,7 @@ function confirmPassword(username, verificationCode, newPassword) {
   cognitoUser = new AmazonCognitoIdentity.CognitoUser({
       Username: username,
       Pool: userPool
-  });
-  console.log(verificationCode);
+  }); 
   return new Promise((resolve, reject) => {
       cognitoUser.confirmPassword(verificationCode, newPassword, {
           onFailure(err) { 
@@ -445,5 +397,25 @@ function confirmPassword(username, verificationCode, newPassword) {
               resolve();
           },
       });
+  });
+}
+
+function ValidateToken(token) { 
+  //Initializing CognitoExpress constructor
+  const cognitoExpress = new CognitoExpress({
+    region: "eu-west-2",
+    cognitoUserPoolId: "eu-west-2_SuZiAI3hl",
+    tokenUse: "access", //Possible Values: access | id
+    tokenExpiration: 3600000 //Up to default expiration of 1 hour (3600000 ms)
+  }); 
+  return new Promise((resolve, reject) => {
+      cognitoExpress.validate(token, function(err, response) {  
+      //If API is not authenticated, Return 401 with error message. 
+      if (err){
+        reject(err);
+        return;
+      }  
+      resolve();
+    });
   });
 }
