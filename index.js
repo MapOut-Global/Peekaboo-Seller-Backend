@@ -19,8 +19,8 @@ app.use(
     graphiql: true,
   })
 );
-//const uri = `mongodb+srv://bharat-mapout:mapout@123@serverlessinstancepeeka.hj2on.mongodb.net/peekaboo?retryWrites=true&w=majority`;
-const uri = `mongodb+srv://peekaboo-user:peekaboo-user@cluster0.elid5.mongodb.net/peekaboo?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://peekaboo:peekaboo@peekaboodb.fvnfz.mongodb.net/peekaboodb?retryWrites=true&w=majority`;
+//const uri = `mongodb+srv://peekaboo-user:peekaboo-user@cluster0.elid5.mongodb.net/peekaboo?retryWrites=true&w=majority`;
 const options = { useNewUrlParser: true, useUnifiedTopology: true  };
 mongoose.connect(uri, options)
 .then(() => app.listen(3000, console.log("Server is running")))

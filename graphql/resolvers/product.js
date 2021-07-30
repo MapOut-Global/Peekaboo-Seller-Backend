@@ -75,16 +75,8 @@ module.exports = {
 
   products: async args =>  {
     try {
-      let { categoryId, userId, subcategoryId} = args
-      var condition = [];
-      condition['userId'] = userId
-      if(categoryId !== undefined){
-        condition['categories._id'] = categoryId
-      }
-      if(categoryId !== undefined){
-        condition['subcategoryId._id'] = subcategoryId
-      }
-      const productList = await Product.find({condition});
+      let { categoryId, userId, subcategoryId} = args 
+      const productList = await Product.find({userId:userId, categoryId:categoryId, subcategoryId:subcategoryId});
       console.log(productList);
     } catch (error) {
       throw error

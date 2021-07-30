@@ -10,10 +10,10 @@ const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 const Aws = require('aws-sdk');
 const CognitoUserPool = AmazonCognitoIdentity.CognitoUserPool;
 const poolData = {
-  UserPoolId: 'eu-west-2_SuZiAI3hl', // Your user pool id here
-  ClientId: '6t8n8rlmb4tn1omfuvlr2rirt4', // Your client id here
+  UserPoolId: 'us-west-2_SjG0rvbcr', // Your user pool id here
+  ClientId: '208n561eviprs5ss99an5r0hqa', // Your client id here
 };
-const pool_region = 'eu-west-2';
+const pool_region = 'us-west-2';
 module.exports = { 
   signUp: async args => { 
       let { full_name, email, password, phone } = args.user  
@@ -61,16 +61,18 @@ module.exports = {
   },
   
   updateCookProfile: async (args, req) => {
+    //checkToken = await ValidateToken(req.headers.accesstoken);
+    //console.log(checkToken);
     try {    
-      let checkToken = await ValidateToken(req.headers.accesstoken);
-      console.log(checkToken);
-      if(!checkToken){ 
+      //checkToken = await ValidateToken(req.headers.accesstoken); 
+      //console.log(await ValidateToken(req.headers.accesstoken));
+      /*if(!checkToken){ 
         return { status: 403, message: "Invalid token"}
-      }
+      }*/
       var { flags, aboutme, hoursOfOperation, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency } = args.profile;
       /*let { filename, mimetype, createReadStream } = await avatar.file; 
       fileUpload({ filename, stream: createReadStream() }) */
-      userData = await User.findById(userId).exec(); 
+      userData = await User.findById(userId).exec();  
       if(userData == null){
         return {  responseStatus : {status: false, message: "Invalid user id"}, userData : null, userId: userId }
       }
@@ -79,14 +81,23 @@ module.exports = {
           let status = false;
           let type = "speciality";
           let name = val.name;
-          const newSpeciality = new Speciality({
-            name,
-            type,
-            status
-          });
-          await newSpeciality.save();
-          console.log(newSpeciality._doc._id);
-          speciality[key]['_id'] = newSpeciality._doc._id.toString();
+          let checkSpecialityExist = await Speciality.findOne(
+            {
+              name: name
+            }
+          ).exec();   
+          if(checkSpecialityExist.length == 0){
+            const newSpeciality = new Speciality({
+              name,
+              type,
+              status
+            });
+            await newSpeciality.save();
+            speciality[key]['_id'] = newSpeciality._doc._id.toString();
+          }else{
+            console.log(checkSpecialityExist);
+            speciality[key]['_id'] = checkSpecialityExist._id.toString();
+          } 
         }
       } 
       let cookProfileSave = await Profile.findOneAndUpdate(
@@ -293,7 +304,7 @@ module.exports = {
   fbLogin: async args => {
     let { fbAccessToken, full_name, email } = args;
     fbCognitoCredentials = new Aws.CognitoIdentityCredentials({
-      IdentityPoolId: 'eu-west-2:6ad6f321-7376-4f32-b390-f5cc1957eed0',
+      IdentityPoolId: 'us-west-2:6ad6f321-7376-4f32-b390-f5cc1957eed0',
       Logins: {
         'graph.facebook.com': fbAccessToken
       }
@@ -403,19 +414,16 @@ function confirmPassword(username, verificationCode, newPassword) {
 function ValidateToken(token) { 
   //Initializing CognitoExpress constructor
   const cognitoExpress = new CognitoExpress({
-    region: "eu-west-2",
-    cognitoUserPoolId: "eu-west-2_SuZiAI3hl",
+    region: "us-west-2",
+    cognitoUserPoolId: "us-west-2_SjG0rvbcr",
     tokenUse: "access", //Possible Values: access | id
     tokenExpiration: 3600000 //Up to default expiration of 1 hour (3600000 ms)
   }); 
-  return new Promise((resolve, reject) => {
-      cognitoExpress.validate(token, function(err, response) {  
-      //If API is not authenticated, Return 401 with error message. 
-      if (err){
-        reject(err);
-        return;
-      }  
-      resolve();
-    });
+  return cognitoExpress.validate(token, function(err, response) {  
+    //If API is not authenticated, Return 401 with error message. 
+    if (err){ 
+      return false;
+    }   
+    return true;
   });
 }
