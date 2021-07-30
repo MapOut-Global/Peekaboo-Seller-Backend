@@ -108,6 +108,7 @@ module.exports = buildSchema(`
     _id: ID
     name: String
     status: Boolean
+    type:String
     createdAt: String!
     updatedAt: String!
   }  

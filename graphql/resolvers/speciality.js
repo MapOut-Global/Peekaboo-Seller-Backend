@@ -4,7 +4,8 @@ module.exports = {
   specialities: async args =>  {
     try {
       let { type } = args;
-      const specialitiesFetched = await Speciality.find({type:type, status:true});
+      var typeArr = type.split(","); 
+      const specialitiesFetched = await Speciality.find({type:{ $in : typeArr}, status:true});
       return specialitiesFetched.map(speciality => {
         return {
           ...speciality._doc,
