@@ -1,5 +1,5 @@
 const Product = require("../../models/product") 
-
+var ObjectId = require('mongoose').Types.ObjectId; 
 module.exports = {
   addProduct: async args =>  {
     try {
@@ -76,8 +76,14 @@ module.exports = {
   products: async args =>  {
     try {
       let { categoryId, userId, subcategoryId} = args 
-      const productList = await Product.find({userId:userId, categoryId:categoryId, subcategoryId:subcategoryId});
-      console.log(productList);
+      const productList = await Product.find({userId:new ObjectId(userId)});
+      return productList.map(product => {
+        return {
+          ...product._doc,
+          _id: product.id,
+          createdAt: new Date(product._doc.createdAt).toISOString(),
+        }
+      })
     } catch (error) {
       throw error
     }
