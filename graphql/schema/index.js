@@ -251,7 +251,8 @@ module.exports = buildSchema(`
     delivery_details: DeliveryDetailInput
     discount_details: DiscountDetailInput 
     userId: ID! 
-    stock: String 
+    stock: String
+    product_image: Upload 
   }
 
   input CategoryInput {
