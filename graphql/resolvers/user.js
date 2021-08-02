@@ -69,9 +69,38 @@ module.exports = {
       /*if(!checkToken){ 
         return { status: 403, message: "Invalid token"}
       }*/
-      var { flags, aboutme, hoursOfOperation, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency } = args.profile;
-      /*let { filename, mimetype, createReadStream } = await avatar.file; 
-      fileUpload({ filename, stream: createReadStream() }) */
+      var { flags, aboutme, avatar, hoursOfOperation, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency } = args.profile;
+      var avatar_url = "";
+      if (avatar) { 
+        let {promise, file, resolve, reject} = await avatar; 
+        let { createReadStream,  filename} = file;
+        // read the data from the file.
+        let fileStream = createReadStream();
+        const params = {
+            Bucket:"peekaboo2",
+            Key:'',
+            Body:'',
+            ACL:'public-read'
+        };
+        // in case of an error, log it.
+        fileStream.on("error", (error) => console.error(error));
+
+        // set the body of the object as data to read from the file.
+        params.Body = fileStream;
+            // get the current time stamp.
+        let timestamp = new Date().getTime();
+
+        // get the file extension.
+        let file_extension = path.extname(filename);
+
+        // set the key as a combination of the folder name, timestamp, and the file extension of the object.
+        params.Key = `cook_images/${timestamp}${file_extension}`;
+
+        let upload = util.promisify(s3.upload.bind(s3));
+
+        let result = await upload(params).catch(console.log);  
+        avatar_url = result.Location;
+      } 
       userData = await User.findById(userId).exec();  
       if(userData == null){
         return {  responseStatus : {status: false, message: "Invalid user id"}, userData : null, userId: userId }
@@ -114,6 +143,7 @@ module.exports = {
           speciality: speciality,
           kitchenTourFile: kitchenTourFile,
           currency: currency,
+          avatar_url
         },
         {
           new: true,

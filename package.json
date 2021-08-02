@@ -5,12 +5,14 @@
   "main": "index.js",
   "scripts": {
     "test": "start.js",
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "preinstall": "npx npm-force-resolutions"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "amazon-cognito-identity-js": "^5.0.5",
+    "apollo-upload-server": "^7.1.0",
     "aws-sdk": "^2.954.0",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
@@ -20,6 +22,7 @@
     "express-jwt": "^6.0.0",
     "fs": "0.0.1-security",
     "graphql": "^15.5.1",
+    "graphql-compose": "^9.0.2",
     "graphql-playground-middleware-express": "^1.7.22",
     "graphql-tools": "^7.0.5",
     "graphql-upload": "^12.0.0",
@@ -29,5 +32,9 @@
     "nodemailer": "^6.6.3",
     "nodemon": "^2.0.12",
     "superagent": "^6.1.0"
+  },
+  "resolutions": {
+    "fs-capacitor": "^6.2.0",
+    "graphql-upload": "^11.0.0"
   }
 }

@@ -1,9 +1,10 @@
 const express = require("express");
-const graphqlHttp = require("express-graphql").graphqlHTTP;
-const { graphqlUploadExpress } = require('graphql-upload');
+const graphqlHttp = require("express-graphql").graphqlHTTP; 
 const mongoose = require("mongoose");
 const graphqlSchema = require("./graphql/schema");
 const graphqlResolvers = require("./graphql/resolvers");
+const bodyParser =  require('body-parser');
+const { graphqlUploadExpress } = require('graphql-upload');
 const expressPlayground = require('graphql-playground-middleware-express')
   .default
 
@@ -12,11 +13,20 @@ const app = express()
 app.get('/playground', expressPlayground({ endpoint: '/graphql' }))
 app.use(
   "/graphql",
-  graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
+  bodyParser.json(),
+  graphqlUploadExpress({
+    // Limits here should be stricter than config for surrounding
+    // infrastructure such as Nginx so errors can be handled elegantly by
+    // `graphql-upload`:
+    // https://github.com/jaydenseric/graphql-upload#type-processrequestoptions
+    maxFileSize: 10000000, // 10 MB
+    maxFiles: 20,
+  }),
   graphqlHttp({
     schema: graphqlSchema,
     rootValue: graphqlResolvers,
     graphiql: true,
+    
   })
 );
 const uri = `mongodb+srv://peekaboo:peekaboo@peekaboodb.fvnfz.mongodb.net/peekaboodb?retryWrites=true&w=majority`;

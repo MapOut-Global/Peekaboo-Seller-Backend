@@ -41,6 +41,9 @@ const productSchema = new Schema(
     discount_details: {
       type: Object, 
     },
+    product_image_url: {
+      type: String,
+    }
   },
   { timestamps: true }
 )

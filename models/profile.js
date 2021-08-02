@@ -38,6 +38,9 @@ const profileSchema = new Schema(
     currency: {
       type: String, 
     },
+    avatar_url: {
+      type: String, 
+    },
   },
   { timestamps: true }
 )

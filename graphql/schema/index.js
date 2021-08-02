@@ -55,6 +55,7 @@ module.exports = buildSchema(`
     currency: String
     createdAt: String!
     updatedAt: String!
+    avtar_url: String
     responseStatus: ResponseStatus
   }
   
@@ -233,6 +234,7 @@ module.exports = buildSchema(`
     product_availibility: ProductAvailibility
     delivery_details: DeliveryDetail
     desicount_details: DiscountDetail
+    product_image_url: String
     userId: ID! 
     stock: String 
     createdAt: String
