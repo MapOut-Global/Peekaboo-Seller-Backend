@@ -7,7 +7,18 @@ const CognitoExpress = require("cognito-express")
 //const fileUpload = require("../fileuploader/uploader") 
 const { GraphQLUpload } = require('graphql-upload');
 const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
-const Aws = require('aws-sdk');
+const Aws = require('Aws-sdk'); 
+const path = require('path');
+const util = require('util') 
+
+Aws.config.update({
+  secretAccessKey:'yozM9l4734aDNxi4MpCVmAo4k2kbdvr9Tx8yzAud',
+  accessKeyId:'AKIAUV3FFSC7JRCJM25R',
+  region:'us-west-2'
+});
+const s3 = new Aws.S3();
+
+
 const CognitoUserPool = AmazonCognitoIdentity.CognitoUserPool;
 const poolData = {
   UserPoolId: 'us-west-2_SjG0rvbcr', // Your user pool id here
@@ -100,11 +111,17 @@ module.exports = {
 
         let result = await upload(params).catch(console.log);  
         avatar_url = result.Location;
-      } 
+      }else{ 
+        var checkProfileOldAvtar = await Profile.findOne({userId: userId}).exec();   
+        if(checkProfileOldAvtar.avatar_url !== "" ){
+          avatar_url = checkProfileOldAvtar.avatar_url; 
+        }
+      }  
       userData = await User.findById(userId).exec();  
       if(userData == null){
         return {  responseStatus : {status: false, message: "Invalid user id"}, userData : null, userId: userId }
       }
+
       for(const [key, val] of Object.entries(speciality)) {
         if(val._id === undefined){
           let status = false;
@@ -123,13 +140,12 @@ module.exports = {
             });
             await newSpeciality.save();
             speciality[key]['_id'] = newSpeciality._doc._id.toString();
-          }else{
-            console.log(checkSpecialityExist);
+          }else{ 
             speciality[key]['_id'] = checkSpecialityExist._id.toString();
           } 
         }
       } 
-      let cookProfileSave = await Profile.findOneAndUpdate(
+      await Profile.findOneAndUpdate(
         {userId: userId},
         {
           flags: flags,
@@ -143,7 +159,7 @@ module.exports = {
           speciality: speciality,
           kitchenTourFile: kitchenTourFile,
           currency: currency,
-          avatar_url
+          avatar_url: avatar_url
         },
         {
           new: true,
@@ -155,7 +171,8 @@ module.exports = {
           userId: userId
         }
       ).exec();   
-      var { flags, aboutme, hoursOfOperation, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency } = cookProfile;
+      var { flags, aboutme, hoursOfOperation, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency, avatar_url } = cookProfile;
+       
       return { 
         flags: flags, 
         aboutme:aboutme, 
@@ -168,6 +185,7 @@ module.exports = {
         speciality:speciality,
         kitchenTourFile:kitchenTourFile,
         currency:currency, 
+        avatar_url: avatar_url,
         userData: userData, 
         responseStatus: {status: true, message: "Profile saved"}};
     } catch (error) {

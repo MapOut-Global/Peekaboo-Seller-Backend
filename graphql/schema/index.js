@@ -55,7 +55,7 @@ module.exports = buildSchema(`
     currency: String
     createdAt: String!
     updatedAt: String!
-    avtar_url: String
+    avatar_url: String
     responseStatus: ResponseStatus
   }
   
