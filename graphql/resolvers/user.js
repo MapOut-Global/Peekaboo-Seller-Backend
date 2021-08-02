@@ -7,7 +7,7 @@ const CognitoExpress = require("cognito-express")
 //const fileUpload = require("../fileuploader/uploader") 
 const { GraphQLUpload } = require('graphql-upload');
 const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
-const Aws = require('Aws-sdk'); 
+const Aws = require('aws-sdk'); 
 const path = require('path');
 const util = require('util') 
 
