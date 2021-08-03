@@ -4,6 +4,7 @@ const Profile = require("../../models/profile")
 const Speciality = require("../../models/speciality")  
 
 const CognitoExpress = require("cognito-express") 
+const nodemailer = require("nodemailer") 
 //const fileUpload = require("../fileuploader/uploader") 
 const { GraphQLUpload } = require('graphql-upload');
 const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
@@ -44,7 +45,7 @@ module.exports = {
       attributeList.push(attributeEmail);
       try {  
         let result = await asyncSignUp(userPool, email, password, attributeList); 
-        if(result !== undefined){
+        if(result !== undefined){ 
           var authenticationData = {
             Username: email,
             Password: password,
@@ -126,8 +127,8 @@ module.exports = {
       if(checkUserExist){ 
         return { responseStatus : {status: false, message: "Email already exists"} };
       }else{ 
-        //let randomOtp = Math.floor(1000 + Math.random() * 9999);
-        let otp = 9999; 
+        let otp = Math.floor(1000 + Math.random() * 9999);
+        //let otp = 9999; 
         await OtpVerification.findOneAndRemove(
           {
             email: email
@@ -138,6 +139,25 @@ module.exports = {
           otp, 
         });
         await otpDoc.save();
+
+        const transporter = nodemailer.createTransport({
+          host: "smtpout.secureserver.net",
+          port: 587,
+          secure: false, // upgrade later with STARTTLS
+          auth: {
+            user: "info@knowledgly.com",
+            pass: "knowledgly@2020",
+          },
+        });
+                // send mail with defined transport object
+        let info = await transporter.sendMail({
+          from: '"Peekaboo" <info@peekaboo.com>', // sender address
+          to: email, // list of receivers
+          subject: "Verify your email on Peekaboo", // Subject line
+          text: "Your one time password for Peekaboo is " + otp, // plain text body
+          html: "Dear Sir / Madam<br/><br/>Your One Time Password(OTP) is :<br/><br/>"+otp, 
+        });
+
         return { responseStatus : {status: true, message: "Email sent successfully"} };
       }
     } catch (error) {
