@@ -1,7 +1,14 @@
 const Category = require("../../models/category") 
+const { authorizationFunction } = require('../checkCognitoToken.js'); 
 
 module.exports = {
-  categories: async args =>  {
+  categories: async (args, req) =>  {
+    if(checkToken.client_id === undefined){
+      throw {
+        error: checkToken,
+        status: 401
+      }
+    }
     try {
       let { parentIds } = args;
       var searchById = [];

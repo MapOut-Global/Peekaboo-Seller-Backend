@@ -1,15 +1,34 @@
+const CognitoExpress = require("cognito-express");
 
+const { parse, print, getIntrospectionQuery } = require('graphql');
+// format introspection query same way as apollo tooling do
+const introspectionQuery = print(parse(getIntrospectionQuery()));
 
-module.exports = class AwsCognitoAuthenticate{
-	ValidateToken(token) { 
-		console.log("hii");
-		  return cognitoExpress.validate(token, function(err, response) { 
-			//If API is not authenticated, Return 401 with error message. 
-			if (err) return false;
-			
-			//Else API has been authenticated. Proceed.
-			res.locals.user = response; 
-			return true;
-		});
+module.exports = {
+	authorizationFunction: async (req, res) => {  
+		if(req.headers.token_type !== undefined && req.headers.token_type == "fb"){
+			var cognitoExpress = new CognitoExpress({
+				region: "us-west-2",
+				cognitoUserPoolId: "us-west-2_s968WrlYz",
+				tokenUse: "access", //Possible Values: access | id
+				tokenExpiration: 3600000 //Up to default expiration of 1 hour (3600000 ms)
+			});
+		}else{
+			var cognitoExpress = new CognitoExpress({
+				region: "us-west-2",
+				cognitoUserPoolId: "us-west-2_SjG0rvbcr",
+				tokenUse: "access", //Possible Values: access | id
+				tokenExpiration: 3600000 //Up to default expiration of 1 hour (3600000 ms)
+			});
+		} 
+		var token = req.headers.accesstoken
+		try{
+			let tokenResponse = await cognitoExpress.validate(token); 
+			if(tokenResponse.client_id !== undefined){
+				return tokenResponse;
+			} 
+		} catch(err) {
+			throw err;
+		}
 	}
 }

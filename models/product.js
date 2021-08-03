@@ -42,7 +42,7 @@ const productSchema = new Schema(
       type: Object, 
     },
     product_image_url: {
-      type: String,
+      type: Object,
     }
   },
   { timestamps: true }

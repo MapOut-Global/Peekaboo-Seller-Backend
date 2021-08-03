@@ -3,6 +3,7 @@ const aws = require('aws-sdk');
 const path = require('path');
 const util = require('util')
 var ObjectId = require('mongoose').Types.ObjectId; 
+const { authorizationFunction } = require('../checkCognitoToken.js'); 
 
 aws.config.update({
   secretAccessKey:'yozM9l4734aDNxi4MpCVmAo4k2kbdvr9Tx8yzAud',
@@ -12,7 +13,14 @@ aws.config.update({
 const s3 = new aws.S3();
 
 module.exports = {
-  addProduct: async args =>  {
+  addProduct: async (args, req) =>  {
+    let checkToken = await authorizationFunction(req); 
+    if(checkToken.client_id === undefined){
+      throw {
+        error: checkToken,
+        status: 401
+      }
+    }
     try {
       let { name, description, categories, sub_categories, cuisines, dietary_need, product_image, packaging_price, product_availibility, userId, delivery_details, stock, discount_details } = args.productData;
       
@@ -103,24 +111,37 @@ module.exports = {
 
         let result = await upload(params).catch(console.log);  
         product_image_url = result.Location;
-      } 
+        var product_image_arr = {
+          Location: result.Location, 
+          Key: result.Key, 
+        }; 
+        product_image_url = Object.create(product_image_arr);
+        product_image_url.Location = result.Location;
+        product_image_url.Key = result.Key; 
+      }
 
       const newProduct = new Product({
         name, description, categories, product_image_url, sub_categories, cuisines, dietary_need, packaging_price, product_availibility, userId, delivery_details, stock, discount_details
       });
-      const productData = await newProduct.save();
-      console.log(productData);
+      const productData = await newProduct.save(); 
       return { productData: productData._doc, responseStatus : {status: true, message: "Product added successfully"} }  
     } catch (error) {
       throw error
     }
   }, 
 
-  products: async args =>  {
+  products: async (args, req) =>  {
+    let checkToken = await authorizationFunction(req); 
+    if(checkToken.client_id === undefined){
+      throw {
+        error: checkToken,
+        status: 401
+      }
+    }
     try {
       let { categoryId, userId, subcategoryId} = args 
       const productList = await Product.find({userId:new ObjectId(userId)});
-      return productList.map(product => {
+      return productList.map(product => { 
         return {
           ...product._doc,
           _id: product.id,

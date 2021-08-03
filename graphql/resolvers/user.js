@@ -69,129 +69,7 @@ module.exports = {
       } catch (error) {
         throw error
       } 
-  },
-  
-  updateCookProfile: async (args, req) => {
-    //checkToken = await ValidateToken(req.headers.accesstoken);
-    //console.log(checkToken);
-    try {    
-      //checkToken = await ValidateToken(req.headers.accesstoken); 
-      //console.log(await ValidateToken(req.headers.accesstoken));
-      /*if(!checkToken){ 
-        return { status: 403, message: "Invalid token"}
-      }*/
-      var { flags, aboutme, avatar, hoursOfOperation, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency } = args.profile;
-      var avatar_url = "";
-      if (avatar) { 
-        let {promise, file, resolve, reject} = await avatar; 
-        let { createReadStream,  filename} = file;
-        // read the data from the file.
-        let fileStream = createReadStream();
-        const params = {
-            Bucket:"peekaboo2",
-            Key:'',
-            Body:'',
-            ACL:'public-read'
-        };
-        // in case of an error, log it.
-        fileStream.on("error", (error) => console.error(error));
-
-        // set the body of the object as data to read from the file.
-        params.Body = fileStream;
-            // get the current time stamp.
-        let timestamp = new Date().getTime();
-
-        // get the file extension.
-        let file_extension = path.extname(filename);
-
-        // set the key as a combination of the folder name, timestamp, and the file extension of the object.
-        params.Key = `cook_images/${timestamp}${file_extension}`;
-
-        let upload = util.promisify(s3.upload.bind(s3));
-
-        let result = await upload(params).catch(console.log);  
-        avatar_url = result.Location;
-      }else{ 
-        var checkProfileOldAvtar = await Profile.findOne({userId: userId}).exec();   
-        if(checkProfileOldAvtar.avatar_url !== "" ){
-          avatar_url = checkProfileOldAvtar.avatar_url; 
-        }
-      }  
-      userData = await User.findById(userId).exec();  
-      if(userData == null){
-        return {  responseStatus : {status: false, message: "Invalid user id"}, userData : null, userId: userId }
-      }
-
-      for(const [key, val] of Object.entries(speciality)) {
-        if(val._id === undefined){
-          let status = false;
-          let type = "speciality";
-          let name = val.name;
-          let checkSpecialityExist = await Speciality.findOne(
-            {
-              name: name
-            }
-          ).exec();   
-          if(checkSpecialityExist.length == 0){
-            const newSpeciality = new Speciality({
-              name,
-              type,
-              status
-            });
-            await newSpeciality.save();
-            speciality[key]['_id'] = newSpeciality._doc._id.toString();
-          }else{ 
-            speciality[key]['_id'] = checkSpecialityExist._id.toString();
-          } 
-        }
-      } 
-      await Profile.findOneAndUpdate(
-        {userId: userId},
-        {
-          flags: flags,
-          aboutme: aboutme, 
-          hoursOfOperation: hoursOfOperation, 
-          heading: heading,
-          availibility: availibility, 
-          address: address,
-          delivery: delivery,
-          userId: userId,
-          speciality: speciality,
-          kitchenTourFile: kitchenTourFile,
-          currency: currency,
-          avatar_url: avatar_url
-        },
-        {
-          new: true,
-          upsert: true
-        }
-      ); 
-      let cookProfile = await Profile.findOne(
-        {
-          userId: userId
-        }
-      ).exec();   
-      var { flags, aboutme, hoursOfOperation, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency, avatar_url } = cookProfile;
-       
-      return { 
-        flags: flags, 
-        aboutme:aboutme, 
-        hoursOfOperation:hoursOfOperation, 
-        heading: heading, 
-        availibility:availibility, 
-        address:address, 
-        delivery:delivery, 
-        userId:userId, 
-        speciality:speciality,
-        kitchenTourFile:kitchenTourFile,
-        currency:currency, 
-        avatar_url: avatar_url,
-        userData: userData, 
-        responseStatus: {status: true, message: "Profile saved"}};
-    } catch (error) {
-      throw error
-    }
-  },
+  }, 
 
   login: async args => {
     const { email, password } = args.user
@@ -208,7 +86,7 @@ module.exports = {
       Pool: userPool,
     };
     var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
-    user = User.findOne(
+    user = await User.findOne(
       {
         email: email
       }
@@ -218,7 +96,17 @@ module.exports = {
       if ('idToken' in result) {
         var accessToken = result.getAccessToken().getJwtToken(); 
         var refreshToken = result.getRefreshToken().getToken();  
-        return { userData: user, token:accessToken, refreshToken: refreshToken, responseStatus : {status: true, message: "Login successfully"} }  
+        var checkCookProfile = await Profile.findOne({userId: user._id}).exec();  
+        return { 
+          userData: user, 
+          cookProfile: checkCookProfile,
+          token:accessToken, 
+          refreshToken: refreshToken, 
+          responseStatus : {
+            status: true, 
+            message: "Login successfully"
+          } 
+        }  
       } else {
         return {  responseStatus : {status: true, message: "Email sent successfully"} }
       } 
@@ -362,34 +250,7 @@ module.exports = {
       
     });
     console.log(fbCognitoDetails)
-  },
-
-  updateCookOffer: async args => {
-    let { categories, userId } = args;
-    for(const [key, val] of Object.entries(categories)) {
-      if(val._id === undefined){
-        let status = false;
-        let name = val.name;
-        const newCategories = new Category({
-          name,
-          status
-        });
-        await newCategories.save(); 
-        categories[key]['_id'] = newCategories._doc._id.toString();
-      }
-    } 
-    await Profile.findOneAndUpdate(
-      {userId: userId},
-      {
-        categories: categories
-      },
-      {
-        new: true,
-        upsert: true
-      }
-    ); 
-    return { responseStatus : {status: true, message: "Cook offer updated"} };
-  }
+  }, 
 }
 
 function asyncAuthenticateUser(cognitoUser, cognitoAuthenticationDetails) {
@@ -458,20 +319,4 @@ function confirmPassword(username, verificationCode, newPassword) {
       });
   });
 }
-
-function ValidateToken(token) { 
-  //Initializing CognitoExpress constructor
-  const cognitoExpress = new CognitoExpress({
-    region: "us-west-2",
-    cognitoUserPoolId: "us-west-2_SjG0rvbcr",
-    tokenUse: "access", //Possible Values: access | id
-    tokenExpiration: 3600000 //Up to default expiration of 1 hour (3600000 ms)
-  }); 
-  return cognitoExpress.validate(token, function(err, response) {  
-    //If API is not authenticated, Return 401 with error message. 
-    if (err){ 
-      return false;
-    }   
-    return true;
-  });
-}
+ 

@@ -39,8 +39,11 @@ const profileSchema = new Schema(
       type: String, 
     },
     avatar_url: {
-      type: String, 
+      type: Object, 
     },
+    attachments: {
+      type: Array,
+    }
   },
   { timestamps: true }
 )

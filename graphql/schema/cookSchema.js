@@ -12,30 +12,7 @@ module.exports = buildSchema(`
     createdAt: String
     updatedAt: String
     responseStatus: ResponseStatus
-  } 
-
-  type LoginType {
-    userData: User
-    token: String
-    refreshToken: String
-    responseStatus: ResponseStatus
-  }
-
-  type SignupType {
-    userData: User
-    token: String
-    refreshToken: String
-    responseStatus: ResponseStatus
-  }
-
-  type EmailVerify{
-    otp: Int
-    responseStatus: ResponseStatus
-  }
-  
-  type OtpVerify{ 
-    responseStatus: ResponseStatus
-  }
+  }  
 
   scalar Upload
 
@@ -55,10 +32,16 @@ module.exports = buildSchema(`
     currency: String
     createdAt: String!
     updatedAt: String!
-    avatar_url: String
+    avatar_url: S3Type
+    attachments: [S3Type]
     responseStatus: ResponseStatus
   }
   
+  type S3Type {
+    Location: String
+    Key: String
+  }
+
   type Flag{
     termAccepted: Boolean
     active: Boolean
@@ -112,8 +95,93 @@ module.exports = buildSchema(`
     type:String
     createdAt: String!
     updatedAt: String!
-  }  
- 
+  }   
+  
+  type ResponseStatus{
+    status: Boolean
+    message: String
+  }
+
+  type RefreshToken{
+    token: String!
+    refreshToken: String!
+    responseStatus: ResponseStatus
+  }
+  
+  type ForgetPassword{
+    responseStatus: ResponseStatus
+  }
+  
+  type ResetPassword{
+    responseStatus: ResponseStatus
+  }
+
+  type FbLogin{
+    responseStatus: ResponseStatus
+  }
+
+  type Product {
+    name: String!, 
+    description: String 
+    categories: [Category] 
+    sub_categories: [Category] 
+    cuisines: [Speciality] 
+    dietary_need: [Speciality] 
+    pakaging_price: Packaging
+    product_availibility: ProductAvailibility
+    delivery_details: DeliveryDetail
+    desicount_details: DiscountDetail
+    product_image_url: String
+    userId: ID! 
+    stock: String 
+    createdAt: String
+    updatedAt: String
+  }
+
+  type Category {
+    _id:String
+    name: String
+    parent_id: String
+  }
+  
+  type ProductAvailibility { 
+    made_upon_order: Boolean
+    date: String
+    asap: Boolean
+    asap_prepration_time: String
+    preorder: Boolean
+    preorder_prepration_time: String
+  }
+  
+  type DeliveryDetail { 
+    delivery: Boolean 
+    pick_up: Boolean 
+  }
+
+  type DiscountDetail { 
+    discount: Boolean
+    days: String 
+    available_date: String
+    available_time: String 
+  }
+
+  type AddProduct{
+    productData: Product
+    responseStatus: ResponseStatus
+  } 
+
+  type UpdatedOffer{ 
+    responseStatus: ResponseStatus
+  }
+
+  type Packaging { 
+    packagin_type: String
+    weight: String
+    package_price: Float
+  }
+
+
+
   input UserInput {
     full_name: String! 
     middle_name: String
@@ -121,16 +189,7 @@ module.exports = buildSchema(`
     password: String!
     phone: String
   }
-
-  input EmailVerifyInput {
-    email: String!
-  }
-
-  input OtpVerifyInput {
-    email: String!
-    otp: Int!
-  }
-
+ 
   input FlagInput{
     termAccepted: Boolean
     active: Boolean
@@ -180,7 +239,7 @@ module.exports = buildSchema(`
   } 
  
   input ProfileInput {
-    avatar: Upload,
+    avatar: Upload
     flags: FlagInput
     aboutme: String 
     hoursOfOperation: [HoursOfOperationInput] 
@@ -193,53 +252,8 @@ module.exports = buildSchema(`
     speciality: [SpecialityInput]
     kitchenTourFile: String
     currency: String
-  }
-  
-  input UserLoginInput { 
-    email: String!
-    password: String! 
-  }
-
-  type ResponseStatus{
-    status: Boolean
-    message: String
-  }
-
-  type RefreshToken{
-    token: String!
-    refreshToken: String!
-    responseStatus: ResponseStatus
-  }
-  
-  type ForgetPassword{
-    responseStatus: ResponseStatus
-  }
-  
-  type ResetPassword{
-    responseStatus: ResponseStatus
-  }
-
-  type FbLogin{
-    responseStatus: ResponseStatus
-  }
-
-  type Product {
-    name: String!, 
-    description: String 
-    categories: [Category] 
-    sub_categories: [Category] 
-    cuisines: [Speciality] 
-    dietary_need: [Speciality] 
-    pakaging_price: Packaging
-    product_availibility: ProductAvailibility
-    delivery_details: DeliveryDetail
-    desicount_details: DiscountDetail
-    product_image_url: String
-    userId: ID! 
-    stock: String 
-    createdAt: String
-    updatedAt: String
-  }
+    attachments: [Upload]
+  } 
   
   input ProductInput {
     name: String!, 
@@ -263,24 +277,11 @@ module.exports = buildSchema(`
     parent_id: String
   }
 
-  type Category {
-    _id:String
-    name: String
-    parent_id: String
-  }
-
   input PackagingInput { 
     packagin_type: String
     weight: String
     package_price: Float
-  }
-
-  type Packaging { 
-    packagin_type: String
-    weight: String
-    package_price: Float
-  }
-
+  } 
 
   input ProductAvailibilityInput { 
     made_upon_order: Boolean
@@ -289,42 +290,18 @@ module.exports = buildSchema(`
     asap_prepration_time: String
     preorder: Boolean
     preorder_prepration_time: String
-  } 
-  type ProductAvailibility { 
-    made_upon_order: Boolean
-    date: String
-    asap: Boolean
-    asap_prepration_time: String
-    preorder: Boolean
-    preorder_prepration_time: String
-  }
-
+  }  
 
   input DeliveryDetailInput { 
     delivery: Boolean 
     pick_up: Boolean 
-  }
-  type DeliveryDetail { 
-    delivery: Boolean 
-    pick_up: Boolean 
-  }
+  } 
 
   input DiscountDetailInput { 
     discount: Boolean
     days: String 
     available_date: String
     available_time: String 
-  }
-  type DiscountDetail { 
-    discount: Boolean
-    days: String 
-    available_date: String
-    available_time: String 
-  }
-
-  type AddProduct{
-    productData: Product
-    responseStatus: ResponseStatus
   }
 
   input CategoryFindInput{
@@ -334,28 +311,16 @@ module.exports = buildSchema(`
   input CategoryOfferInput{
     _id: String
     name: String
-  }
-
-  type UpdatedOffer{ 
-    responseStatus: ResponseStatus
-  }
+  } 
 
   type Query { 
     specialities(type:String!):[Speciality!]
-    categories(parentIds:[CategoryFindInput]):[Category!]
-    verifyEmail(verify:EmailVerifyInput): EmailVerify
-    verifyOtp(verify:OtpVerifyInput): OtpVerify
-    renewJwtToken(refreshToken: String): RefreshToken
-    forgetPassword(email: String): ForgetPassword
-    resetPassword(email: String!, verificationCode: String!, newPassword: String!): ResetPassword
-    fbLogin(fbAccessToken: String!, full_name:String, email:String): FbLogin
+    categories(parentIds:[CategoryFindInput]):[Category!] 
     products(categoryId:String, userId:String!, subcategoryId:String): [Product]
   }
 
-  type Mutation {
-    signUp(user:UserInput): SignupType
-    updateCookProfile(profile:ProfileInput): Profile
-    login(user:UserLoginInput): LoginType
+  type Mutation { 
+    updateCookProfile(profile:ProfileInput): Profile 
     addProduct(productData:ProductInput): AddProduct
     updateCookOffer(categories:[CategoryOfferInput], userId:String): UpdatedOffer
   }
