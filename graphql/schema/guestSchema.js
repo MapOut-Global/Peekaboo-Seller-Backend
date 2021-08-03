@@ -53,6 +53,7 @@ module.exports = buildSchema(`
     userId: ID!
     speciality: [Speciality]
     kitchenTourFile: String
+    categories: [Category]
     currency: String
     createdAt: String!
     updatedAt: String!
