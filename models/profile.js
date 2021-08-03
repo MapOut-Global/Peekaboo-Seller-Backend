@@ -35,6 +35,9 @@ const profileSchema = new Schema(
     kitchenTourFile: {
       type: String, 
     },
+    messageForMe: {
+      type: String, 
+    },
     currency: {
       type: String, 
     },

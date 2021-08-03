@@ -24,7 +24,7 @@ module.exports = {
       }
     }
     try {  
-      var { flags, aboutme, avatar, hoursOfOperation, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency, attachments } = args.profile;
+      var { flags, aboutme, avatar, hoursOfOperation, messageForMe, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency, attachments } = args.profile;
       var checkProfileOldAvtar = await Profile.findOne({userId: userId}).exec();   
 
       /************************* Upload avtar on S3 Server ********************/
@@ -175,7 +175,8 @@ module.exports = {
           kitchenTourFile: kitchenTourFile,
           currency: currency,
           avatar_url: avatar_url,
-          attachments: attachmentArr
+          attachments: attachmentArr,
+          messageForMe: messageForMe
         },
         {
           new: true,
@@ -187,7 +188,7 @@ module.exports = {
           userId: userId
         }
       ).exec();   
-      var { flags, aboutme, hoursOfOperation, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency, avatar_url, attachments } = cookProfile;
+      var { flags, aboutme, hoursOfOperation, messageForMe, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency, avatar_url, attachments } = cookProfile;
        
       return { 
         flags: flags, 
@@ -202,6 +203,7 @@ module.exports = {
         kitchenTourFile:kitchenTourFile,
         currency:currency, 
         avatar_url: avatar_url,
+        messageForMe: messageForMe,
         attachments: attachments,
         userData: userData, 
         responseStatus: {status: true, message: "Profile saved"}};
