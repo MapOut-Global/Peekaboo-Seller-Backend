@@ -3,10 +3,11 @@ const OtpVerification = require("../../models/otp_verification")
 const Profile = require("../../models/profile")  
 const { authorizationFunction } = require('../checkCognitoToken.js'); 
 
- 
+const path = require('path');
+const util = require('util') ;
+const s3 =  require('../s3FileUploader');  
 const nodemailer = require("nodemailer")  
 const AmazonCognitoIdentity = require('amazon-cognito-identity-js'); 
-
 
 const CognitoUserPool = AmazonCognitoIdentity.CognitoUserPool;
 const poolData = {
@@ -16,7 +17,7 @@ const poolData = {
 const pool_region = 'us-west-2';
 module.exports = { 
   signUp: async args => { 
-      let { full_name, email, password, phone } = args.user  
+      let { full_name, email, password, phone, avatar } = args.user  
       const user = new User({
         full_name,
         email, 
@@ -52,7 +53,57 @@ module.exports = {
           var refreshToken = resultLogin.getRefreshToken().getToken();  
   
           const newUser = await user.save();
-          return { userData: newUser._doc, token:accessToken, refreshToken: refreshToken, responseStatus : {status: true, message: "Sign up successfully"} }  
+
+          /************************* Upload avtar on S3 Server ********************/
+            userId = newUser._doc._id;
+            if (avatar !== undefined) { 
+              let {file} = await avatar; 
+              let { createReadStream,  filename} = file;
+              // read the data from the file.
+              let fileStream = createReadStream();
+              const params = {
+                  Bucket:"peekaboo2",
+                  Key:'',
+                  Body:'',
+                  ACL:'public-read'
+              };
+              // in case of an error, log it.
+              fileStream.on("error", (error) => console.error(error));
+
+              // set the body of the object as data to read from the file.
+              params.Body = fileStream;
+                  // get the current time stamp.
+              let timestamp = new Date().getTime();
+
+              // get the file extension.
+              let file_extension = path.extname(filename);
+
+              // set the key as a combination of the folder name, timestamp, and the file extension of the object.
+              params.Key = `cook_images/${timestamp}${file_extension}`;
+
+              let upload = util.promisify(s3.upload.bind(s3));
+
+              let result = await upload(params).catch(console.log);   
+              var avatar_url_arr = {
+                Location: result.Location, 
+                Key: result.Key, 
+              }; 
+              avatar_url = Object.create(avatar_url_arr);
+              avatar_url.Location = result.Location;
+              avatar_url.Key = result.Key; 
+              
+              const profile = new Profile({
+                userId,
+                avatar_url,  
+              });
+              const newProfile = await profile.save();
+              profileData = newProfile._doc;
+            }else{
+              profileData.userId = userId;
+            }  
+          /************************* Upload avtar on S3 Server ********************/
+          
+          return { userData: newUser._doc, cookProfile:profileData,  token:accessToken, refreshToken: refreshToken, responseStatus : {status: true, message: "Sign up successfully"} }  
         }
         
       } catch (error) {

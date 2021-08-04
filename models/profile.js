@@ -33,7 +33,7 @@ const profileSchema = new Schema(
       type: Array,
     }, 
     kitchenTourFile: {
-      type: String, 
+      type: Object, 
     },
     messageForMe: {
       type: String, 

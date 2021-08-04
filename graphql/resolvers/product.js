@@ -1,16 +1,10 @@
-const Product = require("../../models/product")  
-const aws = require('aws-sdk');
-const path = require('path');
-const util = require('util')
+const Product = require("../../models/product")   
 var ObjectId = require('mongoose').Types.ObjectId; 
 const { authorizationFunction } = require('../checkCognitoToken.js'); 
 
-aws.config.update({
-  secretAccessKey:'yozM9l4734aDNxi4MpCVmAo4k2kbdvr9Tx8yzAud',
-  accessKeyId:'AKIAUV3FFSC7JRCJM25R',
-  region:'us-west-2'
-});
-const s3 = new aws.S3();
+const path = require('path');
+const util = require('util') ;
+const s3 =  require('../s3FileUploader'); 
 
 module.exports = {
   addProduct: async (args, req) =>  {

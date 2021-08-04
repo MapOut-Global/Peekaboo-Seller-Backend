@@ -24,6 +24,7 @@ module.exports = buildSchema(`
 
   type SignupType {
     userData: User
+    cookProfile: Profile
     token: String
     refreshToken: String
     responseStatus: ResponseStatus
@@ -52,7 +53,7 @@ module.exports = buildSchema(`
     delivery: Delivery
     userId: ID!
     speciality: [Speciality]
-    kitchenTourFile: String
+    kitchenTourFile: S3Type
     categories: [Category]
     currency: String
     createdAt: String!

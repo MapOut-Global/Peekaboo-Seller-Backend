@@ -1,19 +1,11 @@
 const User = require("../../models/user")  
 const Profile = require("../../models/profile") 
 const Speciality = require("../../models/speciality") 
-const { authorizationFunction } = require('../checkCognitoToken.js'); 
+const { authorizationFunction } = require('../checkCognitoToken'); 
  
-const Aws = require('aws-sdk'); 
 const path = require('path');
-const util = require('util') 
-
-Aws.config.update({
-  secretAccessKey:'yozM9l4734aDNxi4MpCVmAo4k2kbdvr9Tx8yzAud',
-  accessKeyId:'AKIAUV3FFSC7JRCJM25R',
-  region:'us-west-2'
-});
-const s3 = new Aws.S3();
- 
+const util = require('util') ;
+const s3 =  require('../s3FileUploader'); 
 module.exports = {  
   updateCookProfile: async (args, req) => { 
     let checkToken = await authorizationFunction(req); 
@@ -92,8 +84,7 @@ module.exports = {
           for(let i = attachmentArr.length; i < totArrayLength; i++){ 
             // Get that single file.
             let fileObj = attachments[i];  
-            let { createReadStream,  filename} = fileObj.file;
-            console.log(fileObj);
+            let { createReadStream,  filename} = fileObj.file; 
             const params = {
                 Bucket:"peekaboo2",
                 Key:'',
@@ -130,6 +121,58 @@ module.exports = {
           };
         } 
       /************************* Upload attachments on S3 Server ********************/
+
+      /************************* Upload avtar on S3 Server ********************/
+        if (kitchenTourFile) { 
+          let {file} = await kitchenTourFile; 
+          let { createReadStream,  filename} = file;
+          // read the data from the file.
+          let fileStream = createReadStream();
+          const params = {
+              Bucket:"peekaboo2",
+              Key:'',
+              Body:'',
+              ACL:'public-read'
+          };
+          // in case of an error, log it.
+          fileStream.on("error", (error) => console.error(error));
+
+          // set the body of the object as data to read from the file.
+          params.Body = fileStream;
+              // get the current time stamp.
+          let timestamp = new Date().getTime();
+
+          // get the file extension.
+          let file_extension = path.extname(filename);
+
+          // set the key as a combination of the folder name, timestamp, and the file extension of the object.
+          params.Key = `kitchen_tours/${timestamp}${file_extension}`;
+
+          let upload = util.promisify(s3.upload.bind(s3));
+
+          let result = await upload(params).catch(console.log); 
+          var kitchenTourFile_url_arr = {
+            Location: result.Location, 
+            Key: result.Key, 
+          }; 
+          kitchenTourFile = Object.create(kitchenTourFile_url_arr);
+          kitchenTourFile.Location = result.Location;
+          kitchenTourFile.Key = result.Key;  
+          if(checkProfileOldAvtar.kitchenTourFile !== null && checkProfileOldAvtar.kitchenTourFile !== undefined && checkProfileOldAvtar.kitchenTourFile.Key !== undefined){
+            oldKey = checkProfileOldAvtar.kitchenTourFile.Key;
+            const deleteParams = {
+                Bucket:"peekaboo2", 
+                Key:oldKey, 
+            };
+            let removeObject = util.promisify(s3.deleteObject.bind(s3));
+            await removeObject(deleteParams).catch(console.log); 
+          } 
+        }else{  
+          if(checkProfileOldAvtar.kitchenTourFile !== "" ){
+            kitchenTourFile = checkProfileOldAvtar.kitchenTourFile; 
+          }
+        }  
+      /************************* Upload avtar on S3 Server ********************/
  
       userData = await User.findById(userId).exec();  
       if(userData == null){
