@@ -6,21 +6,12 @@ const introspectionQuery = print(parse(getIntrospectionQuery()));
 
 module.exports = {
 	authorizationFunction: async (req, res) => {  
-		if(req.headers.token_type !== undefined && req.headers.token_type == "fb"){
-			var cognitoExpress = new CognitoExpress({
-				region: "us-west-2",
-				cognitoUserPoolId: "us-west-2_s968WrlYz",
-				tokenUse: "access", //Possible Values: access | id
-				tokenExpiration: 3600000 //Up to default expiration of 1 hour (3600000 ms)
-			});
-		}else{
-			var cognitoExpress = new CognitoExpress({
-				region: "us-west-2",
-				cognitoUserPoolId: "us-west-2_SjG0rvbcr",
-				tokenUse: "access", //Possible Values: access | id
-				tokenExpiration: 3600000 //Up to default expiration of 1 hour (3600000 ms)
-			});
-		} 
+		var cognitoExpress = new CognitoExpress({
+			region: "us-west-2",
+			cognitoUserPoolId: "us-west-2_s968WrlYz",
+			tokenUse: "access", //Possible Values: access | id
+			tokenExpiration: 3600000 //Up to default expiration of 1 hour (3600000 ms)
+		});
 		var token = req.headers.accesstoken
 		try{
 			let tokenResponse = await cognitoExpress.validate(token); 

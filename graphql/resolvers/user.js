@@ -1,29 +1,17 @@
 const User = require("../../models/user") 
 const OtpVerification = require("../../models/otp_verification") 
-const Profile = require("../../models/profile") 
-const Speciality = require("../../models/speciality")  
+const Profile = require("../../models/profile")  
+const { authorizationFunction } = require('../checkCognitoToken.js'); 
 
-const CognitoExpress = require("cognito-express") 
-const nodemailer = require("nodemailer") 
-//const fileUpload = require("../fileuploader/uploader") 
-const { GraphQLUpload } = require('graphql-upload');
-const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
-const Aws = require('aws-sdk'); 
-const path = require('path');
-const util = require('util') 
-
-Aws.config.update({
-  secretAccessKey:'yozM9l4734aDNxi4MpCVmAo4k2kbdvr9Tx8yzAud',
-  accessKeyId:'AKIAUV3FFSC7JRCJM25R',
-  region:'us-west-2'
-});
-const s3 = new Aws.S3();
+ 
+const nodemailer = require("nodemailer")  
+const AmazonCognitoIdentity = require('amazon-cognito-identity-js'); 
 
 
 const CognitoUserPool = AmazonCognitoIdentity.CognitoUserPool;
 const poolData = {
-  UserPoolId: 'us-west-2_SjG0rvbcr', // Your user pool id here
-  ClientId: '208n561eviprs5ss99an5r0hqa', // Your client id here
+  UserPoolId: 'us-west-2_s968WrlYz', // Your user pool id here
+  ClientId: '2dvr8f0s8egqrpii8a9udvpf3h', // Your client id here
 };
 const pool_region = 'us-west-2';
 module.exports = { 
@@ -257,19 +245,45 @@ module.exports = {
     }
   },
 
-  fbLogin: async args => {
-    let { fbAccessToken, full_name, email } = args;
-    fbCognitoCredentials = new Aws.CognitoIdentityCredentials({
-      IdentityPoolId: 'us-west-2:6ad6f321-7376-4f32-b390-f5cc1957eed0',
-      Logins: {
-        'graph.facebook.com': fbAccessToken
+  socialLogin: async args => {
+    let checkToken = await authorizationFunction(req); 
+    if(checkToken.client_id === undefined){
+      throw {
+        error: checkToken,
+        status: 401
       }
-      // Obtain AWS credentials 
-    });
-    let fbCognitoDetails = await fbCognitoCredentials.get(function(){
-      
-    });
-    console.log(fbCognitoDetails)
+    }
+    
+    try { 
+      let { full_name, email } = args; 
+      userData = await User.findOne(
+        {
+          email: email
+        }
+      ).exec(); 
+      if (userData) { 
+        var checkCookProfile = await Profile.findOne({userId: userData._id}).exec();  
+        return { 
+          userData: userData, 
+          cookProfile: checkCookProfile, 
+          responseStatus : {
+            status: true, 
+            message: "Login successfully"
+          } 
+        }  
+      } else {
+        const user = new User({
+          full_name,
+          email 
+        });
+        const newUser = await user.save();
+        cookProfile.userId = newUser._id;
+        return { userData: newUser._doc, cookProfile: cookProfile , responseStatus : {status: true, message: "Login successfully"} } 
+      } 
+    } catch (error) {
+       
+    }
+     
   }, 
 }
 

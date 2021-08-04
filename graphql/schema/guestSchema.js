@@ -127,6 +127,7 @@ module.exports = buildSchema(`
     middle_name: String
     email: String!
     password: String!
+    avatar: Upload
     phone: String
   }
 
@@ -199,7 +200,7 @@ module.exports = buildSchema(`
     delivery: DeliveryInput
     userId: ID!
     speciality: [SpecialityInput]
-    kitchenTourFile: String
+    kitchenTourFile: Upload
     currency: String
     attachments: [Upload]
   }
@@ -358,7 +359,6 @@ module.exports = buildSchema(`
     renewJwtToken(refreshToken: String): RefreshToken
     forgetPassword(email: String): ForgetPassword
     resetPassword(email: String!, verificationCode: String!, newPassword: String!): ResetPassword
-    fbLogin(fbAccessToken: String!, full_name:String, email:String): FbLogin
     products(categoryId:String, userId:String!, subcategoryId:String): [Product]
   }
 
@@ -368,6 +368,7 @@ module.exports = buildSchema(`
     login(user:UserLoginInput): LoginType
     addProduct(productData:ProductInput): AddProduct
     updateCookOffer(categories:[CategoryOfferInput], userId:String): UpdatedOffer
+    socialLogin(full_name:String, email:String): FbLogin
   }
 
   schema {

@@ -139,8 +139,8 @@ module.exports = {
       }
     }
     try {
-      let { categoryId, userId, subcategoryId} = args 
-      const productList = await Product.find({userId:new ObjectId(userId)});
+      let { userId } = args 
+      const productList = await Product.find({userId:new ObjectId(userId)}); 
       return productList.map(product => { 
         return {
           ...product._doc,
