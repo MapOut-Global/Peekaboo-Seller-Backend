@@ -1,6 +1,8 @@
 const User = require("../../models/user")  
 const Profile = require("../../models/profile") 
 const Speciality = require("../../models/speciality") 
+const Product = require("../../models/product") 
+var ObjectId = require('mongoose').Types.ObjectId; 
 const { authorizationFunction } = require('../checkCognitoToken'); 
  
 const path = require('path');
@@ -303,9 +305,59 @@ module.exports = {
         userId: userId
       }
     ).exec();
-    let productList = await Product.find({userId:new ObjectId(userId)}); 
-    
-    
+    var { flags, aboutme, hoursOfOperation, messageForMe, heading, availibility, address, delivery, speciality, kitchenTourFile, currency, avatar_url, attachments } = cookProfile;
+    let productList = await Product.find({userId:new ObjectId(userId)});  
+    var categoriesArr = [];
+    var subCategoryArr = [];
+    var addeddSubCatId = [];
+    var sKey = 0;
+    productList.map((product, pKey)  => {
+      product.sub_categories.map( (pSubCategory) => { 
+        if(addeddSubCatId.indexOf(pSubCategory._id) == -1){ 
+          subCategoryArr[sKey] = pSubCategory;
+          addeddSubCatId.push(pSubCategory._id);
+          sKey++;
+        } 
+      });
+    }); 
+    cookProfile.categories.map( (category, key) => { 
+      categoriesArr[key] = category; 
+      categoriesArr[key]['sub_category'] = [];
+      var subCatKey = 0;
+      subCategoryArr.map ( (subCategory) => { 
+        if(subCategory.parent_id == category._id){ 
+          categoriesArr[key]['sub_category'][subCatKey] = subCategory;
+          categoriesArr[key]['sub_category'][subCatKey]['productList'] = [];
+          var productKey = 0;
+          productList.map((product)  => {
+            product.sub_categories.map( (pSubCategory ) => {
+              if(subCategory._id == pSubCategory._id){
+                categoriesArr[key]['sub_category'][subCatKey]['productList'][productKey] = product;
+                productKey++;
+              }
+            })
+          }) 
+          subCatKey++;
+        }
+      }) 
+    })  
+    return { 
+      categories: categoriesArr,
+      flags: flags, 
+      aboutme:aboutme, 
+      hoursOfOperation:hoursOfOperation, 
+      heading: heading, 
+      availibility:availibility, 
+      address:address, 
+      delivery:delivery, 
+      userId:userId, 
+      speciality:speciality,
+      kitchenTourFile:kitchenTourFile,
+      currency:currency, 
+      avatar_url: avatar_url,
+      messageForMe: messageForMe,
+      attachments: attachments, 
+      responseStatus: {status: true, message: "Profile saved"}};
   }
 }
  

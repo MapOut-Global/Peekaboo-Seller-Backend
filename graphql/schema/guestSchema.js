@@ -42,7 +42,7 @@ module.exports = buildSchema(`
   scalar Upload
 
   type Profile { 
-    userData: User
+    userData: User 
     flags: Flag
     aboutme: String 
     hoursOfOperation: [HoursOfOperation] 
@@ -279,6 +279,8 @@ module.exports = buildSchema(`
     _id:String
     name: String
     parent_id: String
+    sub_category: [Category]
+    productList: [Product]
   }
 
   input PackagingInput { 
@@ -361,6 +363,7 @@ module.exports = buildSchema(`
     forgetPassword(email: String): ForgetPassword
     resetPassword(email: String!, verificationCode: String!, newPassword: String!): ResetPassword
     products(categoryId:String, userId:String!, subcategoryId:String): [Product]
+    userProfile(userId:String!): Profile
   }
 
   type Mutation {
