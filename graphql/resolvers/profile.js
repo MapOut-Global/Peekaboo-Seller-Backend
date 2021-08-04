@@ -244,6 +244,25 @@ module.exports = {
       }
     ); 
     return { responseStatus : {status: true, message: "Cook offer updated"} };
+  },
+
+  userProfile: async (args, req) => {
+    let checkToken = await authorizationFunction(req); 
+    if(checkToken.client_id === undefined){
+      throw {
+        error: checkToken,
+        status: 401
+      }
+    }
+    let { userId } = args;
+    let cookProfile = await Profile.findOne(
+      {
+        userId: userId
+      }
+    ).exec();
+    let productList = await Product.find({userId:new ObjectId(userId)}); 
+    
+    
   }
 }
  
