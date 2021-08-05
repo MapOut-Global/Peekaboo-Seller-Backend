@@ -9,6 +9,7 @@ module.exports = buildSchema(`
     email: String
     password: String
     phone: String
+    login_type: String
     createdAt: String
     updatedAt: String
     responseStatus: ResponseStatus
@@ -130,6 +131,7 @@ module.exports = buildSchema(`
     password: String!
     avatar: Upload
     phone: String
+    login_type: String
   }
 
   input EmailVerifyInput {
@@ -342,6 +344,11 @@ module.exports = buildSchema(`
     responseStatus: ResponseStatus
   }
 
+  type AddCategory{ 
+    categoryData: Category
+    responseStatus: ResponseStatus
+  }
+
   input CategoryFindInput{
     _id: String
   }
@@ -369,12 +376,14 @@ module.exports = buildSchema(`
 
   type Mutation {
     signUp(user:UserInput): SignupType
+    addCategory(name: String!, parent_id: String!, userId: String!): AddCategory
     updateCookProfile(profile:ProfileInput): Profile
     login(user:UserLoginInput): LoginType
     addProduct(productData:ProductInput): AddProduct
     updateCookOffer(categories:[CategoryOfferInput], userId:String): UpdatedOffer
-    socialLogin(full_name:String, email:String): FbLogin
+    socialLogin(full_name:String, email:String, login_type: String): FbLogin
     removeAttachment(userId: String!, Key: String!): ResponseStatus
+    deleteProduct(userId: String!, productId: String!): ResponseStatus
   }
 
   schema {

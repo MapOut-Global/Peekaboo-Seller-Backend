@@ -145,5 +145,28 @@ module.exports = {
     } catch (error) {
       throw error
     }
+  },
+
+  deleteProduct: async (args, req) =>  {
+    let checkToken = await authorizationFunction(req); 
+    if(checkToken.client_id === undefined){
+      throw {
+        error: checkToken,
+        status: 401
+      }
+    }
+
+    try {
+      let { userId, productId } = args 
+      const productData = await Product.findById(productId); 
+      if(productData.userId == userId){
+        await Product.findByIdAndDelete(productId);
+        return { status: true, message: "Product has been removed"}
+      }else{
+        return { status: false, message: "Invalid User ID"}
+      }
+    } catch (error) {
+      throw error
+    }
   }
 }

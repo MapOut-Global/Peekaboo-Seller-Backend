@@ -12,7 +12,10 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true 
-    },  
+    }, 
+    login_type: {
+      type: String
+    } 
   },
   { timestamps: true }
 )

@@ -17,7 +17,7 @@ module.exports = {
         status: 401
       }
     }
-    try {  
+    try {
       var { flags, aboutme, avatar, hoursOfOperation, messageForMe, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency, attachments } = args.profile;
       var checkProfileOldAvtar = await Profile.findOne({userId: userId}).exec();   
 
@@ -66,11 +66,11 @@ module.exports = {
             let removeObject = util.promisify(s3.deleteObject.bind(s3));
             await removeObject(deleteParams).catch(console.log); 
           } 
-        }else{  
+        }else{
           if(checkProfileOldAvtar.avatar_url !== "" ){
             avatar_url = checkProfileOldAvtar.avatar_url; 
           }
-        }  
+        }
       /************************* Upload avtar on S3 Server ********************/
 
       /************************* Upload attachments on S3 Server ********************/
