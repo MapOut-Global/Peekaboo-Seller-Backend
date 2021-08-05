@@ -18,13 +18,7 @@ const pool_region = 'us-west-2';
 module.exports = { 
   signUp: async args => { 
       let { full_name, email, password, phone, avatar } = args.user  
-      var login_type = "cognito";
-      const user = new User({
-        full_name,
-        email, 
-        phone,
-        login_type
-      }) 
+      var login_type = "cognito"; 
       var userPool = new CognitoUserPool(poolData); 
       var attributeList = [];   
 
@@ -35,6 +29,46 @@ module.exports = {
       var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
       attributeList.push(attributeEmail);
       try {  
+        /************************* Upload avtar on S3 Server ********************/
+        var avatar_url = [];
+        if (avatar !== undefined) {
+          let {file} = await avatar; 
+          let { createReadStream,  filename} = file;
+          // read the data from the file.
+          let fileStream = createReadStream();
+          const params = {
+              Bucket:"peekaboo2",
+              Key:'',
+              Body:'',
+              ACL:'public-read'
+          };
+          // in case of an error, log it.
+          fileStream.on("error", (error) => { return {responseStatus : {status: false, message: error}} });
+
+          // set the body of the object as data to read from the file.
+          params.Body = fileStream;
+              // get the current time stamp.
+          let timestamp = new Date().getTime();
+
+          // get the file extension.
+          let file_extension = path.extname(filename);
+
+          // set the key as a combination of the folder name, timestamp, and the file extension of the object.
+          params.Key = `cook_images/${timestamp}${file_extension}`;
+
+          let upload = util.promisify(s3.upload.bind(s3));
+
+          let result = await upload(params).catch(console.log);   
+          var avatar_url_arr = {
+            Location: result.Location, 
+            Key: result.Key, 
+          }; 
+          avatar_url = Object.create(avatar_url_arr);
+          avatar_url.Location = result.Location;
+          avatar_url.Key = result.Key;     
+        }  
+        
+      /************************* Upload avtar on S3 Server ********************/
         let result = await asyncSignUp(userPool, email, password, attributeList); 
         if(result !== undefined){ 
           var authenticationData = {
@@ -52,57 +86,23 @@ module.exports = {
           var cognitoUserLogin = new AmazonCognitoIdentity.CognitoUser(userData);
           let resultLogin = await asyncAuthenticateUser(cognitoUserLogin, authenticationDetails); 
           var accessToken = resultLogin.getAccessToken().getJwtToken(); 
-          var refreshToken = resultLogin.getRefreshToken().getToken();  
-          /************************* Upload avtar on S3 Server ********************/
-            if (avatar !== undefined) {
-              let {file} = await avatar; 
-              let { createReadStream,  filename} = file;
-              // read the data from the file.
-              let fileStream = createReadStream();
-              const params = {
-                  Bucket:"peekaboo2",
-                  Key:'',
-                  Body:'',
-                  ACL:'public-read'
-              };
-              // in case of an error, log it.
-              fileStream.on("error", (error) => { return {responseStatus : {status: false, message: error}} });
-
-              // set the body of the object as data to read from the file.
-              params.Body = fileStream;
-                  // get the current time stamp.
-              let timestamp = new Date().getTime();
-
-              // get the file extension.
-              let file_extension = path.extname(filename);
-
-              // set the key as a combination of the folder name, timestamp, and the file extension of the object.
-              params.Key = `cook_images/${timestamp}${file_extension}`;
-
-              let upload = util.promisify(s3.upload.bind(s3));
-
-              let result = await upload(params).catch(console.log);   
-              var avatar_url_arr = {
-                Location: result.Location, 
-                Key: result.Key, 
-              }; 
-              avatar_url = Object.create(avatar_url_arr);
-              avatar_url.Location = result.Location;
-              avatar_url.Key = result.Key;   
-              const newUser = await user.save();  
-            }else{
-              profileData.userId = userId;
-            }  
-            
-            userId = newUser._doc._id;
-            const newProfile = await profile.save();
-            const profile = new Profile({
-              userId,
-              avatar_url,  
-            });
-            profileData = newProfile._doc;
-          /************************* Upload avtar on S3 Server ********************/
+          var refreshToken = resultLogin.getRefreshToken().getToken();   
           
+          const user = new User({
+            full_name,
+            email, 
+            phone,
+            login_type
+          }) 
+          
+          const newUser = await user.save(); 
+          userId = newUser._doc._id;
+          const newProfile = await profile.save();
+          const profile = new Profile({
+            userId,
+            avatar_url,  
+          });
+          profileData = newProfile._doc;
           return { userData: newUser._doc, cookProfile:profileData,  token:accessToken, refreshToken: refreshToken, responseStatus : {status: true, message: "Sign up successfully"} }  
         }
         
