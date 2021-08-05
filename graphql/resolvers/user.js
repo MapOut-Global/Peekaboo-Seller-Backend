@@ -337,6 +337,46 @@ module.exports = {
     }
      
   }, 
+
+  uploadFile: async args => {
+    try{
+    let { fileUpload } = args.user 
+      if (fileUpload !== undefined) {
+        let {file} = await fileUpload; 
+        let { createReadStream,  filename} = file;
+        // read the data from the file.
+        let fileStream = createReadStream();
+        const params = {
+            Bucket:"peekaboo2",
+            Key:'',
+            Body:'',
+            ACL:'public-read'
+        };
+        // in case of an error, log it.
+        fileStream.on("error", (error) => { return {responseStatus : {status: false, message: error}} });
+
+        // set the body of the object as data to read from the file.
+        params.Body = fileStream;
+            // get the current time stamp.
+        let timestamp = new Date().getTime();
+
+        // get the file extension.
+        let file_extension = path.extname(filename);
+
+        // set the key as a combination of the folder name, timestamp, and the file extension of the object.
+        params.Key = `sample_iamges/${timestamp}${file_extension}`;
+
+        let upload = util.promisify(s3.upload.bind(s3));
+
+        let result = await upload(params).catch(console.log);   
+        
+        return { status: true, message: "File uploaded"}
+          
+      }
+    } catch (error) {
+      throw error
+    } 
+  }
 }
 
 function asyncAuthenticateUser(cognitoUser, cognitoAuthenticationDetails) {

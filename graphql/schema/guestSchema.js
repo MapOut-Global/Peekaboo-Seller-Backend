@@ -384,6 +384,7 @@ module.exports = buildSchema(`
     socialLogin(full_name:String, email:String, login_type: String): FbLogin
     removeAttachment(userId: String!, Key: String!): ResponseStatus
     deleteProduct(userId: String!, productId: String!): ResponseStatus
+    uploadFile(fileUpload: Upload): ResponseStatus
   }
 
   schema {
