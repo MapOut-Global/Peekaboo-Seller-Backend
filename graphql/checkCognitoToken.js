@@ -10,7 +10,7 @@ module.exports = {
 			region: "us-west-2",
 			cognitoUserPoolId: "us-west-2_s968WrlYz",
 			tokenUse: "access", //Possible Values: access | id
-			tokenExpiration: 3600000 //Up to default expiration of 1 hour (3600000 ms)
+			tokenExpiration: 36000000 //Up to default expiration of 1 hour (3600000 ms)
 		});
 		var token = req.headers.accesstoken
 		try{

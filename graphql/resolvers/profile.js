@@ -57,8 +57,7 @@ module.exports = {
           avatar_url = Object.create(avatar_url_arr);
           avatar_url.Location = result.Location;
           avatar_url.Key = result.Key; 
-          if(checkProfileOldAvtar.avatar_url !== null && checkProfileOldAvtar.avatar_url.Key !== undefined){
-            console.log(checkProfileOldAvtar.avatar_url.Key);
+          if(checkProfileOldAvtar.avatar_url !== null && checkProfileOldAvtar.avatar_url.Key !== undefined){ 
             oldKey = checkProfileOldAvtar.avatar_url.Key;
             const deleteParams = {
                 Bucket:"peekaboo2", 
@@ -337,6 +336,7 @@ module.exports = {
               }
             })
           }) 
+          categoriesArr[key]['sub_category'][subCatKey]['product_count'] = productKey;
           subCatKey++;
         }
       }) 
@@ -358,6 +358,40 @@ module.exports = {
       messageForMe: messageForMe,
       attachments: attachments, 
       responseStatus: {status: true, message: "Profile saved"}};
+  },
+
+  removeAttachment: async (args, req) => {
+    let checkToken = await authorizationFunction(req); 
+    if(checkToken.client_id === undefined){
+      throw {
+        error: checkToken,
+        status: 401
+      }
+    }
+    let { userId, Key } = args;
+    var attachmentData = await Profile.findOne({ userId: userId }, 'attachments').exec();
+    for(const [key, val] of Object.entries(attachmentData.attachments)) {
+      if(val.Key == Key){
+        attachmentData.attachments.splice(key, 1);
+          const deleteParams = {
+            Bucket:"peekaboo2", 
+            Key:Key, 
+        };
+        let removeObject = util.promisify(s3.deleteObject.bind(s3));
+        await removeObject(deleteParams).catch(console.log); 
+      }
+    }
+    await Profile.findOneAndUpdate(
+      {userId: userId},
+      {
+        attachments: attachmentData.attachments
+      },
+      {
+        new: true,
+        upsert: true
+      }
+    ); 
+    return { status: true, message: "Attachment removed" };
   }
 }
  

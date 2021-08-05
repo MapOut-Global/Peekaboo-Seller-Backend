@@ -281,6 +281,7 @@ module.exports = buildSchema(`
     parent_id: String
     sub_category: [Category]
     productList: [Product]
+    product_count: Int
   }
 
   input PackagingInput { 
@@ -373,6 +374,7 @@ module.exports = buildSchema(`
     addProduct(productData:ProductInput): AddProduct
     updateCookOffer(categories:[CategoryOfferInput], userId:String): UpdatedOffer
     socialLogin(full_name:String, email:String): FbLogin
+    removeAttachment(userId: String!, Key: String!): ResponseStatus
   }
 
   schema {
