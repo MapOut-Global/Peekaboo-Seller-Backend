@@ -97,11 +97,12 @@ module.exports = {
           
           const newUser = await user.save(); 
           userId = newUser._doc._id;
-          const newProfile = await profile.save();
           const profile = new Profile({
             userId,
             avatar_url,  
           });
+          const newProfile = await profile.save();
+          
           profileData = newProfile._doc;
           return { userData: newUser._doc, cookProfile:profileData,  token:accessToken, refreshToken: refreshToken, responseStatus : {status: true, message: "Sign up successfully"} }  
         }
