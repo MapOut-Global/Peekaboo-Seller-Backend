@@ -340,7 +340,7 @@ module.exports = {
 
   uploadFile: async args => {
     try{
-    let { fileUpload } = args.user 
+    let { fileUpload } = args 
       if (fileUpload !== undefined) {
         let {file} = await fileUpload; 
         let { createReadStream,  filename} = file;
