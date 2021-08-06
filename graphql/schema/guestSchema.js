@@ -400,7 +400,7 @@ module.exports = buildSchema(`
     login(user:UserLoginInput): LoginType
     addProduct(productData:ProductInput): AddProduct
     updateCookOffer(categories:[CategoryOfferInput], userId:String): UpdatedOffer
-    socialLogin(full_name:String, email:String, login_type: String): FbLogin
+    socialLogin(full_name:String, email:String, login_type: String): Profile
     removeAttachment(userId: String!, Key: String!): ResponseStatus
     deleteProduct(userId: String!, productId: String!): ResponseStatus
     uploadFile(fileUpload: Upload): ResponseStatus
