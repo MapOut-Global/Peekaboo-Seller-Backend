@@ -431,6 +431,34 @@ module.exports = {
       }
     ); 
     return { responseStatus: {status: true, message: "Category flag updated"}, categories: categoryData.categories };
-  } 
+  }, 
+
+  removeCategory: async (args, req) => {
+    let checkToken = await authorizationFunction(req); 
+    if(checkToken.client_id === undefined){
+      throw {
+        error: checkToken,
+        status: 401
+      }
+    }
+    let { userId, categoryId } = args;
+    var categoryData = await Profile.findOne({ userId: userId }, 'categories').exec();
+    for(const [key, val] of Object.entries(categoryData.categories)) {
+      if(val._id == categoryId){
+        categoryData.categories.splice(key, 1); 
+      }
+    }
+    await Profile.findOneAndUpdate(
+      {userId: userId},
+      {
+        categories: categoryData.categories
+      },
+      {
+        new: true,
+        upsert: true
+      }
+    ); 
+    return { status: true, message: "Category removed" };
+  },
 }
  
