@@ -410,14 +410,16 @@ module.exports = {
       }
     }
     let { userId, categoryId, status } = args;
+    var updateCat = {};
     var categoryData = await Profile.findOne({ userId: userId }, 'categories').exec();
     for(const [key, val] of Object.entries(categoryData.categories)) {
-      if(val._id == categoryId){ 
-        categoryData.categories.key[key].availibility_flag = "";
-        categoryData.categories.key[key].availibility_flag = status;
+      if(val._id == categoryId){  
+        updateCat._id = val._id;
+        updateCat.name = val.name;   
+        updateCat.availibility_flag = status;
+        categoryData.categories[key] = updateCat
       }
-    }
-    conosle.log(categoryData);
+    }  
     await Profile.findOneAndUpdate(
       {userId: userId},
       {

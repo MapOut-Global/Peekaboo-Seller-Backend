@@ -299,7 +299,7 @@ module.exports = buildSchema(`
   }
 
   type UpdateProfileCategory {
-    categories: UserCategory
+    categories: [UserCategory]
     responseStatus: ResponseStatus
   }
 
