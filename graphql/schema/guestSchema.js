@@ -55,7 +55,7 @@ module.exports = buildSchema(`
     userId: ID!
     speciality: [Speciality]
     kitchenTourFile: S3Type
-    categories: [Category]
+    categories: [UserCategory]
     currency: String
     createdAt: String!
     updatedAt: String!
@@ -233,6 +233,8 @@ module.exports = buildSchema(`
   }
 
   type FbLogin{
+    userData: User
+    profileData: Profile
     responseStatus: ResponseStatus
   }
 
@@ -285,6 +287,21 @@ module.exports = buildSchema(`
     productList: [Product]
     product_count: Int
   }
+  
+  type UserCategory {
+    _id:String
+    name: String
+    parent_id: String
+    availibility_flag: Boolean
+    sub_category: [Category]
+    productList: [Product]
+    product_count: Int
+  }
+
+  type UpdateProfileCategory {
+    categories: UserCategory
+    responseStatus: ResponseStatus
+  }
 
   input PackagingInput { 
     packagin_type: String
@@ -307,6 +324,7 @@ module.exports = buildSchema(`
     preorder: Boolean
     preorder_prepration_time: String
   } 
+
   type ProductAvailibility { 
     made_upon_order: Boolean
     date: String
@@ -356,6 +374,7 @@ module.exports = buildSchema(`
   input CategoryOfferInput{
     _id: String
     name: String
+    availibility_flag: Boolean
   }
 
   type UpdatedOffer{ 
@@ -385,6 +404,7 @@ module.exports = buildSchema(`
     removeAttachment(userId: String!, Key: String!): ResponseStatus
     deleteProduct(userId: String!, productId: String!): ResponseStatus
     uploadFile(fileUpload: Upload): ResponseStatus
+    updateUserCategoryFlag(userId: String!,categoryId: String!, status: Boolean!): UpdateProfileCategory
   }
 
   schema {

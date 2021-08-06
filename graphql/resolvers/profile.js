@@ -303,7 +303,13 @@ module.exports = {
       {
         userId: userId
       }
-    ).exec();
+    ).exec(); 
+    if(cookProfile === null){ 
+      return {   
+        userId:userId,  
+        responseStatus: {status: true, message: "Profile saved"}
+      };
+    }
     var { flags, aboutme, hoursOfOperation, messageForMe, heading, availibility, address, delivery, speciality, kitchenTourFile, currency, avatar_url, attachments } = cookProfile;
     let productList = await Product.find({userId:new ObjectId(userId)});  
     var categoriesArr = [];
@@ -319,6 +325,7 @@ module.exports = {
         } 
       });
     }); 
+
     cookProfile.categories.map( (category, key) => { 
       categoriesArr[key] = category; 
       categoriesArr[key]['sub_category'] = [];
@@ -392,6 +399,36 @@ module.exports = {
       }
     ); 
     return { status: true, message: "Attachment removed" };
-  }
+  },
+
+  updateUserCategoryFlag: async (args, req) =>  {
+    let checkToken = await authorizationFunction(req);
+    if(checkToken.client_id === undefined){
+      throw {
+        error: checkToken,
+        status: 401
+      }
+    }
+    let { userId, categoryId, status } = args;
+    var categoryData = await Profile.findOne({ userId: userId }, 'categories').exec();
+    for(const [key, val] of Object.entries(categoryData.categories)) {
+      if(val._id == categoryId){ 
+        categoryData.categories.key[key].availibility_flag = "";
+        categoryData.categories.key[key].availibility_flag = status;
+      }
+    }
+    conosle.log(categoryData);
+    await Profile.findOneAndUpdate(
+      {userId: userId},
+      {
+        categories: categoryData.categories
+      },
+      {
+        new: true,
+        upsert: true
+      }
+    ); 
+    return { responseStatus: {status: true, message: "Category flag updated"}, categories: categoryData.categories };
+  } 
 }
  

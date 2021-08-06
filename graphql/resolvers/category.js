@@ -50,15 +50,5 @@ module.exports = {
     } catch (error) {
       throw error
     }
-  },
-
-  updateUserCategoryFlag: async (args, req) =>  {
-    let checkToken = await authorizationFunction(req);
-    if(checkToken.client_id === undefined){
-      throw {
-        error: checkToken,
-        status: 401
-      }
-    }
   }
 }
