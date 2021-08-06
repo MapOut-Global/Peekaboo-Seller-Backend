@@ -23,7 +23,7 @@ module.exports = {
 
       /************************* Upload avtar on S3 Server ********************/
         if (avatar) { 
-          let {file} = await avatar; 
+          let { file } = await avatar;  
           let { createReadStream,  filename} = file;
           // read the data from the file.
           let fileStream = createReadStream();
@@ -78,13 +78,13 @@ module.exports = {
           var attachmentArr = checkProfileOldAvtar.attachments; 
         }else{
           var attachmentArr = []; 
-        }
-        
+        } 
         if(attachments !== undefined && attachments.length > 0){
           totArrayLength = parseInt(attachments.length) + parseInt(attachmentArr.length);
+          j=0;
           for(let i = attachmentArr.length; i < totArrayLength; i++){ 
             // Get that single file.
-            let fileObj = attachments[i];  
+            let fileObj = attachments[j];   
             let { createReadStream,  filename} = fileObj.file; 
             const params = {
                 Bucket:"peekaboo2",
@@ -119,6 +119,7 @@ module.exports = {
             attachment_url.Location = result.Location;
             attachment_url.Key = result.Key; 
             attachmentArr[i] = attachment_url;
+            j++;
           };
         } 
       /************************* Upload attachments on S3 Server ********************/
