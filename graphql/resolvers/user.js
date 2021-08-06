@@ -297,7 +297,7 @@ module.exports = {
     }
   },
 
-  socialLogin: async args => {
+  socialLogin: async (args, req) => {
     let checkToken = await authorizationFunction(req); 
     if(checkToken.client_id === undefined){
       throw {
