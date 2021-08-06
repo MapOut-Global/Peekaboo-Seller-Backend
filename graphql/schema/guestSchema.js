@@ -23,6 +23,12 @@ module.exports = buildSchema(`
     responseStatus: ResponseStatus
   }
 
+  type UpdateProfile {
+    userData: User
+    cookProfile: Profile 
+    responseStatus: ResponseStatus
+  }
+
   type SignupType {
     userData: User
     cookProfile: Profile
@@ -396,7 +402,7 @@ module.exports = buildSchema(`
   type Mutation {
     signUp(user:UserInput): SignupType
     addCategory(name: String!, parent_id: String!, userId: String!): AddCategory
-    updateCookProfile(profile:ProfileInput): Profile
+    updateCookProfile(profile:ProfileInput): UpdateProfile
     login(user:UserLoginInput): LoginType
     addProduct(productData:ProductInput): AddProduct
     updateCookOffer(categories:[CategoryOfferInput], userId:String): UpdatedOffer

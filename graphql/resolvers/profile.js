@@ -232,23 +232,10 @@ module.exports = {
           userId: userId
         }
       ).exec();   
-      var { flags, aboutme, hoursOfOperation, messageForMe, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency, avatar_url, attachments } = cookProfile;
+      //var { flags, aboutme, hoursOfOperation, messageForMe, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency, avatar_url, attachments } = cookProfile;
        
       return { 
-        flags: flags, 
-        aboutme:aboutme, 
-        hoursOfOperation:hoursOfOperation, 
-        heading: heading, 
-        availibility:availibility, 
-        address:address, 
-        delivery:delivery, 
-        userId:userId, 
-        speciality:speciality,
-        kitchenTourFile:kitchenTourFile,
-        currency:currency, 
-        avatar_url: avatar_url,
-        messageForMe: messageForMe,
-        attachments: attachments,
+        cookProfile: cookProfile,
         userData: userData, 
         responseStatus: {status: true, message: "Profile saved"}};
     } catch (error) {
@@ -349,6 +336,7 @@ module.exports = {
       }) 
     })  
     return { 
+
       categories: categoriesArr,
       flags: flags, 
       aboutme:aboutme, 
