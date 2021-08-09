@@ -255,7 +255,7 @@ module.exports = buildSchema(`
     product_availibility: ProductAvailibility
     delivery_details: DeliveryDetail
     discount_details: DiscountDetail
-    product_image_url: Upload
+    product_image_url: S3Type
     userId: ID! 
     _id: ID!
     stock: String 
@@ -387,6 +387,36 @@ module.exports = buildSchema(`
     responseStatus: ResponseStatus
   }
 
+  input PostInput {
+    _id: String
+    description: String
+    image: Upload
+    productId: String!
+    userId: String!
+    facebook_flag: Boolean
+    instagram_flag: Boolean
+    watsapp_flag: Boolean
+  }
+
+  type Post {
+    _id: String
+    description: String
+    image: S3Type
+    productData: Product!
+    userId: String!
+    facebook_flag: Boolean
+    instagram_flag: Boolean
+    watsapp_flag: Boolean
+    createdAt: String
+    updatedAt: String
+  }
+
+  type AddPost {
+    postData: Post
+    responseStatus: ResponseStatus
+  }
+
+
   type Query { 
     specialities(type:String!):[Speciality!]
     categories(parentIds:[CategoryFindInput]):[Category!]
@@ -397,6 +427,7 @@ module.exports = buildSchema(`
     resetPassword(email: String!, verificationCode: String!, newPassword: String!): ResetPassword
     products(categoryId:String, userId:String!, subcategoryId:String): [Product]
     userProfile(userId:String!): Profile
+    posts(userId:String):[Post!]
   }
 
   type Mutation {
@@ -412,6 +443,8 @@ module.exports = buildSchema(`
     deleteProduct(userId: String!, productId: String!): ResponseStatus
     uploadFile(fileUpload: Upload): ResponseStatus
     updateUserCategoryFlag(userId: String!,categoryId: String!, status: Boolean!): UpdateProfileCategory
+    addPost(postData: PostInput): AddPost
+    removePost(userId: String!, postId: String!): ResponseStatus
   }
 
   schema {

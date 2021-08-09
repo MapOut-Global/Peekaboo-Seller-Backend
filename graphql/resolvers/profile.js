@@ -56,8 +56,7 @@ module.exports = {
           }; 
           avatar_url = {};
           avatar_url.Location = result.Location;
-          avatar_url.Key = result.Key; 
-          console.log(checkProfileOldAvtar); 
+          avatar_url.Key = result.Key;  
           if(checkProfileOldAvtar.avatar_url !== null && checkProfileOldAvtar.avatar_url !== undefined && checkProfileOldAvtar.avatar_url.Key !== undefined){
             oldKey = checkProfileOldAvtar.avatar_url.Key;
             const deleteParams = {

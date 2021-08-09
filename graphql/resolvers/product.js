@@ -160,6 +160,14 @@ module.exports = {
       let { userId, productId } = args 
       const productData = await Product.findById(productId); 
       if(productData.userId == userId){
+        oldKey = productData.product_image_url.Key;
+        const deleteParams = {
+            Bucket:"peekaboo2", 
+            Key:oldKey, 
+        };
+        let removeObject = util.promisify(s3.deleteObject.bind(s3)); 
+        await removeObject(deleteParams).catch(console.log); 
+
         await Product.findByIdAndDelete(productId);
         return { status: true, message: "Product has been removed"}
       }else{
