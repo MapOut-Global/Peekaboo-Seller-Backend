@@ -1,12 +1,11 @@
-const Post = require("../../models/post") 
-const Product = require("../../models/product") 
+const Class = require("../../models/class")  
 const { authorizationFunction } = require('../checkCognitoToken.js'); 
 
 const path = require('path');
 const util = require('util') ;
 const s3 =  require('../s3FileUploader'); 
 module.exports = {  
-  addPost: async (args, req) =>  {
+  addClass: async (args, req) =>  {
     let checkToken = await authorizationFunction(req);
     if(checkToken.client_id === undefined){
       throw {
@@ -15,10 +14,10 @@ module.exports = {
       }
     }
     try {
-      let { description, productId, userId, facebook_flag, instagram_flag, watsapp_flag, image, _id } = args.postData;  
-      var checkPostOldImage = {};
+      let { description, userId, name, date, from, to, price, participant_limit, zoom_link, image, _id } = args.classData;  
+      var checkClassOldImage = {};
       if(_id !== undefined ){
-        var checkPostOldImage = await Post.findOne({_id: _id}).exec();   
+        var checkClassOldImage = await Class.findOne({_id: _id}).exec();   
       }
       
       /************************* Upload avtar on S3 Server ********************/
@@ -45,7 +44,7 @@ module.exports = {
         let file_extension = path.extname(filename);
 
         // set the key as a combination of the folder name, timestamp, and the file extension of the object.
-        params.Key = `post_images/${timestamp}${file_extension}`;
+        params.Key = `class_images/${timestamp}${file_extension}`;
 
         let upload = util.promisify(s3.upload.bind(s3));
 
@@ -54,8 +53,8 @@ module.exports = {
         image.Location = result.Location;
         image.Key = result.Key; 
         console.log(image); 
-        if(checkPostOldImage.image !== null && checkPostOldImage.image !== undefined && checkPostOldImage.image.Key !== undefined){
-          oldKey = checkPostOldImage.image.Key;
+        if(checkClassOldImage.image !== null && checkClassOldImage.image !== undefined && checkClassOldImage.image.Key !== undefined){
+          oldKey = checkClassOldImage.image.Key;
           const deleteParams = {
               Bucket:"peekaboo2", 
               Key:oldKey, 
@@ -64,54 +63,59 @@ module.exports = {
           await removeObject(deleteParams).catch(console.log); 
         } 
       }else{
-        if(checkPostOldImage.image !== "" ){
+        if(checkClassOldImage.image !== "" ){
           image = checkClassOldImage.image; 
         }
-      }
-      console.log(checkPostOldImage.length);
+      } 
     /************************* Upload avtar on S3 Server ********************/ 
-      if(checkPostOldImage.length > 0){
-        await Post.findOneAndUpdate(
+      if(checkClassOldImage.length > 0){
+        await Class.findOneAndUpdate(
           {_id: _id},
           {
+            name:name,
             description: description,
-            productId: productId,
-            facebook_flag: facebook_flag,
-            instagram_flag: instagram_flag,
-            watsapp_flag: watsapp_flag,
-            image: image,
-            userId: userId
+            date: date,
+            from: from,
+            to: to,
+            price: price,
+            participant_limit: participant_limit,
+            userId: userId,
+            zoom_link: zoom_link,
+            image: image
           },
           {
             new: true,
             upsert: true
           }
         );   
-        let postData = await Post.findOne(
+        let classData = await Class.findOne(
           {
             _id: _id
           }
         ).exec();
-        return { postData: postData, responseStatus : {status: true, message: "Post added successfully"} }  
+        return { classData: classData, responseStatus : {status: true, message: "Class added successfully"} }  
       }else{
-        const newPost = new Post({
-          description,
-          productId,
-          facebook_flag,
-          instagram_flag,
-          watsapp_flag,
-          image,
-          userId
+        const newClass = new Class({
+          name:name,
+          description: description,
+          date: date,
+          from: from,
+          to: to,
+          price: price,
+          participant_limit: participant_limit,
+          userId: userId,
+          zoom_link: zoom_link,
+          image:image
         });
-        await newPost.save(); 
-        return { postData: newPost._doc, responseStatus : {status: true, message: "Post added successfully"} }  
+        await newClass.save(); 
+        return { classData: newClass._doc, responseStatus : {status: true, message: "Class added successfully"} }  
       }
     } catch (error) {
       throw error
     }
   },
 
-  posts: async (args, req) =>  {
+  classes: async (args, req) =>  {
     let checkToken = await authorizationFunction(req);
     if(checkToken.client_id === undefined){
       throw {
@@ -121,14 +125,13 @@ module.exports = {
     }
     try {
       let { userId } = args; 
-      const postFetched = await Post.find({userId : userId}); 
-      return postFetched.map(post => {
-        productData = Product.findById(post.productId);
+      const classFetched = await Class.find({userId : userId}); 
+      return classFetched.map(classData => { 
         return {
-          ...post._doc,
-          _id: post.id,
-          productData: productData,
-          createdAt: new Date(post._doc.createdAt).toISOString(),
+          ...classData._doc,
+          _id: classData.id, 
+          createdAt: new Date(classData._doc.createdAt).toISOString(),
+          date: new Date(classData._doc.date).toISOString(),
         }
       })
     } catch (error) {
@@ -136,7 +139,7 @@ module.exports = {
     }
   },
 
-  removePost: async (args, req) =>  {
+  removeClass: async (args, req) =>  {
     let checkToken = await authorizationFunction(req);
     if(checkToken.client_id === undefined){
       throw {
@@ -146,10 +149,10 @@ module.exports = {
     }
 
     try {
-      let { userId, postId } = args 
-      const postData = await Post.findById(postId); 
-      if(postData.userId == userId){
-        oldKey = postData.image.Key;
+      let { userId, classId } = args 
+      const classData = await Class.findById(classId); 
+      if(classData.userId == userId){
+        oldKey = classData.image.Key;
         const deleteParams = {
             Bucket:"peekaboo2", 
             Key:oldKey, 
@@ -157,8 +160,8 @@ module.exports = {
         let removeObject = util.promisify(s3.deleteObject.bind(s3)); 
         await removeObject(deleteParams).catch(console.log); 
 
-        await Post.findByIdAndDelete(postId);
-        return { status: true, message: "Post has been removed"}
+        await Class.findByIdAndDelete(classId);
+        return { status: true, message: "Class has been removed"}
       }else{
         return { status: false, message: "Invalid User ID"}
       }

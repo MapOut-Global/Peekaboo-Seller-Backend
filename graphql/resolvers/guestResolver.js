@@ -5,6 +5,7 @@ const productResolver = require('./product');
 const categoryResolver = require('./category'); 
 const profileResolver = require('./profile'); 
 const postResolver = require('./post'); 
+const classResolver = require('./class'); 
 
 const resolvers = [
   userResolver, 
@@ -12,7 +13,8 @@ const resolvers = [
   productResolver,
   categoryResolver,
   profileResolver,
-  postResolver
+  postResolver,
+  classResolver,
 ];
 
 module.exports  = mergeResolvers(resolvers);

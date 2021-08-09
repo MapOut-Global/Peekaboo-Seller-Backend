@@ -416,6 +416,42 @@ module.exports = buildSchema(`
     responseStatus: ResponseStatus
   }
 
+  
+  input ClassInput {
+    _id: String
+    description: String
+    image: Upload 
+    userId: String!
+    name: String!
+    date: String!
+    from: String!
+    to: String!
+    price: Float!
+    participant_limit: Int!
+    zoom_link: String!
+  }
+
+  type Class {
+    _id: String
+    description: String!
+    image: S3Type
+    name: String!
+    date: String!
+    from: String!
+    to: String!
+    price: Float!
+    participant_limit: Int!
+    zoom_link: String!
+    userId: String! 
+    createdAt: String
+    updatedAt: String
+  }
+
+  type AddClass {
+    classData: Class
+    responseStatus: ResponseStatus
+  }
+
 
   type Query { 
     specialities(type:String!):[Speciality!]
@@ -428,6 +464,7 @@ module.exports = buildSchema(`
     products(categoryId:String, userId:String!, subcategoryId:String): [Product]
     userProfile(userId:String!): Profile
     posts(userId:String):[Post!]
+    classes(userId:String):[Class!]
   }
 
   type Mutation {
@@ -445,6 +482,8 @@ module.exports = buildSchema(`
     updateUserCategoryFlag(userId: String!,categoryId: String!, status: Boolean!): UpdateProfileCategory
     addPost(postData: PostInput): AddPost
     removePost(userId: String!, postId: String!): ResponseStatus
+    addClass(classData: ClassInput): AddClass
+    removeClass(userId: String!, classId: String!): ResponseStatus
   }
 
   schema {
