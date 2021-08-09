@@ -54,10 +54,11 @@ module.exports = {
             Location: result.Location, 
             Key: result.Key, 
           }; 
-          avatar_url = Object.create(avatar_url_arr);
+          avatar_url = {};
           avatar_url.Location = result.Location;
           avatar_url.Key = result.Key; 
-          if(checkProfileOldAvtar.avatar_url !== null && checkProfileOldAvtar.avatar_url.Key !== undefined){ 
+          console.log(checkProfileOldAvtar); 
+          if(checkProfileOldAvtar.avatar_url !== null && checkProfileOldAvtar.avatar_url !== undefined && checkProfileOldAvtar.avatar_url.Key !== undefined){
             oldKey = checkProfileOldAvtar.avatar_url.Key;
             const deleteParams = {
                 Bucket:"peekaboo2", 
