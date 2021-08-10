@@ -441,6 +441,7 @@ module.exports = buildSchema(`
     to: String!
     price: Float!
     participant_limit: Int!
+    likes: Int
     zoom_link: String!
     userId: String! 
     createdAt: String
