@@ -239,21 +239,10 @@ module.exports = {
 
         const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
 
-        let response = await cognitoUser.refreshSession(RefreshToken, (err, session) => {
-            if (err) {
-                console.log(err);
-            } else {
-                let retObj = {
-                    "access_token": session.accessToken.jwtToken,
-                    "id_token": session.idToken.jwtToken,
-                    "refresh_token": session.refreshToken.token,
-                }
-                console.log(retObj);
-                return {  responseStatus: { status: true, message: "Token renews"}, token: session.accessToken.jwtToken, refreshToken: session.refreshToken.jwtToken }
-            }
-        });
-        console.log(response)
-        return response;
+        let result = await refreshTokenMethod(cognitoUser, RefreshToken);
+        console.log(result);
+        return {  responseStatus: { status: true, message: "Token renewed"}, token: result.accessToken.jwtToken, refreshToken: result.refreshToken.token }
+ 
       } catch (error) {
         throw error
       }
@@ -388,7 +377,7 @@ function asyncAuthenticateUser(cognitoUser, cognitoAuthenticationDetails) {
       newPasswordRequired: resolve
     })
   })
-}
+} 
 
 function asyncSignUp(userPool, email, password, attribute_list) {
   return new Promise((resolve, reject) => {
@@ -444,6 +433,20 @@ function confirmPassword(username, verificationCode, newPassword) {
               resolve();
           },
       });
+  });
+}
+
+function refreshTokenMethod(cognitoUser, RefreshToken) { 
+  return new Promise((resolve, reject) => {
+    cognitoUser.refreshSession(RefreshToken, (err, session) => { 
+      if (err) {
+        console.log(err.message);
+        reject(err);
+        return;
+      }
+      newTokenSession = session;
+      resolve(newTokenSession)
+    });
   });
 }
  
