@@ -7,7 +7,8 @@ const { authorizationFunction } = require('../checkCognitoToken');
  
 const path = require('path');
 const util = require('util') ;
-const s3 =  require('../s3FileUploader'); 
+const s3 =  require('../s3FileUploader');   
+const nodemailer = require("nodemailer") 
 module.exports = {  
   updateCookProfile: async (args, req) => { 
     let checkToken = await authorizationFunction(req); 
@@ -487,8 +488,7 @@ module.exports = {
         ],
         text: "New support request on Peekaboo. Check below ", // plain text body
         html: "Dear Admin<br/><br/>Cook has submitted new support ticket on Peekaboo. Please check details below :<br/><br/>Name: "+user.full_name+ "<br/>Email: "+user.email+ "<br/>Problem: "+problem+ "<br/>Detail: "+description+ "<br/>", 
-      });
-      console.log(info);
+      }); 
       return { responseStatus : {status: true, message: "Support submitted successfully"} };
     } catch(error) {
 
