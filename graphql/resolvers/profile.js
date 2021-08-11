@@ -449,5 +449,50 @@ module.exports = {
     ); 
     return { status: true, message: "Category removed" };
   },
+
+  submitSupportTicket: async (args, req) => {
+    let checkToken = await authorizationFunction(req); 
+    if(checkToken.client_id === undefined){
+      throw {
+        error: checkToken,
+        status: 401
+      }
+    }
+    try {
+      let  { attachment, problem, userId, description} = args.support;
+      let { file } = await attachment;  
+      let { createReadStream,  filename} = file;
+      // read the data from the file.
+      let fileStream = createReadStream();  
+      let user = await User.findById(userId);
+      const transporter = nodemailer.createTransport({
+        host: "smtpout.secureserver.net",
+        port: 587,
+        secure: false, // upgrade later with STARTTLS
+        auth: {
+          user: "info@knowledgly.com",
+          pass: "knowledgly@2020",
+        },
+      });
+              // send mail with defined transport object
+      let info = await transporter.sendMail({
+        from: '"Peekaboo" <info@peekaboo.com>', // sender address
+        to: "bharat.mapout@gmail.com", // list of receivers
+        subject: "Support request from Cook on Peekaboo", // Subject line
+        attachments: [
+          {
+            filename: filename,
+            content: fileStream
+          }
+        ],
+        text: "New support request on Peekaboo. Check below ", // plain text body
+        html: "Dear Admin<br/><br/>Cook has submitted new support ticket on Peekaboo. Please check details below :<br/><br/>Name: "+user.full_name+ "<br/>Email: "+user.email+ "<br/>Problem: "+problem+ "<br/>Detail: "+description+ "<br/>", 
+      });
+      console.log(info);
+      return { responseStatus : {status: true, message: "Support submitted successfully"} };
+    } catch(error) {
+
+    }
+  }
 }
  

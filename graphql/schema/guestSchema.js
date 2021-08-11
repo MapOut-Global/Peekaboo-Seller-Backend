@@ -453,6 +453,50 @@ module.exports = buildSchema(`
     responseStatus: ResponseStatus
   }
 
+  type Order {
+    _id: String
+    customerData: User
+    order_details: [OrderDetail]
+    is_asap: Boolean
+    is_preorder: Boolean
+    preferred_time: PreferredTime
+    pick_up: Boolean
+    delivery: Boolean
+    delivery_address: String
+    courier_note: String
+    comment_for_cook: String
+    delivery_cost: String
+    order_total: String
+    order_status: String
+    userId: String! 
+    createdAt: String
+    updatedAt: String
+  }
+
+  type OrderDetail {
+    productData: Product
+    price: Float
+    quantity: Int
+  }
+
+  type PreferredTime {
+    from: String
+    to: String
+  }
+
+  type Support {
+    problem: String!
+    description: String!
+    attachment: S3Type
+    responseStatus: ResponseStatus 
+  }
+
+  input SupportInput {
+    problem: String!
+    description: String!
+    attachment: Upload 
+    userId: String!
+  }
 
   type Query { 
     specialities(type:String!):[Speciality!]
@@ -466,6 +510,7 @@ module.exports = buildSchema(`
     userProfile(userId:String!): Profile
     posts(userId:String):[Post!]
     classes(userId:String):[Class!]
+    orders(userId: String!): [Order!]
   }
 
   type Mutation {
@@ -485,6 +530,8 @@ module.exports = buildSchema(`
     removePost(userId: String!, postId: String!): ResponseStatus
     addClass(classData: ClassInput): AddClass
     removeClass(userId: String!, classId: String!): ResponseStatus
+    acceptDeclineOrder(_id: String!, order_status: String!): ResponseStatus
+    submitSupportTicket(support: SupportInput): Support
   }
 
   schema {
