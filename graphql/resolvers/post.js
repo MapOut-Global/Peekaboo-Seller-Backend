@@ -15,7 +15,7 @@ module.exports = {
       }
     }
     try {
-      let { description, productId, userId, facebook_flag, instagram_flag, watsapp_flag, image, _id } = args.postData;  
+      let { description, productIds, userId, facebook_flag, instagram_flag, watsapp_flag, image, _id } = args.postData;  
       var checkPostOldImage = {};
       if(_id !== undefined ){
         var checkPostOldImage = await Post.findOne({_id: _id}).exec();   
@@ -52,8 +52,7 @@ module.exports = {
         let result = await upload(params).catch(console.log);    
         image = {};
         image.Location = result.Location;
-        image.Key = result.Key; 
-        console.log(image); 
+        image.Key = result.Key;  
         if(checkPostOldImage.image !== null && checkPostOldImage.image !== undefined && checkPostOldImage.image.Key !== undefined){
           oldKey = checkPostOldImage.image.Key;
           const deleteParams = {
@@ -65,7 +64,7 @@ module.exports = {
         } 
       }else{
         if(checkPostOldImage.image !== "" ){
-          image = checkClassOldImage.image; 
+          image = checkPostOldImage.image; 
         }
       }
       console.log(checkPostOldImage.length);
@@ -75,7 +74,7 @@ module.exports = {
           {_id: _id},
           {
             description: description,
-            productId: productId,
+            productIds: productIds,
             facebook_flag: facebook_flag,
             instagram_flag: instagram_flag,
             watsapp_flag: watsapp_flag,
@@ -96,7 +95,7 @@ module.exports = {
       }else{
         const newPost = new Post({
           description,
-          productId,
+          productIds,
           facebook_flag,
           instagram_flag,
           watsapp_flag,
@@ -123,7 +122,11 @@ module.exports = {
       let { userId } = args; 
       const postFetched = await Post.find({userId : userId}); 
       return postFetched.map(post => {
-        productData = Product.findById(post.productId);
+        productData = [];
+        post.productIds.map( (productId, productKey) => {
+          let product =  Product.findById(productId);
+          productData.push(product);
+        })
         return {
           ...post._doc,
           _id: post.id,

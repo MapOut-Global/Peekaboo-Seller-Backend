@@ -323,7 +323,7 @@ module.exports = {
         _id: userId
       }
     ).exec();
-
+    console.log(cookProfile.categories);
     cookProfile.categories.map( (category, key) => { 
       categoriesArr[key] = category; 
       categoriesArr[key]['sub_category'] = [];

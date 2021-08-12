@@ -392,18 +392,22 @@ module.exports = buildSchema(`
     _id: String
     description: String
     image: Upload
-    productId: String!
+    productIds: [PostProductInput]
     userId: String!
     facebook_flag: Boolean
     instagram_flag: Boolean
     watsapp_flag: Boolean
   }
 
+  input PostProductInput {
+    _id: String!
+  }
+
   type Post {
     _id: String
     description: String
     image: S3Type
-    productData: Product!
+    productData: [Product]
     userId: String!
     facebook_flag: Boolean
     instagram_flag: Boolean
