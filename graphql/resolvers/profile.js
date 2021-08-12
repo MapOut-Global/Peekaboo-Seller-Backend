@@ -2,6 +2,7 @@ const User = require("../../models/user")
 const Profile = require("../../models/profile") 
 const Speciality = require("../../models/speciality") 
 const Product = require("../../models/product") 
+const Class = require("../../models/class") 
 var ObjectId = require('mongoose').Types.ObjectId; 
 const { authorizationFunction } = require('../checkCognitoToken'); 
  
@@ -315,6 +316,14 @@ module.exports = {
       });
     }); 
 
+    classes = await Class.find({userId:new ObjectId(userId)});   
+
+    user = await User.findOne(
+      {
+        _id: userId
+      }
+    ).exec();
+
     cookProfile.categories.map( (category, key) => { 
       categoriesArr[key] = category; 
       categoriesArr[key]['sub_category'] = [];
@@ -337,8 +346,8 @@ module.exports = {
         }
       }) 
     })  
-    return { 
-
+    return {  
+      userData: user,
       categories: categoriesArr,
       flags: flags, 
       aboutme:aboutme, 
@@ -354,6 +363,7 @@ module.exports = {
       avatar_url: avatar_url,
       messageForMe: messageForMe,
       attachments: attachments, 
+      classes: classes,
       responseStatus: {status: true, message: "Profile saved"}};
   },
 

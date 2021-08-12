@@ -67,6 +67,7 @@ module.exports = buildSchema(`
     updatedAt: String!
     avatar_url: S3Type
     attachments: [S3Type]
+    classes: [Class]
     responseStatus: ResponseStatus
   }
   
