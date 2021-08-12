@@ -245,7 +245,7 @@ module.exports = buildSchema(`
   }
 
   type Product {
-    name: String!, 
+    name: String, 
     description: String 
     categories: [Category] 
     sub_categories: [Category] 
