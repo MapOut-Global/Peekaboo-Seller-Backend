@@ -41,6 +41,15 @@ const profileSchema = new Schema(
     currency: {
       type: String, 
     },
+    latitude: {
+      type: String, 
+    },
+    longitude: {
+      type: String, 
+    },
+    zipcode: {
+      type: String, 
+    },
     avatar_url: {
       type: Object, 
     },

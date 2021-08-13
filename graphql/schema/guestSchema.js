@@ -68,6 +68,9 @@ module.exports = buildSchema(`
     avatar_url: S3Type
     attachments: [S3Type]
     classes: [Class]
+    latitude: String
+    longitude: String
+    zipcode: String
     responseStatus: ResponseStatus
   }
   
@@ -213,6 +216,9 @@ module.exports = buildSchema(`
     kitchenTourFile: Upload
     currency: String
     attachments: [Upload]
+    latitude: String
+    longitude: String
+    zipcode: String
   }
   
   input UserLoginInput { 

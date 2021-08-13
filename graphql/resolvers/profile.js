@@ -20,7 +20,7 @@ module.exports = {
       }
     }
     try {
-      var { flags, aboutme, avatar, hoursOfOperation, messageForMe, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency, attachments } = args.profile;
+      var { flags, aboutme, avatar, hoursOfOperation, messageForMe, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency, attachments, latitude, longitude, zipcode } = args.profile;
       var checkProfileOldAvtar = await Profile.findOne({userId: userId}).exec();   
 
       /************************* Upload avtar on S3 Server ********************/
@@ -223,6 +223,9 @@ module.exports = {
           currency: currency,
           avatar_url: avatar_url,
           attachments: attachmentArr,
+          latitude:latitude,
+          longitude:longitude,
+          zipcode: zipcode,
           messageForMe: messageForMe
         },
         {
@@ -322,8 +325,7 @@ module.exports = {
       {
         _id: userId
       }
-    ).exec();
-    console.log(cookProfile.categories);
+    ).exec(); 
     cookProfile.categories.map( (category, key) => { 
       categoriesArr[key] = category; 
       categoriesArr[key]['sub_category'] = [];
