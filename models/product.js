@@ -43,6 +43,9 @@ const productSchema = new Schema(
     },
     product_image_url: {
       type: Object,
+    },
+    likes: {
+      type: Number
     }
   },
   { timestamps: true }

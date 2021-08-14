@@ -263,6 +263,7 @@ module.exports = buildSchema(`
     delivery_details: DeliveryDetail
     discount_details: DiscountDetail
     product_image_url: S3Type
+    likes: Int
     userId: ID! 
     _id: ID!
     stock: String 
