@@ -55,6 +55,9 @@ const profileSchema = new Schema(
     },
     attachments: {
       type: Array,
+    },
+    stop_orders: {
+      type: Object
     }
   },
   { timestamps: true }

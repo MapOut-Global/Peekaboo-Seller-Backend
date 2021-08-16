@@ -505,6 +505,22 @@ module.exports = {
     } catch(error) {
 
     }
+  },
+
+  stopRecievingOrder: async (args, req) => {
+    let checkToken = await authorizationFunction(req); 
+    if(checkToken.client_id === undefined){
+      throw {
+        error: checkToken,
+        status: 401
+      }
+    }
+
+    try{
+      let { pause_status, pause_duration, pause_reason} = args;
+    }catch (error){
+      throw error;
+    }
   }
 }
  
