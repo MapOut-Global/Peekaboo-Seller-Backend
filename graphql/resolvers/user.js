@@ -31,7 +31,7 @@ module.exports = {
       try {  
         /************************* Upload avtar on S3 Server ********************/
         var avatar_url = [];
-        if (avatar !== undefined) {
+        if (avatar !== undefined && avatar !== null) {
           let {file} = await avatar; 
           let { createReadStream,  filename} = file;
           // read the data from the file.
