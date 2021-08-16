@@ -220,7 +220,7 @@ module.exports = buildSchema(`
     longitude: String
     zipcode: String
     pause_status: Boolean
-    pause_till: Date
+    pause_till: String
   }
   
   input UserLoginInput { 
