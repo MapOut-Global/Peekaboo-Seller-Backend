@@ -67,10 +67,7 @@ module.exports = buildSchema(`
     updatedAt: String!
     avatar_url: S3Type
     attachments: [S3Type]
-    classes: [Class]
-    latitude: String
-    longitude: String
-    zipcode: String
+    classes: [Class]  
     phone: String
     payment_details: CookPaymentDetail
     responseStatus: ResponseStatus
@@ -225,9 +222,7 @@ module.exports = buildSchema(`
     kitchenTourFile: Upload
     currency: String
     attachments: [Upload]
-    latitude: String
-    longitude: String
-    zipcode: String
+    phone: String
     pause_status: Boolean
     pause_till: String
     payment_details: PaymentDetailInput

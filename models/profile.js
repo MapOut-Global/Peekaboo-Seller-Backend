@@ -22,6 +22,9 @@ const profileSchema = new Schema(
     delivery: {
       type: Object, 
     }, 
+    address: {
+      type: Object, 
+    }, 
     userId: {
       type: Schema.Types.ObjectId, 
       ref: 'User', 
