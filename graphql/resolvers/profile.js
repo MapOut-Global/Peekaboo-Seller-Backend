@@ -20,7 +20,7 @@ module.exports = {
       }
     }
     try {
-      var { flags, aboutme, avatar, hoursOfOperation, messageForMe, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency, attachments, latitude, longitude, zipcode } = args.profile;
+      var { flags, aboutme, payment_details, avatar, hoursOfOperation, messageForMe, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency, attachments, latitude, longitude, zipcode } = args.profile;
       var checkProfileOldAvtar = await Profile.findOne({userId: userId}).exec();   
 
       /************************* Upload avtar on S3 Server ********************/
@@ -211,6 +211,7 @@ module.exports = {
         {userId: userId},
         {
           flags: flags,
+          payment_details: payment_details,
           aboutme: aboutme, 
           hoursOfOperation: hoursOfOperation, 
           heading: heading,
@@ -303,7 +304,7 @@ module.exports = {
         responseStatus: {status: true, message: "Profile saved"}
       };
     }
-    var { flags, aboutme, hoursOfOperation, messageForMe, heading, availibility, address, delivery, speciality, kitchenTourFile, currency, avatar_url, attachments } = cookProfile;
+    var { flags, aboutme, payment_details, hoursOfOperation, messageForMe, heading, availibility, address, delivery, speciality, kitchenTourFile, currency, avatar_url, attachments } = cookProfile;
     let productList = await Product.find({userId:new ObjectId(userId)});  
     var categoriesArr = [];
     var subCategoryArr = [];
@@ -366,6 +367,7 @@ module.exports = {
       messageForMe: messageForMe,
       attachments: attachments, 
       classes: classes,
+      payment_details: payment_details,
       responseStatus: {status: true, message: "Profile saved"}};
   },
 
