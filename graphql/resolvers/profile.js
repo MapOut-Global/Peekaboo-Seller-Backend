@@ -86,7 +86,7 @@ module.exports = {
           j=0;
           for(let i = attachmentArr.length; i < totArrayLength; i++){ 
             // Get that single file.
-            let fileObj = attachments[j];   
+            let fileObj = await attachments[j];   
             let { createReadStream,  filename} = fileObj.file; 
             const params = {
                 Bucket:"peekaboo2",
