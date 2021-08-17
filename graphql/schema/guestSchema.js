@@ -71,6 +71,7 @@ module.exports = buildSchema(`
     latitude: String
     longitude: String
     zipcode: String
+    phone: String
     payment_details: CookPaymentDetail
     responseStatus: ResponseStatus
   }
@@ -117,22 +118,19 @@ module.exports = buildSchema(`
   }  
 
   type Address{ 
-    country: String
-    region: String
-    city: Boolean
-    street: String
-    buildNumber: String
-    floor: String
-    apartment: String
-    postCode: String
-    geoCordinate: String
+    address1: String
+    address2: String 
+    latitude: Float
+    longitude: Float
   }
 
   type Delivery{ 
     address: Address
     deliveryAvailable: Boolean
-    deliveryRadius: Float
+    deliveryRadius: String
     deliveryType: Int
+    sameAsAddress: Boolean
+    pickupOnly: Boolean
   }  
  
   type Speciality{
@@ -203,6 +201,7 @@ module.exports = buildSchema(`
     freeDeliveryRadius: String
     pickupOnly: Boolean
     sameAsAddress:Boolean
+    deliveryRadius: String
   }   
 
   input SpecialityInput{

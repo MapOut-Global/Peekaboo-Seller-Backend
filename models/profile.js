@@ -61,6 +61,9 @@ const profileSchema = new Schema(
     },
     payment_details: {
       type: Object
+    },
+    phone: {
+      type: String
     }
   },
   { timestamps: true }
