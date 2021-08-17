@@ -16,8 +16,10 @@ module.exports = {
       }
     }
     try {
-      let { name, description, categories, sub_categories, cuisines, dietary_need, product_image, packaging_price, product_availibility, userId, delivery_details, stock, discount_details } = args.productData;
-      
+      let { name, description, categories, sub_categories, cuisines, dietary_need, product_image, packaging_price, product_availibility, userId, delivery_details, stock, discount_details, _id } = args.productData;
+       
+      var categoryData = await Profile.findOne({ userId: userId }, 'categories').exec();
+
       for(const [key, val] of Object.entries(categories)) {
         if(val._id === undefined){
           let status = false;
@@ -28,8 +30,32 @@ module.exports = {
           });
           await newCategories.save(); 
           categories[key]['_id'] = newCategories._doc._id.toString();
+          catId = newCategories._doc._id.toString();
+        }else{
+          catId = val._id
         }
-      } 
+        categoryExist = false;
+
+        for(const [profileKey, profileCat] of Object.entries(categoryData.categories)) {
+          if(profileCat._id == catId){  
+            categoryExist = true;
+          }
+        }  
+
+        if(!categoryExist){
+          categoryData.categories.push(categories[key]);
+        }
+      }  
+      await Profile.findOneAndUpdate(
+        {userId: userId},
+        {
+          categories: categoryData.categories
+        },
+        {
+          new: true,
+          upsert: true
+        }
+      ); 
 
       for(const [key, val] of Object.entries(sub_categories)) {
         if(val._id === undefined){
@@ -114,11 +140,44 @@ module.exports = {
         product_image_url.Key = result.Key; 
       }
 
-      const newProduct = new Product({
-        name, description, categories, product_image_url, sub_categories, cuisines, dietary_need, packaging_price, product_availibility, userId, delivery_details, stock, discount_details
-      });
-      const productData = await newProduct.save(); 
-      return { productData: productData._doc, responseStatus : {status: true, message: "Product added successfully"} }  
+      if(_id !== undefined && _id !== null){
+        await Product.findOneAndUpdate(
+          {_id: _id},
+          {
+            name: name,
+            description: description,
+            categories: categories,
+            product_image_url: product_image_url,
+            sub_categories: sub_categories,
+            cuisines: cuisines,
+            dietary_need: dietary_need,
+            packaging_price: packaging_price,
+            product_availibility: product_availibility,
+            delivery_details: delivery_details,
+            stock: stock,
+            discount_details: discount_details,
+          },
+          {
+            new: true,
+            upsert: true
+          }
+        );   
+        let productData = await Product.findOne(
+          {
+            _id: _id
+          }
+        ).exec();
+        return { productData: productData, responseStatus : {status: true, message: "Product updated successfully"} }  
+      }else{
+        const newProduct = new Product({
+          name, description, categories, product_image_url, sub_categories, cuisines, dietary_need, packaging_price, 
+          product_availibility, userId, delivery_details, stock, discount_details
+        });
+        let productData = await newProduct.save(); 
+        return { productData: productData._doc, responseStatus : {status: true, message: "Product added successfully"} }  
+      }
+      
+      
     } catch (error) {
       throw error
     }

@@ -194,8 +194,7 @@ module.exports = buildSchema(`
 
   input DeliveryInput{ 
     address: AddressInput
-    deliveryAvailable: Boolean
-    freeDeliveryRadius: String
+    deliveryAvailable: Boolean 
     pickupOnly: Boolean
     sameAsAddress:Boolean
     deliveryRadius: String
