@@ -71,9 +71,19 @@ module.exports = buildSchema(`
     latitude: String
     longitude: String
     zipcode: String
+    payment_details: CookPaymentDetail
     responseStatus: ResponseStatus
   }
   
+  type CookPaymentDetail {
+    is_bank_account: Boolean
+    is_wallet: Boolean
+    account_numner: String
+    ifsc_code: String
+    wallet_type: String
+    upi_id: String
+  }
+
   type S3Type {
     Location: String
     Key: String
@@ -221,8 +231,17 @@ module.exports = buildSchema(`
     zipcode: String
     pause_status: Boolean
     pause_till: String
+    payment_details: PaymentDetailInput
   }
   
+  input PaymentDetailInput {
+    is_bank_account: Boolean
+    is_wallet: Boolean
+    account_numner: String
+    ifsc_code: String
+    wallet_type: String
+    upi_id: String
+  }
   input UserLoginInput { 
     email: String!
     password: String! 

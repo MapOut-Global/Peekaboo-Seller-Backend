@@ -58,6 +58,9 @@ const profileSchema = new Schema(
     },
     stop_orders: {
       type: Object
+    },
+    payment_details: {
+      type: Object
     }
   },
   { timestamps: true }
