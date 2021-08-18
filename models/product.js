@@ -46,6 +46,9 @@ const productSchema = new Schema(
     },
     likes: {
       type: Number
+    },
+    status: {
+      type: Boolean
     }
   },
   { timestamps: true }

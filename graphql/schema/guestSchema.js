@@ -280,6 +280,7 @@ module.exports = buildSchema(`
     likes: Int
     userId: ID! 
     _id: ID!
+    status: Boolean
     stock: String 
     createdAt: String
     updatedAt: String
@@ -297,6 +298,7 @@ module.exports = buildSchema(`
     delivery_details: DeliveryDetailInput
     discount_details: DiscountDetailInput 
     userId: ID! 
+    status: Boolean
     stock: String
     product_image: Upload 
   }
@@ -558,6 +560,7 @@ module.exports = buildSchema(`
     removeClass(userId: String!, classId: String!): ResponseStatus
     acceptDeclineOrder(_id: String!, order_status: String!): ResponseStatus
     submitSupportTicket(support: SupportInput): Support
+    changeProductStatus(_id: String!, status: Boolean!): ResponseStatus
   }
 
   schema {
