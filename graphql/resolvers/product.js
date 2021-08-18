@@ -1,4 +1,5 @@
 const Product = require("../../models/product")   
+const Profile = require("../../models/profile")   
 var ObjectId = require('mongoose').Types.ObjectId; 
 const { authorizationFunction } = require('../checkCognitoToken.js'); 
 
