@@ -301,6 +301,7 @@ module.exports = buildSchema(`
     status: Boolean
     stock: String
     product_image: Upload 
+    _id: String
   }
 
   input CategoryInput {
