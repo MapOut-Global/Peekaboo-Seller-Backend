@@ -135,8 +135,12 @@ module.exports = {
     /************************* Upload avtar on S3 Server ********************/
 
       /************************* Upload attachments on S3 Server ********************/
-        if(checkProfileOldAvtar.attachments !== null && checkProfileOldAvtar.attachments !== undefined){
-          var attachmentArr = checkProfileOldAvtar.attachments; 
+        if(checkProfileOldAvtar !== null){
+          if(checkProfileOldAvtar.attachments !== null && checkProfileOldAvtar.attachments !== undefined){
+            var attachmentArr = checkProfileOldAvtar.attachments; 
+          }else{
+            var attachmentArr = []; 
+          } 
         }else{
           var attachmentArr = []; 
         } 
