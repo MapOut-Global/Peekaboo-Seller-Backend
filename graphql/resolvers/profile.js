@@ -59,8 +59,66 @@ module.exports = {
           avatar_url = {};
           avatar_url.Location = result.Location;
           avatar_url.Key = result.Key;  
-          if(checkProfileOldAvtar.avatar_url !== null && checkProfileOldAvtar.avatar_url !== undefined && checkProfileOldAvtar.avatar_url.Key !== undefined){
-            oldKey = checkProfileOldAvtar.avatar_url.Key;
+          if(checkProfileOldAvtar.length > 0){
+            if(checkProfileOldAvtar.avatar_url !== null && checkProfileOldAvtar.avatar_url !== undefined && checkProfileOldAvtar.avatar_url.Key !== undefined){
+              oldKey = checkProfileOldAvtar.avatar_url.Key;
+              const deleteParams = {
+                  Bucket:"peekaboo2", 
+                  Key:oldKey, 
+              };
+              let removeObject = util.promisify(s3.deleteObject.bind(s3));
+              await removeObject(deleteParams).catch(console.log); 
+            } 
+          }
+          
+        }else{
+          if(checkProfileOldAvtar.avatar_url !== "" ){
+            avatar_url = checkProfileOldAvtar.avatar_url; 
+          }
+        }
+      /************************* Upload avtar on S3 Server ********************/ 
+
+
+      /************************* Upload avtar on S3 Server ********************/
+      if (kitchenTourFile) { 
+        let {file} = await kitchenTourFile; 
+        let { createReadStream,  filename} = file;
+        // read the data from the file.
+        let fileStream = createReadStream();
+        const params = {
+            Bucket:"peekaboo2",
+            Key:'',
+            Body:'',
+            ACL:'public-read'
+        };
+        // in case of an error, log it.
+        fileStream.on("error", (error) => console.error(error));
+
+        // set the body of the object as data to read from the file.
+        params.Body = fileStream;
+            // get the current time stamp.
+        let timestamp = new Date().getTime();
+
+        // get the file extension.
+        let file_extension = path.extname(filename);
+
+        // set the key as a combination of the folder name, timestamp, and the file extension of the object.
+        params.Key = `kitchen_tours/${timestamp}${file_extension}`;
+
+        let upload = util.promisify(s3.upload.bind(s3));
+
+        let result = await upload(params).catch(console.log); 
+        var kitchenTourFile_url_arr = {
+          Location: result.Location, 
+          Key: result.Key, 
+        }; 
+        kitchenTourFile = Object.create(kitchenTourFile_url_arr);
+        kitchenTourFile.Location = result.Location;
+        kitchenTourFile.Key = result.Key;  
+        
+        if(checkProfileOldAvtar.length > 0){
+          if(checkProfileOldAvtar.kitchenTourFile !== null && checkProfileOldAvtar.kitchenTourFile !== undefined && checkProfileOldAvtar.kitchenTourFile.Key !== undefined){
+            oldKey = checkProfileOldAvtar.kitchenTourFile.Key;
             const deleteParams = {
                 Bucket:"peekaboo2", 
                 Key:oldKey, 
@@ -68,12 +126,13 @@ module.exports = {
             let removeObject = util.promisify(s3.deleteObject.bind(s3));
             await removeObject(deleteParams).catch(console.log); 
           } 
-        }else{
-          if(checkProfileOldAvtar.avatar_url !== "" ){
-            avatar_url = checkProfileOldAvtar.avatar_url; 
-          }
         }
-      /************************* Upload avtar on S3 Server ********************/
+      }else{  
+        if(checkProfileOldAvtar.kitchenTourFile !== "" ){
+          kitchenTourFile = checkProfileOldAvtar.kitchenTourFile; 
+        }
+      }  
+    /************************* Upload avtar on S3 Server ********************/
 
       /************************* Upload attachments on S3 Server ********************/
         if(checkProfileOldAvtar.attachments !== null && checkProfileOldAvtar.attachments !== undefined){
@@ -125,58 +184,6 @@ module.exports = {
           };
         } 
       /************************* Upload attachments on S3 Server ********************/
-
-      /************************* Upload avtar on S3 Server ********************/
-        if (kitchenTourFile) { 
-          let {file} = await kitchenTourFile; 
-          let { createReadStream,  filename} = file;
-          // read the data from the file.
-          let fileStream = createReadStream();
-          const params = {
-              Bucket:"peekaboo2",
-              Key:'',
-              Body:'',
-              ACL:'public-read'
-          };
-          // in case of an error, log it.
-          fileStream.on("error", (error) => console.error(error));
-
-          // set the body of the object as data to read from the file.
-          params.Body = fileStream;
-              // get the current time stamp.
-          let timestamp = new Date().getTime();
-
-          // get the file extension.
-          let file_extension = path.extname(filename);
-
-          // set the key as a combination of the folder name, timestamp, and the file extension of the object.
-          params.Key = `kitchen_tours/${timestamp}${file_extension}`;
-
-          let upload = util.promisify(s3.upload.bind(s3));
-
-          let result = await upload(params).catch(console.log); 
-          var kitchenTourFile_url_arr = {
-            Location: result.Location, 
-            Key: result.Key, 
-          }; 
-          kitchenTourFile = Object.create(kitchenTourFile_url_arr);
-          kitchenTourFile.Location = result.Location;
-          kitchenTourFile.Key = result.Key;  
-          if(checkProfileOldAvtar.kitchenTourFile !== null && checkProfileOldAvtar.kitchenTourFile !== undefined && checkProfileOldAvtar.kitchenTourFile.Key !== undefined){
-            oldKey = checkProfileOldAvtar.kitchenTourFile.Key;
-            const deleteParams = {
-                Bucket:"peekaboo2", 
-                Key:oldKey, 
-            };
-            let removeObject = util.promisify(s3.deleteObject.bind(s3));
-            await removeObject(deleteParams).catch(console.log); 
-          } 
-        }else{  
-          if(checkProfileOldAvtar.kitchenTourFile !== "" ){
-            kitchenTourFile = checkProfileOldAvtar.kitchenTourFile; 
-          }
-        }  
-      /************************* Upload avtar on S3 Server ********************/
  
       userData = await User.findById(userId).exec();  
       if(userData == null){
