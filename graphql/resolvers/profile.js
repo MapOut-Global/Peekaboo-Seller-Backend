@@ -59,7 +59,7 @@ module.exports = {
           avatar_url = {};
           avatar_url.Location = result.Location;
           avatar_url.Key = result.Key;  
-          if(checkProfileOldAvtar.length > 0){
+          if(checkProfileOldAvtar !== null){
             if(checkProfileOldAvtar.avatar_url !== null && checkProfileOldAvtar.avatar_url !== undefined && checkProfileOldAvtar.avatar_url.Key !== undefined){
               oldKey = checkProfileOldAvtar.avatar_url.Key;
               const deleteParams = {
@@ -116,7 +116,7 @@ module.exports = {
         kitchenTourFile.Location = result.Location;
         kitchenTourFile.Key = result.Key;  
         
-        if(checkProfileOldAvtar.length > 0){
+        if(checkProfileOldAvtar !== null){
           if(checkProfileOldAvtar.kitchenTourFile !== null && checkProfileOldAvtar.kitchenTourFile !== undefined && checkProfileOldAvtar.kitchenTourFile.Key !== undefined){
             oldKey = checkProfileOldAvtar.kitchenTourFile.Key;
             const deleteParams = {
