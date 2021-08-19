@@ -199,8 +199,8 @@ module.exports = {
       }else{
         if(subcategoryId === undefined || subcategoryId === null){
            productList = await Product.find({userId:new ObjectId(userId), 'categories._id': categoryId}); 
-        }else{
-           productList = await Product.find({adduserId:new ObjectId(userId), 'sub_categories._id': subcategoryId}); 
+        }else{ 
+           productList = await Product.find({userId:new ObjectId(userId), 'sub_categories._id': subcategoryId}); 
         }
       }
       console.log(productList);
