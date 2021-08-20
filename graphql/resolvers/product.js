@@ -78,13 +78,23 @@ module.exports = {
           let status = false;
           let type = "cuisine";
           let name = val.name;
-          const newSpeciality = new Speciality({
-            name,
-            type,
-            status
-          });
-          await newSpeciality.save(); 
-          cuisines[key]['_id'] = newSpeciality._doc._id.toString();
+          let checkSpecialityExist = await Speciality.findOne(
+            {
+              name: name,
+              type: "cuisine"
+            }
+          ).exec();   
+          if(!checkSpecialityExist){
+            const newSpeciality = new Speciality({
+              name,
+              type,
+              status
+            });
+            await newSpeciality.save(); 
+            cuisines[key]['_id'] = newSpeciality._doc._id.toString();
+          }else{ 
+            cuisines[key]['_id'] = checkSpecialityExist._id.toString();
+          } 
         }
       } 
 
@@ -93,13 +103,23 @@ module.exports = {
           let status = false;
           let type = "dietary_need";
           let name = val.name;
-          const newSpeciality = new Speciality({
-            name,
-            type,
-            status
-          });
-          await newSpeciality.save(); 
-          dietary_need[key]['_id'] = newSpeciality._doc._id.toString();
+          let checkSpecialityExist = await Speciality.findOne(
+            {
+              name: name,
+              type: "dietary_need"
+            }
+          ).exec();   
+          if(!checkSpecialityExist){
+            const newSpeciality = new Speciality({
+              name,
+              type,
+              status
+            });
+            await newSpeciality.save(); 
+            dietary_need[key]['_id'] = newSpeciality._doc._id.toString();
+          }else{ 
+            dietary_need[key]['_id'] = checkSpecialityExist._id.toString();
+          } 
         }
       } 
 

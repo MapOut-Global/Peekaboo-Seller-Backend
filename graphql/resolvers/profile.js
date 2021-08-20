@@ -201,7 +201,8 @@ module.exports = {
           let name = val.name;
           let checkSpecialityExist = await Speciality.findOne(
             {
-              name: name
+              name: name,
+              type: "speciality"
             }
           ).exec();   
           if(!checkSpecialityExist){
