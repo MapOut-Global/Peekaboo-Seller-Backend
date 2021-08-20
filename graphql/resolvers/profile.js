@@ -204,7 +204,7 @@ module.exports = {
               name: name
             }
           ).exec();   
-          if(checkSpecialityExist.length == 0){
+          if(!checkSpecialityExist){
             const newSpeciality = new Speciality({
               name,
               type,
