@@ -7,6 +7,9 @@ const profileSchema = new Schema(
     flags: {
       type: Object,
     },
+    shop_name: {
+      type: String
+    },
     aboutme: {
       type: String,
     },

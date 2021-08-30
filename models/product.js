@@ -47,6 +47,12 @@ const productSchema = new Schema(
     likes: {
       type: Number
     },
+    conssume_info: {
+      type: Object
+    },
+    storage_instructions: {
+      type: Array
+    },
     status: {
       type: Boolean
     }

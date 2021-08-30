@@ -100,6 +100,31 @@ module.exports = {
         }
       } 
 
+      for(const [key, val] of Object.entries(storage_instructions)) {
+        if(val._id === undefined){
+          let status = false;
+          let type = "cuisine";
+          let name = val.name;
+          let checkSpecialityExist = await Speciality.findOne(
+            {
+              name: name,
+              type: "storage_instruction"
+            }
+          ).exec();   
+          if(!checkSpecialityExist){
+            const newSpeciality = new Speciality({
+              name,
+              type,
+              status
+            });
+            await newSpeciality.save(); 
+            storage_instructions[key]['_id'] = newSpeciality._doc._id.toString();
+          }else{ 
+            storage_instructions[key]['_id'] = checkSpecialityExist._id.toString();
+          } 
+        }
+      } 
+
       for(const [key, val] of Object.entries(dietary_need)) {
         if(val._id === undefined){
           let status = false;
@@ -170,6 +195,7 @@ module.exports = {
             description: description,
             categories: categories,
             product_image_url: product_image_url,
+            storage_instructions: storage_instructions,
             sub_categories: sub_categories,
             cuisines: cuisines,
             dietary_need: dietary_need,

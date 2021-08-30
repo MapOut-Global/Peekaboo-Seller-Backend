@@ -50,7 +50,7 @@ module.exports = {
           params.Key = `cook_images/${timestamp}${file_extension}`;
 
           let upload = util.promisify(s3.upload.bind(s3));
-
+          
           let result = await upload(params).catch(console.log);   
           var avatar_url_arr = {
             Location: result.Location, 
@@ -170,7 +170,7 @@ module.exports = {
             let file_extension = path.extname(filename);
   
             // set the key as a combination of the folder name, timestamp, and the file extension of the object.
-            params.Key = `cook_attachments/${timestamp}${file_extension}`;
+            params.Key = `cook_attachments/${filename}`;
   
             let upload = util.promisify(s3.upload.bind(s3));
   
@@ -223,6 +223,7 @@ module.exports = {
         {userId: userId},
         {
           flags: flags,
+          shop_name: shop_name,
           phone: phone,
           payment_details: payment_details,
           aboutme: aboutme, 
@@ -251,9 +252,7 @@ module.exports = {
         {
           userId: userId
         }
-      ).exec();   
-      //var { flags, aboutme, hoursOfOperation, messageForMe, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency, avatar_url, attachments } = cookProfile;
-       
+      ).exec();    
       return { 
         cookProfile: cookProfile,
         userData: userData, 
@@ -366,6 +365,7 @@ module.exports = {
       userData: user,
       categories: categoriesArr,
       flags: flags, 
+      shop_name: shop_name, 
       aboutme:aboutme, 
       hoursOfOperation:hoursOfOperation, 
       heading: heading, 

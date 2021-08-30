@@ -51,6 +51,7 @@ module.exports = buildSchema(`
   type Profile { 
     userData: User 
     flags: Flag
+    shop_name: String
     aboutme: String 
     hoursOfOperation: [HoursOfOperation] 
     heading: String
@@ -210,6 +211,7 @@ module.exports = buildSchema(`
     avatar: Upload
     flags: FlagInput
     aboutme: String 
+    shop_name: String
     hoursOfOperation: [HoursOfOperationInput] 
     heading: String
     messageForMe: String
@@ -224,9 +226,20 @@ module.exports = buildSchema(`
     phone: String
     pause_status: Boolean
     pause_till: String
+    conssume_info: ConssumeInfoInput
     payment_details: PaymentDetailInput
   }
+
+  input ConssumeInfoInput {
+    type: ConssumeType,
+    number_of_day: Int
+  }
   
+  enum ConssumeType {
+    Immidiately,
+    Num Of day
+  }
+
   input PaymentDetailInput {
     is_bank_account: Boolean
     is_wallet: Boolean
@@ -272,6 +285,7 @@ module.exports = buildSchema(`
     sub_categories: [Category] 
     cuisines: [Speciality] 
     dietary_need: [Speciality] 
+    storage_instructions: [Speciality] 
     packaging_price: Packaging
     product_availibility: ProductAvailibility
     delivery_details: DeliveryDetail
@@ -293,6 +307,7 @@ module.exports = buildSchema(`
     sub_categories: [CategoryInput] 
     cuisines: [SpecialityInput] 
     dietary_need: [SpecialityInput] 
+    storage_instructions: [SpecialityInput] 
     packaging_price: PackagingInput
     product_availibility: ProductAvailibilityInput
     delivery_details: DeliveryDetailInput
@@ -416,7 +431,7 @@ module.exports = buildSchema(`
     _id: String
     description: String
     image: Upload
-    productIds: [PostProductInput]
+    product_id: String
     userId: String!
     facebook_flag: Boolean
     instagram_flag: Boolean
@@ -431,7 +446,7 @@ module.exports = buildSchema(`
     _id: String
     description: String
     image: S3Type
-    productData: [Product]
+    productData: Product
     userId: String!
     facebook_flag: Boolean
     instagram_flag: Boolean
