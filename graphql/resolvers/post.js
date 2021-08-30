@@ -121,19 +121,12 @@ module.exports = {
     try {
       let { userId } = args; 
       const postFetched = await Post.find({userId : userId}); 
-      let productIds = [];
-      postFetched.map(post => {
-        productIds.push(post.productId); 
-      })
-
-      let productList = await Product.find({ _id: { $in: productIds }});
       return postFetched.map(post => {
-        let productData;
-        productList.map( product => {
-          if(product._id.toString() === post.productId.toString() ){
-            productData =  Product.findById(post.productId);
-          }
-        }) 
+        productData = [];
+        post.productIds.map( (productId, productKey) => {
+          let product =  Product.findById(productId);
+          productData.push(product);
+        })
         return {
           ...post._doc,
           _id: post.id,

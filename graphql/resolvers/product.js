@@ -250,8 +250,7 @@ module.exports = {
         }else{ 
            productList = await Product.find({userId:new ObjectId(userId), 'sub_categories._id': subcategoryId}); 
         }
-      }
-      console.log(productList);
+      } 
       
       return productList.map(product => { 
         return {

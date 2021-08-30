@@ -11,10 +11,8 @@ const postSchema = new Schema(
     image: {
       type: Object, 
     },
-    product_id: {
-      type: Schema.Types.ObjectId, 
-      ref: 'Product', 
-      required: true,
+    productIds: {
+      type: Array
     },
     userId: {
       type: Schema.Types.ObjectId, 

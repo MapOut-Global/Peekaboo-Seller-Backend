@@ -431,7 +431,7 @@ module.exports = buildSchema(`
     _id: String
     description: String
     image: Upload
-    product_id: String
+    productIds: [Product]
     userId: String!
     facebook_flag: Boolean
     instagram_flag: Boolean
@@ -446,7 +446,7 @@ module.exports = buildSchema(`
     _id: String
     description: String
     image: S3Type
-    productData: Product
+    productData: [Product]
     userId: String!
     facebook_flag: Boolean
     instagram_flag: Boolean
