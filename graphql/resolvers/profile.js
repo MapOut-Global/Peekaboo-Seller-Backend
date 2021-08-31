@@ -316,7 +316,7 @@ module.exports = {
         responseStatus: {status: true, message: "Profile saved"}
       };
     }
-    var { flags, phone, aboutme, payment_details, hoursOfOperation, messageForMe, heading, availibility, address, delivery, speciality, kitchenTourFile, currency, avatar_url, attachments } = cookProfile;
+    var { flags, shop_name, phone, aboutme, payment_details, hoursOfOperation, messageForMe, heading, availibility, address, delivery, speciality, kitchenTourFile, currency, avatar_url, attachments } = cookProfile;
     let productList = await Product.find({userId:new ObjectId(userId)});  
     var categoriesArr = [];
     var subCategoryArr = [];
