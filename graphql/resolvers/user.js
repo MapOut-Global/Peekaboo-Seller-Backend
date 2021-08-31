@@ -110,7 +110,7 @@ module.exports = {
       } catch (error) {
         throw error
       } 
-  }, 
+  },  
 
   login: async args => {
     const { email, password } = args.user

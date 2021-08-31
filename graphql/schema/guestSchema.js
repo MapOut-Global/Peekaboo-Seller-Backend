@@ -431,7 +431,7 @@ module.exports = buildSchema(`
     _id: String
     description: String
     image: Upload
-    productIds: [Product]
+    productIds: [PostProductInput]
     userId: String!
     facebook_flag: Boolean
     instagram_flag: Boolean
