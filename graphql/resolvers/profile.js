@@ -20,7 +20,7 @@ module.exports = {
       }
     }
     try {
-      var { flags, aboutme, phone, payment_details, avatar, hoursOfOperation, messageForMe, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency, attachments, latitude, longitude, zipcode } = args.profile;
+      var { flags, shop_name, aboutme, phone, payment_details, avatar, hoursOfOperation, messageForMe, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency, attachments, latitude, longitude, zipcode } = args.profile;
       var checkProfileOldAvtar = await Profile.findOne({userId: userId}).exec();   
 
       /************************* Upload avtar on S3 Server ********************/
