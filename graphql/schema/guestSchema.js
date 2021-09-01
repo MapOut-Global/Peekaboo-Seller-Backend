@@ -226,7 +226,6 @@ module.exports = buildSchema(`
     phone: String
     pause_status: Boolean
     pause_till: String
-    conssume_info: ConssumeInfoInput
     payment_details: PaymentDetailInput
   }
 
@@ -316,6 +315,7 @@ module.exports = buildSchema(`
     status: Boolean
     stock: String
     product_image: Upload 
+    conssume_info: ConssumeInfoInput
     _id: String
   }
 

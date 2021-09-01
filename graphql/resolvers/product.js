@@ -19,7 +19,7 @@ module.exports = {
       }
     }
     try {
-      let { name, description, categories, sub_categories, cuisines, dietary_need, product_image, packaging_price, product_availibility, userId, delivery_details, stock, discount_details, _id } = args.productData;
+      let { name, storage_instructions, description, categories, sub_categories, cuisines, dietary_need, product_image, packaging_price, product_availibility, userId, delivery_details, stock, discount_details, _id } = args.productData;
        
       var categoryData = await Profile.findOne({ userId: userId }, 'categories').exec();
 
@@ -192,10 +192,11 @@ module.exports = {
           {_id: _id},
           {
             name: name,
+            storage_instructions: storage_instructions,
+            conssume_info: conssume_info,
             description: description,
             categories: categories,
             product_image_url: product_image_url,
-            storage_instructions: storage_instructions,
             sub_categories: sub_categories,
             cuisines: cuisines,
             dietary_need: dietary_need,
@@ -219,7 +220,8 @@ module.exports = {
       }else{
         let status = true;
         const newProduct = new Product({
-          name, description, categories, product_image_url, sub_categories, cuisines, dietary_need, packaging_price, 
+          name, storage_instructions, conssume_info, description, categories, product_image_url, sub_categories, 
+          cuisines, dietary_need, packaging_price, 
           product_availibility, userId, delivery_details, stock, discount_details, status
         });
         let productData = await newProduct.save(); 
