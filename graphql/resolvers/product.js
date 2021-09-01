@@ -149,7 +149,7 @@ module.exports = {
           } 
         }
       } 
-
+      var product_image_url;
       if (product_image) { 
         let {promise, file, resolve, reject} = await product_image; 
         let { createReadStream,  filename} = file;
