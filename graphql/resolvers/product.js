@@ -19,7 +19,7 @@ module.exports = {
       }
     }
     try {
-      let { name, storage_instructions, description, categories, sub_categories, cuisines, dietary_need, product_image, packaging_price, product_availibility, userId, delivery_details, stock, discount_details, _id } = args.productData;
+      let { name, conssume_info, storage_instructions, description, categories, sub_categories, cuisines, dietary_need, product_image, packaging_price, product_availibility, userId, delivery_details, stock, discount_details, _id } = args.productData;
        
       var categoryData = await Profile.findOne({ userId: userId }, 'categories').exec();
 
