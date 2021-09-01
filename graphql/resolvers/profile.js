@@ -109,11 +109,11 @@ module.exports = {
 
         let result = await upload(params).catch(console.log); 
         var kitchenTourFile_url_arr = {
-          Location: result.Location, 
+          Location: 'https://d24bvnb428s3x7.cloudfront.net/' + result.Key, 
           Key: result.Key, 
         }; 
         kitchenTourFile = Object.create(kitchenTourFile_url_arr);
-        kitchenTourFile.Location = result.Location;
+        kitchenTourFile.Location = 'https://d24bvnb428s3x7.cloudfront.net/' + result.Key;
         kitchenTourFile.Key = result.Key;  
         
         if(checkProfileOldAvtar !== null){
@@ -165,7 +165,8 @@ module.exports = {
             params.Body = fileStream;
                 // get the current time stamp.
             let timestamp = new Date().getTime();
-  
+            
+            filename = filename.replace(" ", "-");
             // get the file extension.
             let file_extension = path.extname(filename);
   

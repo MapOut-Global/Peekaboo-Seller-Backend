@@ -231,12 +231,20 @@ module.exports = buildSchema(`
 
   input ConssumeInfoInput {
     type: ConssumeType,
-    number_of_day: Int
+    number: Int
+    number_type: NumberType
   }
   
   enum ConssumeType {
     Immidiately,
-    Num Of day
+    NumOfDay
+  }
+
+  enum NumberType {
+    Days,
+    Weeks,
+    Months,
+    Years
   }
 
   input PaymentDetailInput {

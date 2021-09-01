@@ -15,7 +15,7 @@ app.use(
   "/graphql",
   bodyParser.json(),
   graphqlUploadExpress({ 
-    maxFileSize: 10000000, // 10 MB
+    maxFileSize: 512000000, // 512 MB
     maxFiles: 20,
   }),
   graphqlHttp({
