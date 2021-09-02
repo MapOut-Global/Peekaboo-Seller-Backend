@@ -297,6 +297,7 @@ module.exports = buildSchema(`
     product_availibility: ProductAvailibility
     delivery_details: DeliveryDetail
     discount_details: DiscountDetail
+    conssume_info: ConssumeInfo 
     product_image_url: S3Type
     likes: Int
     userId: ID! 
@@ -305,6 +306,12 @@ module.exports = buildSchema(`
     stock: String 
     createdAt: String
     updatedAt: String
+  }
+
+  type ConssumeInfo {
+    type: ConssumeType,
+    number: Int
+    number_type: NumberType
   }
   
   input ProductInput {
