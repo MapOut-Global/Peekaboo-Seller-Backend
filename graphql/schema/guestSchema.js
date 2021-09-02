@@ -86,6 +86,7 @@ module.exports = buildSchema(`
   type S3Type {
     Location: String
     Key: String
+    thumbnail: String
   }
 
   type Flag{

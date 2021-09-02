@@ -111,10 +111,12 @@ module.exports = {
         var kitchenTourFile_url_arr = {
           Location: 'https://d24bvnb428s3x7.cloudfront.net/' + result.Key, 
           Key: result.Key, 
+          thumbnail: 'https://d24bvnb428s3x7.cloudfront.net/thumbnails/kitchen_tours' + timestamp + "-0.jpg", 
         }; 
         kitchenTourFile = Object.create(kitchenTourFile_url_arr);
         kitchenTourFile.Location = 'https://d24bvnb428s3x7.cloudfront.net/' + result.Key;
         kitchenTourFile.Key = result.Key;  
+        kitchenTourFile.thumbnail = 'https://d24bvnb428s3x7.cloudfront.net/thumbnails/kitchen_tours/' + timestamp + "-0.jpg";  
         
         if(checkProfileOldAvtar !== null){
           if(checkProfileOldAvtar.kitchenTourFile !== null && checkProfileOldAvtar.kitchenTourFile !== undefined && checkProfileOldAvtar.kitchenTourFile.Key !== undefined){
@@ -125,6 +127,13 @@ module.exports = {
             };
             let removeObject = util.promisify(s3.deleteObject.bind(s3));
             await removeObject(deleteParams).catch(console.log); 
+
+            thumbnailKey = 'thumbnails/' + checkProfileOldAvtar.kitchenTourFile.Key;
+            const deleteThumbnailParams = {
+                Bucket:"peekaboo2", 
+                Key:thumbnailKey, 
+            }; 
+            await removeObject(deleteThumbnailParams).catch(console.log); 
           } 
         }
       }else{  
