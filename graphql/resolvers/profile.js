@@ -21,6 +21,7 @@ module.exports = {
     }
     try {
       var { flags, shop_name, aboutme, phone, payment_details, avatar, hoursOfOperation, messageForMe, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency, attachments, latitude, longitude, zipcode } = args.profile;
+      var { full_name} = args.user;
       var checkProfileOldAvtar = await Profile.findOne({userId: userId}).exec();   
 
       /************************* Upload avtar on S3 Server ********************/
@@ -198,7 +199,12 @@ module.exports = {
           };
         } 
       /************************* Upload attachments on S3 Server ********************/
- 
+      User.findOneAndUpdate(
+        { _id: userId },
+        {
+          full_name: full_name
+        }
+      );
       userData = await User.findById(userId).exec();  
       if(userData == null){
         return {  responseStatus : {status: false, message: "Invalid user id"}, userData : null, userId: userId }

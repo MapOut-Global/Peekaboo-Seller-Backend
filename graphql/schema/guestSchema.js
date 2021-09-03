@@ -573,10 +573,13 @@ module.exports = buildSchema(`
     orders(userId: String!): [Order!]
   }
 
+  input EditUserInput {
+    full_name: String
+  }
   type Mutation {
     signUp(user:UserInput): SignupType
     addCategory(name: String!, parent_id: String!, userId: String!): AddCategory
-    updateCookProfile(profile:ProfileInput): UpdateProfile
+    updateCookProfile(profile:ProfileInput, user:EditUserInput): UpdateProfile
     login(user:UserLoginInput): LoginType
     addProduct(productData:ProductInput): AddProduct
     updateCookOffer(categories:[CategoryOfferInput], userId:String): UpdatedOffer

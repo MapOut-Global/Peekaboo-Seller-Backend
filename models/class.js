@@ -39,6 +39,9 @@ const classSchema = new Schema(
     image: {
       type: Object, 
     }, 
+    tot_participents: {
+      type: Number
+    }, 
     userId: {
       type: Schema.Types.ObjectId, 
       ref: 'User', 
