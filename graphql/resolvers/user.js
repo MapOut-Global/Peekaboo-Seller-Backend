@@ -167,8 +167,7 @@ module.exports = {
       if(checkUserExist){ 
         return { responseStatus : {status: false, message: "Email already exists"} };
       }else{ 
-        let otp = Math.floor(1000 + Math.random() * 9999);
-        //let otp = 9999; 
+        let otp = (Math.floor(Math.random() * 10000) + 10000).toString().substring(1);
         await OtpVerification.findOneAndRemove(
           {
             email: email
