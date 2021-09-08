@@ -81,68 +81,68 @@ module.exports = {
 
 
       /************************* Upload avtar on S3 Server ********************/
-      if (kitchenTourFile) { 
-        let {file} = await kitchenTourFile; 
-        let { createReadStream,  filename} = file;
-        // read the data from the file.
-        let fileStream = createReadStream();
-        const params = {
-            Bucket:"peekaboo2",
-            Key:'',
-            Body:'',
-            ACL:'public-read'
-        };
-        // in case of an error, log it.
-        fileStream.on("error", (error) => console.error(error));
+        if (kitchenTourFile) { 
+          let {file} = await kitchenTourFile; 
+          let { createReadStream,  filename} = file;
+          // read the data from the file.
+          let fileStream = createReadStream();
+          const params = {
+              Bucket:"peekaboo2",
+              Key:'',
+              Body:'',
+              ACL:'public-read'
+          };
+          // in case of an error, log it.
+          fileStream.on("error", (error) => console.error(error));
 
-        // set the body of the object as data to read from the file.
-        params.Body = fileStream;
-            // get the current time stamp.
-        let timestamp = new Date().getTime();
+          // set the body of the object as data to read from the file.
+          params.Body = fileStream;
+              // get the current time stamp.
+          let timestamp = new Date().getTime();
 
-        // get the file extension.
-        let file_extension = path.extname(filename);
+          // get the file extension.
+          let file_extension = path.extname(filename);
 
-        // set the key as a combination of the folder name, timestamp, and the file extension of the object.
-        params.Key = `kitchen_tours/${timestamp}${file_extension}`;
+          // set the key as a combination of the folder name, timestamp, and the file extension of the object.
+          params.Key = `kitchen_tours/${timestamp}${file_extension}`;
 
-        let upload = util.promisify(s3.upload.bind(s3));
+          let upload = util.promisify(s3.upload.bind(s3));
 
-        let result = await upload(params).catch(console.log); 
-        var kitchenTourFile_url_arr = {
-          Location: 'https://d24bvnb428s3x7.cloudfront.net/' + result.Key, 
-          Key: result.Key, 
-          thumbnail: 'https://d24bvnb428s3x7.cloudfront.net/thumbnails/kitchen_tours' + timestamp + "-0.jpg", 
-        }; 
-        kitchenTourFile = Object.create(kitchenTourFile_url_arr);
-        kitchenTourFile.Location = 'https://d24bvnb428s3x7.cloudfront.net/' + result.Key;
-        kitchenTourFile.Key = result.Key;  
-        kitchenTourFile.thumbnail = 'https://d24bvnb428s3x7.cloudfront.net/thumbnails/kitchen_tours/' + timestamp + "-0.jpg";  
-        
-        if(checkProfileOldAvtar !== null){
-          if(checkProfileOldAvtar.kitchenTourFile !== null && checkProfileOldAvtar.kitchenTourFile !== undefined && checkProfileOldAvtar.kitchenTourFile.Key !== undefined){
-            oldKey = checkProfileOldAvtar.kitchenTourFile.Key;
-            const deleteParams = {
-                Bucket:"peekaboo2", 
-                Key:oldKey, 
-            };
-            let removeObject = util.promisify(s3.deleteObject.bind(s3));
-            await removeObject(deleteParams).catch(console.log); 
+          let result = await upload(params).catch(console.log); 
+          var kitchenTourFile_url_arr = {
+            Location: 'https://d24bvnb428s3x7.cloudfront.net/' + result.Key, 
+            Key: result.Key, 
+            thumbnail: 'https://d24bvnb428s3x7.cloudfront.net/thumbnails/kitchen_tours/' + timestamp + "-0.jpg", 
+          }; 
+          kitchenTourFile = Object.create(kitchenTourFile_url_arr);
+          kitchenTourFile.Location = 'https://d24bvnb428s3x7.cloudfront.net/' + result.Key;
+          kitchenTourFile.Key = result.Key;  
+          kitchenTourFile.thumbnail = 'https://d24bvnb428s3x7.cloudfront.net/thumbnails/kitchen_tours/' + timestamp + "-0.jpg";  
+          
+          if(checkProfileOldAvtar !== null){
+            if(checkProfileOldAvtar.kitchenTourFile !== null && checkProfileOldAvtar.kitchenTourFile !== undefined && checkProfileOldAvtar.kitchenTourFile.Key !== undefined){
+              oldKey = checkProfileOldAvtar.kitchenTourFile.Key;
+              const deleteParams = {
+                  Bucket:"peekaboo2", 
+                  Key:oldKey, 
+              };
+              let removeObject = util.promisify(s3.deleteObject.bind(s3));
+              await removeObject(deleteParams).catch(console.log); 
 
-            thumbnailKey = 'thumbnails/' + checkProfileOldAvtar.kitchenTourFile.Key;
-            const deleteThumbnailParams = {
-                Bucket:"peekaboo2", 
-                Key:thumbnailKey, 
-            }; 
-            await removeObject(deleteThumbnailParams).catch(console.log); 
-          } 
-        }
-      }else{  
-        if(checkProfileOldAvtar.kitchenTourFile !== "" ){
-          kitchenTourFile = checkProfileOldAvtar.kitchenTourFile; 
-        }
-      }  
-    /************************* Upload avtar on S3 Server ********************/
+              thumbnailKey = 'thumbnails/' + checkProfileOldAvtar.kitchenTourFile.Key;
+              const deleteThumbnailParams = {
+                  Bucket:"peekaboo2", 
+                  Key:thumbnailKey, 
+              }; 
+              await removeObject(deleteThumbnailParams).catch(console.log); 
+            } 
+          }
+        }else{  
+          if(checkProfileOldAvtar.kitchenTourFile !== "" ){
+            kitchenTourFile = checkProfileOldAvtar.kitchenTourFile; 
+          }
+        }  
+      /************************* Upload avtar on S3 Server ********************/
 
       /************************* Upload attachments on S3 Server ********************/
         if(checkProfileOldAvtar !== null){
@@ -170,7 +170,7 @@ module.exports = {
             let fileStream = createReadStream();
             // in case of an error, log it.
             fileStream.on("error", (error) => console.error(error));
-  
+
             // set the body of the object as data to read from the file.
             params.Body = fileStream;
                 // get the current time stamp.
@@ -179,14 +179,14 @@ module.exports = {
             filename = filename.replace(" ", "-");
             // get the file extension.
             let file_extension = path.extname(filename);
-  
+
             // set the key as a combination of the folder name, timestamp, and the file extension of the object.
             params.Key = `cook_attachments/${filename}`;
-  
+
             let upload = util.promisify(s3.upload.bind(s3));
-  
+
             let result = await upload(params).catch(console.log); 
-  
+
             var attachment_url_arr = {
               Location: result.Location, 
               Key: result.Key, 
@@ -199,7 +199,8 @@ module.exports = {
           };
         } 
       /************************* Upload attachments on S3 Server ********************/
-      User.findOneAndUpdate(
+      
+        User.findOneAndUpdate(
         { _id: userId },
         {
           full_name: full_name

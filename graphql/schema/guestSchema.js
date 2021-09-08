@@ -299,7 +299,7 @@ module.exports = buildSchema(`
     delivery_details: DeliveryDetail
     discount_details: DiscountDetail
     conssume_info: ConssumeInfo 
-    product_image_url: S3Type
+    product_image_url: [S3Type]
     likes: Int
     userId: ID! 
     _id: ID!
@@ -330,7 +330,7 @@ module.exports = buildSchema(`
     userId: ID! 
     status: Boolean
     stock: String
-    product_image: Upload 
+    product_image: [Upload]
     conssume_info: ConssumeInfoInput
     _id: String
   }

@@ -20,7 +20,18 @@ module.exports = {
     }
     try {
       let { name, conssume_info, storage_instructions, description, categories, sub_categories, cuisines, dietary_need, product_image, packaging_price, product_availibility, userId, delivery_details, stock, discount_details, _id } = args.productData;
-       
+      
+      if(_id !== undefined && _id !== null){
+        var checkProductData = await Product.findById(_id);  
+        if(checkProductData.product_image_url !== null && checkProductData.product_image_url !== undefined){
+          var productImageArr = checkProductData.product_image_url; 
+        }else{
+          var productImageArr = []; 
+        } 
+      }else{
+        var productImageArr = []; 
+      }
+
       var categoryData = await Profile.findOne({ userId: userId }, 'categories').exec();
 
       for(const [key, val] of Object.entries(categories)) {
@@ -148,45 +159,66 @@ module.exports = {
             dietary_need[key]['_id'] = checkSpecialityExist._id.toString();
           } 
         }
-      } 
-      var product_image_url;
-      if (product_image) { 
-        let {promise, file, resolve, reject} = await product_image; 
-        let { createReadStream,  filename} = file;
-        // read the data from the file.
-        let fileStream = createReadStream();
-        const params = {
-            Bucket:"peekaboo2",
-            Key:'',
-            Body:'',
-            ACL:'public-read'
+      }  
+      
+
+      if(product_image !== undefined && product_image.length > 0){
+        totArrayLength = parseInt(product_image.length) + parseInt(productImageArr.length);
+        j=0;
+        for(let i = productImageArr.length; i < totArrayLength; i++){ 
+          // Get that single file.
+          let fileObj = await product_image[j];   
+          let { createReadStream,  filename} = fileObj.file; 
+          const params = {
+              Bucket:"peekaboo2",
+              Key:'',
+              Body:'',
+              ACL:'public-read'
+          };
+          let fileStream = createReadStream();
+          // in case of an error, log it.
+          fileStream.on("error", (error) => console.error(error));
+
+          // set the body of the object as data to read from the file.
+          params.Body = fileStream;
+              // get the current time stamp.
+          let timestamp = new Date().getTime();
+          
+          filename = filename.replace(" ", "-");
+          // get the file extension.
+          let file_extension = path.extname(filename);
+
+          // set the key as a combination of the folder name, timestamp, and the file extension of the object.
+          params.Key = `product_images/${timestamp}${file_extension}`;
+
+          let upload = util.promisify(s3.upload.bind(s3));
+
+          let result = await upload(params).catch(console.log); 
+          if(file_extension == ".mp4"){
+            var productImageArrObj = {
+              Location: 'https://d24bvnb428s3x7.cloudfront.net/' + result.Key, 
+              Key: result.Key, 
+              thumbnail: 'https://d24bvnb428s3x7.cloudfront.net/thumbnails/product_images/' + timestamp + "-0.jpg", 
+            }; 
+            product_image_obj = Object.create(productImageArrObj);
+            product_image_obj.Location = 'https://d24bvnb428s3x7.cloudfront.net/' + result.Key;
+            product_image_obj.Key = result.Key;  
+            product_image_obj.thumbnail = 'https://d24bvnb428s3x7.cloudfront.net/thumbnails/product_images/' + timestamp + "-0.jpg";
+          }else{
+            var productImageArrObj = {
+              Location: result.Location, 
+              Key: result.Key, 
+            }; 
+            product_image_obj = Object.create(productImageArrObj);
+            product_image_obj.Location = 'https://d24bvnb428s3x7.cloudfront.net/' + result.Key;;
+            product_image_obj.Key = result.Key; 
+          }
+          
+          productImageArr[i] = product_image_obj;
+          j++;
         };
-        // in case of an error, log it.
-        fileStream.on("error", (error) => console.error(error));
-
-        // set the body of the object as data to read from the file.
-        params.Body = fileStream;
-            // get the current time stamp.
-        let timestamp = new Date().getTime();
-
-        // get the file extension.
-        let file_extension = path.extname(filename);
-
-        // set the key as a combination of the folder name, timestamp, and the file extension of the object.
-        params.Key = `product_images/${timestamp}${file_extension}`;
-
-        let upload = util.promisify(s3.upload.bind(s3));
-
-        let result = await upload(params).catch(console.log);  
-        product_image_url = result.Location;
-        var product_image_arr = {
-          Location: result.Location, 
-          Key: result.Key, 
-        }; 
-        product_image_url = Object.create(product_image_arr);
-        product_image_url.Location = result.Location;
-        product_image_url.Key = result.Key; 
-      }
+      } 
+       
       if(_id !== undefined && _id !== null){
         await Product.findOneAndUpdate(
           {_id: _id},
@@ -196,7 +228,7 @@ module.exports = {
             conssume_info: conssume_info,
             description: description,
             categories: categories,
-            product_image_url: product_image_url,
+            product_image_url: productImageArr,
             sub_categories: sub_categories,
             cuisines: cuisines,
             dietary_need: dietary_need,
@@ -219,6 +251,7 @@ module.exports = {
         return { productData: productData, responseStatus : {status: true, message: "Product updated successfully"} }  
       }else{
         let status = true;
+        product_image_url = productImageArr;
         const newProduct = new Product({
           name, storage_instructions, conssume_info, description, categories, product_image_url, sub_categories, 
           cuisines, dietary_need, packaging_price, 
