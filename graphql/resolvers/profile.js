@@ -564,6 +564,33 @@ module.exports = {
     }catch (error){
       throw error;
     }
+  },
+
+  operatingDetails: async (args, req) => {
+    let checkToken = await authorizationFunction(req); 
+    if(checkToken.client_id === undefined){
+      throw {
+        error: checkToken,
+        status: 401
+      }
+    }
+
+    try{
+      let { operating_details, userId} = args;
+      await Profile.findOneAndUpdate(
+        {userId: userId},
+        {
+          operating_details: operating_details 
+        },
+        {
+          new: true,
+          upsert: true
+        }
+      ); 
+      return { status: true, message: "Operating details updated" };
+    }catch (error){
+      throw error;
+    }
   }
 }
  

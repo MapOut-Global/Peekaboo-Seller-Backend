@@ -73,6 +73,9 @@ const profileSchema = new Schema(
     },
     shop_policy: {
       type: Object
+    },
+    operating_details: {
+      type: Object
     }
   },
   { timestamps: true }

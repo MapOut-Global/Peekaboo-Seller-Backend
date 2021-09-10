@@ -71,6 +71,7 @@ module.exports = buildSchema(`
     classes: [Class]  
     phone: String
     payment_details: CookPaymentDetail
+    operating_details: OperatingDetail
     responseStatus: ResponseStatus
   }
   
@@ -81,6 +82,23 @@ module.exports = buildSchema(`
     ifsc_code: String
     wallet_type: String
     upi_id: String
+  }
+
+  type OperatingDetail {
+    large_order: Boolean
+    customisec_order: Boolean
+    other: String
+    free_delivery: Boolean
+    paid_delivery_amt: Float
+    free_devlicery_range: Int
+    pick_up: Boolean
+    pick_up_timings: [PickUpTiming]
+    
+  }
+
+  type PickUpTiming {
+    from: String
+    to: String
   }
 
   type S3Type {
@@ -227,7 +245,24 @@ module.exports = buildSchema(`
     phone: String
     pause_status: Boolean
     pause_till: String
-    payment_details: PaymentDetailInput
+    payment_details: PaymentDetailInput 
+  }
+
+  input OperatingDetailInput {
+    large_order: Boolean
+    customisec_order: Boolean
+    other: String
+    free_delivery: Boolean
+    paid_delivery_amt: Float
+    free_devlicery_range: Int
+    pick_up: Boolean
+    pick_up_timings: [PickUpTimingInput]
+    
+  }
+
+  input PickUpTimingInput {
+    from: String
+    to: String
   }
 
   input ConssumeInfoInput {
@@ -669,6 +704,7 @@ module.exports = buildSchema(`
     submitSupportTicket(support: SupportInput): Support
     changeProductStatus(_id: String!, status: Boolean!): ResponseStatus
     shopPolicy(shop_policy: ShopPolicyInput, userId: String!): ResponseStatus
+    operatingDetails(operating_details: OperatingDetailInput, userId: String!): ResponseStatus
   }
 
   schema {
