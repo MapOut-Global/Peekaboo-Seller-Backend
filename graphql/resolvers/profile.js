@@ -20,7 +20,21 @@ module.exports = {
       }
     }
     try {
-      var { flags, shop_name, aboutme, phone, payment_details, avatar, hoursOfOperation, messageForMe, heading, availibility, address, delivery, userId, speciality, kitchenTourFile, currency, attachments, latitude, longitude, zipcode } = args.profile;
+      var { 
+        flags, 
+        shop_name, 
+        aboutme, 
+        phone,  
+        avatar,     
+        address,  
+        userId,  
+        kitchenTourFile, 
+        currency, 
+        attachments, 
+        latitude, 
+        longitude, 
+        zipcode 
+      } = args.profile;
       var { full_name} = args.user;
       var checkProfileOldAvtar = await Profile.findOne({userId: userId}).exec();   
 
@@ -209,31 +223,6 @@ module.exports = {
       userData = await User.findById(userId).exec();  
       if(userData == null){
         return {  responseStatus : {status: false, message: "Invalid user id"}, userData : null, userId: userId }
-      }
-
-      for(const [key, val] of Object.entries(speciality)) {
-        if(val._id === undefined){
-          let status = false;
-          let type = "speciality";
-          let name = val.name;
-          let checkSpecialityExist = await Speciality.findOne(
-            {
-              name: name,
-              type: "speciality"
-            }
-          ).exec();   
-          if(!checkSpecialityExist){
-            const newSpeciality = new Speciality({
-              name,
-              type,
-              status
-            });
-            await newSpeciality.save();
-            speciality[key]['_id'] = newSpeciality._doc._id.toString();
-          }else{ 
-            speciality[key]['_id'] = checkSpecialityExist._id.toString();
-          } 
-        }
       } 
 
       await Profile.findOneAndUpdate(
@@ -241,24 +230,17 @@ module.exports = {
         {
           flags: flags,
           shop_name: shop_name,
-          phone: phone,
-          payment_details: payment_details,
-          aboutme: aboutme, 
-          hoursOfOperation: hoursOfOperation, 
-          heading: heading,
-          availibility: availibility, 
-          address: address,
-          delivery: delivery,
-          userId: userId,
-          speciality: speciality,
+          phone: phone, 
+          aboutme: aboutme,  
+          address: address, 
+          userId: userId, 
           kitchenTourFile: kitchenTourFile,
           currency: currency,
           avatar_url: avatar_url,
           attachments: attachmentArr,
           latitude:latitude,
           longitude:longitude,
-          zipcode: zipcode,
-          messageForMe: messageForMe
+          zipcode: zipcode, 
         },
         {
           new: true,
@@ -333,7 +315,24 @@ module.exports = {
         responseStatus: {status: true, message: "Profile saved"}
       };
     }
-    var { flags, shop_name, phone, aboutme, payment_details, hoursOfOperation, messageForMe, heading, availibility, address, delivery, speciality, kitchenTourFile, currency, avatar_url, attachments } = cookProfile;
+    var { 
+      flags, 
+      shop_name, 
+      phone, 
+      aboutme, 
+      payment_details, 
+      hoursOfOperation, 
+      messageForMe, 
+      heading, 
+      availibility, 
+      address, 
+      delivery, 
+      speciality, 
+      kitchenTourFile, 
+      currency, 
+      avatar_url, 
+      attachments 
+    } = cookProfile;
     let productList = await Product.find({userId:new ObjectId(userId)});  
     var categoriesArr = [];
     var subCategoryArr = [];
@@ -540,7 +539,7 @@ module.exports = {
     }
   },
 
-  stopRecievingOrder: async (args, req) => {
+  shopPolicy: async (args, req) => {
     let checkToken = await authorizationFunction(req); 
     if(checkToken.client_id === undefined){
       throw {
@@ -550,7 +549,7 @@ module.exports = {
     }
 
     try{
-      let { pause_status, pause_duration, pause_reason} = args;
+      let { accept_return, min_contact_time_return, accept_cancellation, min_contact_time_cancel} = args.shop_policy;
     }catch (error){
       throw error;
     }

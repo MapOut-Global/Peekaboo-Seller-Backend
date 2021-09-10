@@ -558,6 +558,33 @@ module.exports = buildSchema(`
     userId: String!
   }
 
+  input ShopPolicyInput {
+    accept_return: Boolean
+    min_contact_time_return: ContactPeriodInput
+    accept_cancellation: Boolean
+    min_contact_time_cancel: ContactPeriodInput
+  }  
+
+  input ContactPeriodInput {
+    value: Int
+    unit: String
+  }
+
+  type ShopPolicy {
+
+    accept_return: Boolean
+    min_contact_time_return: ContactPeriod
+    accept_cancellation: Boolean
+    min_contact_time_cancel: ContactPeriod
+  }
+
+  type ContactPeriod {
+    value: Int
+    unit: String
+  }
+  
+
+
   type Query { 
     specialities(type:String!):[Speciality!]
     categories(parentIds:[CategoryFindInput]):[Category!]
@@ -596,6 +623,7 @@ module.exports = buildSchema(`
     acceptDeclineOrder(_id: String!, order_status: String!): ResponseStatus
     submitSupportTicket(support: SupportInput): Support
     changeProductStatus(_id: String!, status: Boolean!): ResponseStatus
+    shopPolicy(shop_policy: ShopPolicyInput): ResponseStatus
   }
 
   schema {

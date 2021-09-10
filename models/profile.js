@@ -70,6 +70,9 @@ const profileSchema = new Schema(
     },
     phone: {
       type: String
+    },
+    shop_policy: {
+      type: Object
     }
   },
   { timestamps: true }
