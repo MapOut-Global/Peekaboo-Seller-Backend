@@ -13,6 +13,12 @@ const productSchema = new Schema(
     categories: {
       type: Array,
     },
+    key_ingredients: {
+      type: Array
+    },
+    allergens: {
+      type: Array
+    },
     sub_categories: {
       type: Array,
     }, 
@@ -22,37 +28,25 @@ const productSchema = new Schema(
     dietary_need: {
       type: Array,
     }, 
+    mood_tags: {
+      type: Array
+    },
     packaging_price: {
       type: Object,
     }, 
     product_availibility: {
-      type: Object, 
+      type: Array, 
     }, 
     userId: {
       type: Schema.Types.ObjectId, 
       ref: 'User', 
-    },
-    delivery_details: {
-      type: Object,
-    }, 
-    stock: {
-      type: String, 
-    },
-    discount_details: {
-      type: Object, 
-    },
+    },   
     product_image_url: {
       type: Array,
     },
     likes: {
       type: Number
-    },
-    conssume_info: {
-      type: Object
-    },
-    storage_instructions: {
-      type: Array
-    },
+    }, 
     status: {
       type: Boolean
     }

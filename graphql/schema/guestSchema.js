@@ -293,18 +293,16 @@ module.exports = buildSchema(`
     sub_categories: [Category] 
     cuisines: [Speciality] 
     dietary_need: [Speciality] 
-    storage_instructions: [Speciality] 
+    key_ingredients: [Speciality] 
     packaging_price: Packaging
-    product_availibility: ProductAvailibility
-    delivery_details: DeliveryDetail
-    discount_details: DiscountDetail
-    conssume_info: ConssumeInfo 
+    product_availibility: [ProductAvailibility]
+    allergens: [Speciality] 
+    mood_tags: [Speciality] 
     product_image_url: [S3Type]
     likes: Int
     userId: ID! 
     _id: ID!
-    status: Boolean
-    stock: String 
+    status: Boolean 
     createdAt: String
     updatedAt: String
   }
@@ -322,16 +320,14 @@ module.exports = buildSchema(`
     sub_categories: [CategoryInput] 
     cuisines: [SpecialityInput] 
     dietary_need: [SpecialityInput] 
-    storage_instructions: [SpecialityInput] 
+    key_ingredients: [SpecialityInput] 
     packaging_price: PackagingInput
-    product_availibility: ProductAvailibilityInput
-    delivery_details: DeliveryDetailInput
-    discount_details: DiscountDetailInput 
+    product_availibility: [ProductAvailibilityInput]
+    allergens: [SpecialityInput] 
+    mood_tags: [SpecialityInput] 
     userId: ID! 
-    status: Boolean
-    stock: String
-    product_image: [Upload]
-    conssume_info: ConssumeInfoInput
+    status: Boolean 
+    product_image: [Upload] 
     _id: String
   }
 
@@ -366,36 +362,85 @@ module.exports = buildSchema(`
   }
 
   input PackagingInput { 
-    packagin_type: String
-    weight: String
+    packaging_type: String 
+    packaging_size: Int
     package_price: Float
   }
 
   type Packaging { 
-    packagin_type: String
-    weight: String
+    packaging_type: String 
+    packaging_size: Int
     package_price: Float
   }
 
 
   input ProductAvailibilityInput { 
-    made_upon_order: Boolean
-    date: String
-    asap: Boolean
-    asap_prepration_time: String
-    preorder: Boolean
-    preorder_prepration_time: String
+    avalibility_type: ProuductAvailibility
+    from_date: String
+    to_date: String
+    from_time: String
+    to_time: String
+    order_start_date: String
+    frequency: ItemFrequencyInput
+    notice_period_value: Int
+    notice_period_type: NoticePeriodType
+    min_requirment: Int
+    stock: Int
   } 
 
-  type ProductAvailibility { 
-    made_upon_order: Boolean
-    date: String
-    asap: Boolean
-    asap_prepration_time: String
-    preorder: Boolean
-    preorder_prepration_time: String
+  input ItemFrequencyInput {
+    saturday: Boolean
+    sunday: Boolean
+    weekday: Boolean
+    weekend: Boolean
+    custom: Boolean
+    frequency_type: FrequencyType
+    ferquency_value: String
   }
 
+  type ProductAvailibility { 
+    avalibility_type: ProuductAvailibility
+    from_date: String
+    to_date: String
+    from_time: String
+    to_time: String
+    order_start_date: String
+    frequency: ItemFrequency
+    notice_period_value: Int
+    notice_period_type: NoticePeriodType
+    min_requirment: Int
+    stock: Int
+  }
+
+  type ItemFrequency {
+    saturday: Boolean
+    sunday: Boolean
+    weekday: Boolean
+    weekend: Boolean
+    custom: Boolean
+    frequency_type: FrequencyType
+    ferquency_value: String
+  }
+
+  enum ProuductAvailibility {
+    OneOffBasis
+    OnRegularBasis
+    PreOrder
+    MadeUponOrder
+  }
+
+  enum FrequencyType {
+    Day
+    Week
+    Month
+    Year
+  }
+
+  enum NoticePeriodType {
+    Hours
+    Days
+    Weeks
+  }
 
   input DeliveryDetailInput { 
     delivery: Boolean 

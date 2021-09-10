@@ -19,8 +19,22 @@ module.exports = {
       }
     }
     try {
-      let { name, conssume_info, storage_instructions, description, categories, sub_categories, cuisines, dietary_need, product_image, packaging_price, product_availibility, userId, delivery_details, stock, discount_details, _id } = args.productData;
-      
+      let { 
+        name,  
+        description, 
+        categories, 
+        sub_categories, 
+        cuisines, 
+        dietary_need, 
+        key_ingredients,
+        allergens,
+        mood_tags,
+        product_image, 
+        packaging_price, 
+        product_availibility, 
+        userId,    
+        _id 
+      } = args.productData; 
       if(_id !== undefined && _id !== null){
         var checkProductData = await Product.findById(_id);  
         if(checkProductData.product_image_url !== null && checkProductData.product_image_url !== undefined){
@@ -111,31 +125,6 @@ module.exports = {
         }
       } 
 
-      for(const [key, val] of Object.entries(storage_instructions)) {
-        if(val._id === undefined){
-          let status = false;
-          let type = "cuisine";
-          let name = val.name;
-          let checkSpecialityExist = await Speciality.findOne(
-            {
-              name: name,
-              type: "storage_instruction"
-            }
-          ).exec();   
-          if(!checkSpecialityExist){
-            const newSpeciality = new Speciality({
-              name,
-              type,
-              status
-            });
-            await newSpeciality.save(); 
-            storage_instructions[key]['_id'] = newSpeciality._doc._id.toString();
-          }else{ 
-            storage_instructions[key]['_id'] = checkSpecialityExist._id.toString();
-          } 
-        }
-      } 
-
       for(const [key, val] of Object.entries(dietary_need)) {
         if(val._id === undefined){
           let status = false;
@@ -160,6 +149,81 @@ module.exports = {
           } 
         }
       }  
+
+      for(const [key, val] of Object.entries(key_ingredients)) {
+        if(val._id === undefined){
+          let status = false;
+          let type = "key_ingredients";
+          let name = val.name;
+          let checkSpecialityExist = await Speciality.findOne(
+            {
+              name: name,
+              type: "key_ingredients"
+            }
+          ).exec();   
+          if(!checkSpecialityExist){
+            const newSpeciality = new Speciality({
+              name,
+              type,
+              status
+            });
+            await newSpeciality.save(); 
+            key_ingredients[key]['_id'] = newSpeciality._doc._id.toString();
+          }else{ 
+            key_ingredients[key]['_id'] = checkSpecialityExist._id.toString();
+          } 
+        }
+      }  
+
+      for(const [key, val] of Object.entries(allergens)) {
+        if(val._id === undefined){
+          let status = false;
+          let type = "allergens";
+          let name = val.name;
+          let checkSpecialityExist = await Speciality.findOne(
+            {
+              name: name,
+              type: "allergens"
+            }
+          ).exec();   
+          if(!checkSpecialityExist){
+            const newSpeciality = new Speciality({
+              name,
+              type,
+              status
+            });
+            await newSpeciality.save(); 
+            allergens[key]['_id'] = newSpeciality._doc._id.toString();
+          }else{ 
+            allergens[key]['_id'] = checkSpecialityExist._id.toString();
+          } 
+        }
+      }  
+
+      for(const [key, val] of Object.entries(mood_tags)) {
+        if(val._id === undefined){
+          let status = false;
+          let type = "mood_tags";
+          let name = val.name;
+          let checkSpecialityExist = await Speciality.findOne(
+            {
+              name: name,
+              type: "mood_tags"
+            }
+          ).exec();   
+          if(!checkSpecialityExist){
+            const newSpeciality = new Speciality({
+              name,
+              type,
+              status
+            });
+            await newSpeciality.save(); 
+            mood_tags[key]['_id'] = newSpeciality._doc._id.toString();
+          }else{ 
+            mood_tags[key]['_id'] = checkSpecialityExist._id.toString();
+          } 
+        }
+      } 
       
 
       if(product_image !== undefined && product_image.length > 0){
@@ -224,8 +288,8 @@ module.exports = {
           {_id: _id},
           {
             name: name,
-            storage_instructions: storage_instructions,
-            conssume_info: conssume_info,
+            mood_tags: mood_tags,
+            allergens: allergens,
             description: description,
             categories: categories,
             product_image_url: productImageArr,
@@ -234,9 +298,7 @@ module.exports = {
             dietary_need: dietary_need,
             packaging_price: packaging_price,
             product_availibility: product_availibility,
-            delivery_details: delivery_details,
-            stock: stock,
-            discount_details: discount_details,
+            key_ingredients: key_ingredients, 
           },
           {
             new: true,
@@ -253,9 +315,9 @@ module.exports = {
         let status = true;
         product_image_url = productImageArr;
         const newProduct = new Product({
-          name, storage_instructions, conssume_info, description, categories, product_image_url, sub_categories, 
+          name, mood_tags, allergens, description, categories, product_image_url, sub_categories, 
           cuisines, dietary_need, packaging_price, 
-          product_availibility, userId, delivery_details, stock, discount_details, status
+          product_availibility, userId, key_ingredients, status
         });
         let productData = await newProduct.save(); 
         return { productData: productData._doc, responseStatus : {status: true, message: "Product added successfully"} }  
