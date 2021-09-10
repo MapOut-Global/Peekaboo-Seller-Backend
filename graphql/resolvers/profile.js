@@ -549,7 +549,18 @@ module.exports = {
     }
 
     try{
-      let { accept_return, min_contact_time_return, accept_cancellation, min_contact_time_cancel} = args.shop_policy;
+      let { shop_policy, userId} = args;
+      await Profile.findOneAndUpdate(
+        {userId: userId},
+        {
+          shop_policy: shop_policy 
+        },
+        {
+          new: true,
+          upsert: true
+        }
+      ); 
+      return { status: true, message: "Shop Policy updated" };
     }catch (error){
       throw error;
     }

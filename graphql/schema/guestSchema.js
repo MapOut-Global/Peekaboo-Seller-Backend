@@ -562,7 +562,7 @@ module.exports = buildSchema(`
     accept_return: Boolean
     min_contact_time_return: ContactPeriodInput
     accept_cancellation: Boolean
-    min_contact_time_cancel: ContactPeriodInput
+    min_contact_time_cancel: ContactPeriodInput 
   }  
 
   input ContactPeriodInput {
@@ -623,7 +623,7 @@ module.exports = buildSchema(`
     acceptDeclineOrder(_id: String!, order_status: String!): ResponseStatus
     submitSupportTicket(support: SupportInput): Support
     changeProductStatus(_id: String!, status: Boolean!): ResponseStatus
-    shopPolicy(shop_policy: ShopPolicyInput): ResponseStatus
+    shopPolicy(shop_policy: ShopPolicyInput, userId: String!): ResponseStatus
   }
 
   schema {
