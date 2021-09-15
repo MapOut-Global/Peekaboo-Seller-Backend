@@ -107,6 +107,13 @@ module.exports = buildSchema(`
     thumbnail: String
   }
 
+  type ProductImage {
+    Location: String
+    Key: String
+    thumbnail: String
+    order: Int
+  }
+
   type Flag{
     termAccepted: Boolean
     active: Boolean
@@ -333,7 +340,7 @@ module.exports = buildSchema(`
     product_availibility: [ProductAvailibility]
     allergens: [Speciality] 
     mood_tags: [Speciality] 
-    product_image_url: [S3Type]
+    product_image_url: [ProductImage]
     likes: Int
     userId: ID! 
     _id: ID!
@@ -363,7 +370,15 @@ module.exports = buildSchema(`
     userId: ID! 
     status: Boolean 
     product_image: [Upload] 
+    old_product_images: [OldProductImageInput]
     _id: String
+  }
+
+  input OldProductImageInput {
+    Location: String
+    Key: String
+    order: Int
+    thumbnail: String
   }
 
   input CategoryInput {
@@ -692,6 +707,7 @@ module.exports = buildSchema(`
     updateCookOffer(categories:[CategoryOfferInput], userId:String): UpdatedOffer
     socialLogin(full_name:String, email:String, login_type: String): Profile
     removeAttachment(userId: String!, Key: String!): ResponseStatus
+    removeMedia(_id: String!, Key: String!): ResponseStatus
     removeCategory(userId: String!, categoryId: String!): ResponseStatus
     deleteProduct(userId: String!, productId: String!): ResponseStatus
     uploadFile(fileUpload: Upload): ResponseStatus

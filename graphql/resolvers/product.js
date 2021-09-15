@@ -32,13 +32,14 @@ module.exports = {
         product_image, 
         packaging_price, 
         product_availibility, 
+        old_product_images,
         userId,    
         _id 
       } = args.productData; 
       if(_id !== undefined && _id !== null){
         var checkProductData = await Product.findById(_id);  
-        if(checkProductData.product_image_url !== null && checkProductData.product_image_url !== undefined){
-          var productImageArr = checkProductData.product_image_url; 
+        if(old_product_images !== null && old_product_images!== undefined){
+          var productImageArr = old_product_images; 
         }else{
           var productImageArr = []; 
         } 
@@ -226,6 +227,7 @@ module.exports = {
       } 
       
 
+
       if(product_image !== undefined && product_image.length > 0){
         totArrayLength = parseInt(product_image.length) + parseInt(productImageArr.length);
         j=0;
@@ -258,24 +260,29 @@ module.exports = {
           let upload = util.promisify(s3.upload.bind(s3));
 
           let result = await upload(params).catch(console.log); 
+          imageOrder = parseInt(i)+1
           if(file_extension == ".mp4"){
             var productImageArrObj = {
               Location: 'https://d24bvnb428s3x7.cloudfront.net/' + result.Key, 
               Key: result.Key, 
+              order: imageOrder, 
               thumbnail: 'https://d24bvnb428s3x7.cloudfront.net/thumbnails/product_images/' + timestamp + "-0.jpg", 
             }; 
             product_image_obj = Object.create(productImageArrObj);
             product_image_obj.Location = 'https://d24bvnb428s3x7.cloudfront.net/' + result.Key;
             product_image_obj.Key = result.Key;  
+            product_image_obj.order = imageOrder;  
             product_image_obj.thumbnail = 'https://d24bvnb428s3x7.cloudfront.net/thumbnails/product_images/' + timestamp + "-0.jpg";
           }else{
             var productImageArrObj = {
               Location: result.Location, 
               Key: result.Key, 
+              order: imageOrder, 
             }; 
             product_image_obj = Object.create(productImageArrObj);
             product_image_obj.Location = 'https://d24bvnb428s3x7.cloudfront.net/' + result.Key;;
             product_image_obj.Key = result.Key; 
+            product_image_obj.order = imageOrder;  
           }
           
           productImageArr[i] = product_image_obj;
@@ -417,5 +424,39 @@ module.exports = {
     } catch (error) {
       throw error
     }
-  }
+  },
+
+  removeMedia: async (args, req) => {
+    let checkToken = await authorizationFunction(req); 
+    if(checkToken.client_id === undefined){
+      throw {
+        error: checkToken,
+        status: 401
+      }
+    }
+    let { _id, Key } = args;
+    var mediaData = await Product.findById(_id); 
+    for(const [key, val] of Object.entries(mediaData.product_image_url)) {
+      if(val.Key == Key){
+        mediaData.product_image_url.splice(key, 1);
+        const deleteParams = {
+          Bucket:"peekaboo2", 
+          Key:Key, 
+        };
+        let removeObject = util.promisify(s3.deleteObject.bind(s3));
+        await removeObject(deleteParams).catch(console.log); 
+      }
+    }
+    await Product.findOneAndUpdate(
+      {_id: _id},
+      {
+        product_image_url: mediaData.product_image_url
+      },
+      {
+        new: true,
+        upsert: true
+      }
+    ); 
+    return { status: true, message: "Media removed" };
+  },
 }
