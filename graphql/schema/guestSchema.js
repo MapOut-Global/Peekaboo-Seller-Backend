@@ -425,7 +425,7 @@ module.exports = buildSchema(`
 
 
   input ProductAvailibilityInput { 
-    avalibility_type: ProuductAvailibility
+    avalibility_type: ProuductAvailibilityType
     from_date: String
     to_date: String
     from_time: String
@@ -449,15 +449,19 @@ module.exports = buildSchema(`
   }
 
   type ProductAvailibility { 
-    avalibility_type: ProuductAvailibility
+    avalibility_type: ProuductAvailibilityType
     from_date: String
     to_date: String
     from_time: String
     to_time: String
     order_start_date: String
-    frequency: ItemFrequency
+    frequency: FrequencyType
+    ferquency_value: String
+    recurring_end_type: RecurringOrderEndType
+    recurring_end_value: String
     notice_period_value: Int
-    notice_period_type: NoticePeriodType
+    notice_period_type: NoticePeriodType 
+    pre_order: Boolean
     min_requirment: Int
     stock: Int
   }
@@ -469,10 +473,15 @@ module.exports = buildSchema(`
     weekend: Boolean
     custom: Boolean
     frequency_type: FrequencyType
-    ferquency_value: String
   }
 
-  enum ProuductAvailibility {
+  enum RecurringOrderEndType {
+    Never
+    Date
+    Occurrence
+  }
+
+  enum ProuductAvailibilityType {
     OneOffBasis
     OnRegularBasis
     PreOrder
