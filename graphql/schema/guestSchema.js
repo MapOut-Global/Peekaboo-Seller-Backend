@@ -70,6 +70,7 @@ module.exports = buildSchema(`
     attachments: [S3Type]
     classes: [Class]  
     phone: String
+    on_boarding: Boolean
     payment_details: CookPaymentDetail
     operating_details: OperatingDetail
     responseStatus: ResponseStatus

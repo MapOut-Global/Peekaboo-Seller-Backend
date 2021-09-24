@@ -76,6 +76,9 @@ const profileSchema = new Schema(
     },
     operating_details: {
       type: Object
+    },
+    on_boarding: {
+      type: Boolean
     }
   },
   { timestamps: true }

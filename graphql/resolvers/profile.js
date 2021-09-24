@@ -331,6 +331,7 @@ module.exports = {
       kitchenTourFile, 
       currency, 
       avatar_url, 
+      on_boarding, 
       attachments 
     } = cookProfile;
     let productList = await Product.find({userId:new ObjectId(userId)});  
@@ -398,6 +399,7 @@ module.exports = {
       classes: classes,
       payment_details: payment_details,
       phone: phone,
+      on_boarding: on_boarding,
       responseStatus: {status: true, message: "Profile saved"}};
   },
 
@@ -550,10 +552,12 @@ module.exports = {
 
     try{
       let { shop_policy, userId} = args;
+      on_boarding = true;
       await Profile.findOneAndUpdate(
         {userId: userId},
         {
-          shop_policy: shop_policy 
+          shop_policy: shop_policy,
+          on_boarding: on_boarding
         },
         {
           new: true,
