@@ -332,6 +332,9 @@ module.exports = {
       currency, 
       avatar_url, 
       on_boarding, 
+      operating_details, 
+      shop_policy, 
+      on_boarding, 
       attachments 
     } = cookProfile;
     let productList = await Product.find({userId:new ObjectId(userId)});  
@@ -400,6 +403,8 @@ module.exports = {
       payment_details: payment_details,
       phone: phone,
       on_boarding: on_boarding,
+      operating_details: operating_details,
+      shop_policy: shop_policy,
       responseStatus: {status: true, message: "Profile saved"}};
   },
 
