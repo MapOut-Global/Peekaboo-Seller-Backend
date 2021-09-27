@@ -142,8 +142,8 @@ module.exports = {
           user.role_id = 2;
         }
      
-        if(cookProfile.on_boarding === undefined || cookProfile.on_boarding === null){
-          cookProfile.on_boarding = false;
+        if(checkCookProfile.on_boarding === undefined || checkCookProfile.on_boarding === null){
+          checkCookProfile.on_boarding = false;
         }
         return { 
           userData: user, 
