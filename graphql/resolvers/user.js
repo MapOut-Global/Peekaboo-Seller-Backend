@@ -372,6 +372,39 @@ module.exports = {
     } catch (error) {
       throw error
     } 
+  },
+
+  switchRole: async (args, req) => {
+    let checkToken = await authorizationFunction(req); 
+    if(checkToken.client_id === undefined){
+      throw {
+        error: checkToken,
+        status: 401
+      }
+    }
+    try {
+      let { userId, roleId } = args;
+      await User.findOneAndUpdate( {_id: userId}, {role_id: roleId});
+      let user = await User.findById(userId).exec();   
+      var checkCookProfile = await Profile.findOne({userId: user._id}).exec();  
+      if(user.role_id === undefined || user.role_id === null){
+        user.role_id = 2;
+      }
+    
+      if(checkCookProfile.on_boarding === undefined || checkCookProfile.on_boarding === null){
+        checkCookProfile.on_boarding = false;
+      }
+      return { 
+        userData: user, 
+        cookProfile: checkCookProfile, 
+        responseStatus : {
+          status: true, 
+          message: "Role changed successfully"
+        } 
+      }   
+    }catch (error) {
+       
+    }
   }
 }
 

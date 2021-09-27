@@ -713,6 +713,7 @@ module.exports = buildSchema(`
     posts(userId:String):[Post!]
     classes(userId:String):[Class!]
     orders(userId: String!): [Order!]
+    switchRole(userId: String, roleId: Int): ProfileType
   }
 
   type Mutation {
