@@ -15,7 +15,10 @@ const userSchema = new Schema(
     }, 
     login_type: {
       type: String
-    } 
+    } ,
+    role_id: {
+      type: Number
+    }
   },
   { timestamps: true }
 )
