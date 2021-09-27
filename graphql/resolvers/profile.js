@@ -217,7 +217,8 @@ module.exports = {
         User.findOneAndUpdate(
         { _id: userId },
         {
-          full_name: full_name
+          full_name: full_name,
+          role_id: 2
         }
       );
       userData = await User.findById(userId).exec();  
