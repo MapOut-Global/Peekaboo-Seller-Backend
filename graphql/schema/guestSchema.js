@@ -682,8 +682,7 @@ module.exports = buildSchema(`
     unit: String
   }
 
-  type ShopPolicy {
-
+  type ShopPolicy { 
     accept_return: Boolean
     min_contact_time_return: ContactPeriod
     accept_cancellation: Boolean
@@ -697,6 +696,11 @@ module.exports = buildSchema(`
   
   input EditUserInput {
     full_name: String
+  }
+
+  type RemoveAttachment{
+    Key: String
+    responseStatus: ResponseStatus
   }
 
 
@@ -724,7 +728,7 @@ module.exports = buildSchema(`
     addProduct(productData:ProductInput): AddProduct
     updateCookOffer(categories:[CategoryOfferInput], userId:String): UpdatedOffer
     socialLogin(full_name:String, email:String, login_type: String): LoginType
-    removeAttachment(userId: String!, Key: String!): ResponseStatus
+    removeAttachment(userId: String!, Key: String!): RemoveAttachment
     removeMedia(_id: String!, Key: String!): ResponseStatus
     removeCategory(userId: String!, categoryId: String!): ResponseStatus
     deleteProduct(userId: String!, productId: String!): ResponseStatus

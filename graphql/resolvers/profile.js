@@ -404,7 +404,7 @@ module.exports = {
         upsert: true
       }
     ); 
-    return { status: true, message: "Attachment removed" };
+    return { responseStatus: {status: true, message: "Attachment removed"}, Key:Key };
   },
 
   updateUserCategoryFlag: async (args, req) =>  {
