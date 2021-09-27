@@ -314,29 +314,7 @@ module.exports = {
         userId:userId,  
         responseStatus: {status: true, message: "Profile saved"}
       };
-    }
-    var { 
-      flags, 
-      shop_name, 
-      phone, 
-      aboutme, 
-      payment_details, 
-      hoursOfOperation, 
-      messageForMe, 
-      heading, 
-      availibility, 
-      address, 
-      delivery, 
-      speciality, 
-      kitchenTourFile, 
-      currency, 
-      avatar_url, 
-      on_boarding, 
-      operating_details, 
-      shop_policy, 
-      on_boarding, 
-      attachments 
-    } = cookProfile;
+    } 
     let productList = await Product.find({userId:new ObjectId(userId)});  
     var categoriesArr = [];
     var subCategoryArr = [];
@@ -381,6 +359,13 @@ module.exports = {
         }
       }) 
     })  
+    if(user.role_id === undefined || user.role_id === null){
+      user.role_id = 2;
+    }
+     
+    if(cookProfile.on_boarding === undefined || cookProfile.on_boarding === null){
+      cookProfile.on_boarding = false;
+    }
     return {  
       userData: user,
       cookProfile: cookProfile, 

@@ -138,6 +138,13 @@ module.exports = {
         var accessToken = result.getAccessToken().getJwtToken(); 
         var refreshToken = result.getRefreshToken().getToken();  
         var checkCookProfile = await Profile.findOne({userId: user._id}).exec();  
+        if(user.role_id === undefined || user.role_id === null){
+          user.role_id = 2;
+        }
+     
+        if(cookProfile.on_boarding === undefined || cookProfile.on_boarding === null){
+          cookProfile.on_boarding = false;
+        }
         return { 
           userData: user, 
           cookProfile: checkCookProfile,
