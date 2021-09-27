@@ -23,6 +23,12 @@ module.exports = buildSchema(`
     responseStatus: ResponseStatus
   }
 
+  type ProfileType {
+    userData: User
+    cookProfile: Profile 
+    responseStatus: ResponseStatus
+  }
+
   type UpdateProfile {
     userData: User
     cookProfile: Profile 
@@ -73,8 +79,7 @@ module.exports = buildSchema(`
     on_boarding: Boolean 
     shop_policy: ShopPolicy
     payment_details: CookPaymentDetail
-    operating_details: OperatingDetail
-    responseStatus: ResponseStatus
+    operating_details: OperatingDetail 
   }
   
   type CookPaymentDetail {
@@ -689,6 +694,9 @@ module.exports = buildSchema(`
     unit: String
   }
   
+  input EditUserInput {
+    full_name: String
+  }
 
 
   type Query { 
@@ -700,15 +708,12 @@ module.exports = buildSchema(`
     forgetPassword(email: String): ForgetPassword
     resetPassword(email: String!, verificationCode: String!, newPassword: String!): ResetPassword
     products(categoryId:String, userId:String!, subcategoryId:String): [Product]
-    userProfile(userId:String!): Profile
+    userProfile(userId:String!): ProfileType
     posts(userId:String):[Post!]
     classes(userId:String):[Class!]
     orders(userId: String!): [Order!]
   }
 
-  input EditUserInput {
-    full_name: String
-  }
   type Mutation {
     signUp(user:UserInput): SignupType
     addCategory(name: String!, parent_id: String!, userId: String!): AddCategory
@@ -716,7 +721,7 @@ module.exports = buildSchema(`
     login(user:UserLoginInput): LoginType
     addProduct(productData:ProductInput): AddProduct
     updateCookOffer(categories:[CategoryOfferInput], userId:String): UpdatedOffer
-    socialLogin(full_name:String, email:String, login_type: String): Profile
+    socialLogin(full_name:String, email:String, login_type: String): LoginType
     removeAttachment(userId: String!, Key: String!): ResponseStatus
     removeMedia(_id: String!, Key: String!): ResponseStatus
     removeCategory(userId: String!, categoryId: String!): ResponseStatus
