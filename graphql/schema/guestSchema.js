@@ -11,6 +11,7 @@ module.exports = buildSchema(`
     phone: String
     login_type: String
     createdAt: String
+    role_id: Int
     updatedAt: String
     responseStatus: ResponseStatus
   } 
