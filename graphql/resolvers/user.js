@@ -7,6 +7,7 @@ const path = require('path');
 const util = require('util') ;
 const s3 =  require('../s3FileUploader');  
 const nodemailer = require("nodemailer")  
+var ObjectId = require('mongoose').Types.ObjectId; 
 const AmazonCognitoIdentity = require('amazon-cognito-identity-js'); 
 
 const CognitoUserPool = AmazonCognitoIdentity.CognitoUserPool;
@@ -384,9 +385,9 @@ module.exports = {
     }
     try {
       let { userId, roleId } = args;
-      await User.findOneAndUpdate( {_id: userId}, {role_id: roleId});
+      await User.findOneAndUpdate( {_id: ObjectId(userId)}, {role_id: roleId});
       let user = await User.findById(userId).exec();   
- 
+      console.log(user);
       var checkCookProfile = await Profile.findOne({userId: userId}).exec();  
       if(user.role_id === undefined || user.role_id === null){
         user.role_id = 2;

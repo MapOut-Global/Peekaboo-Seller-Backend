@@ -456,7 +456,7 @@ module.exports = {
         new: true,
         upsert: true
       }
-    ); 
-    return { status: true, message: "Media removed" };
+    );  
+    return { responseStatus: {status: true, message: "Media removed"}, Key:Key };
   },
 }

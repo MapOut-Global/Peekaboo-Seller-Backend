@@ -729,7 +729,7 @@ module.exports = buildSchema(`
     updateCookOffer(categories:[CategoryOfferInput], userId:String): UpdatedOffer
     socialLogin(full_name:String, email:String, login_type: String): LoginType
     removeAttachment(userId: String!, Key: String!): RemoveAttachment
-    removeMedia(_id: String!, Key: String!): ResponseStatus
+    removeMedia(_id: String!, Key: String!): RemoveAttachment
     removeCategory(userId: String!, categoryId: String!): ResponseStatus
     deleteProduct(userId: String!, productId: String!): ResponseStatus
     uploadFile(fileUpload: Upload): ResponseStatus
