@@ -253,14 +253,18 @@ module.exports = {
           filename = filename.replace(" ", "-");
           // get the file extension.
           let file_extension = path.extname(filename);
-
+          imageOrder = 1;
+          old_product_images.map( imageArr => {
+            if(imageArr.Key == filename){
+              imageOrder = imageArr.order; 
+            }
+          })
           // set the key as a combination of the folder name, timestamp, and the file extension of the object.
           params.Key = `product_images/${timestamp}${file_extension}`;
 
           let upload = util.promisify(s3.upload.bind(s3));
 
-          let result = await upload(params).catch(console.log); 
-          imageOrder = parseInt(i)+1
+          let result = await upload(params).catch(console.log);  
           if(file_extension == ".mp4"){
             var productImageArrObj = {
               Location: 'https://d24bvnb428s3x7.cloudfront.net/' + result.Key, 

@@ -13,7 +13,7 @@ const profileSchema = new Schema(
     aboutme: {
       type: String,
     },
-    heading: {
+    about_shop: {
       type: String,
     },
     hoursOfOperation: {
@@ -40,19 +40,7 @@ const profileSchema = new Schema(
     }, 
     kitchenTourFile: {
       type: Object, 
-    },
-    messageForMe: {
-      type: String, 
-    },
-    currency: {
-      type: String, 
-    },
-    latitude: {
-      type: String, 
-    },
-    longitude: {
-      type: String, 
-    },
+    },   
     zipcode: {
       type: String, 
     },

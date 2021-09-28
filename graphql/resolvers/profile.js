@@ -24,18 +24,16 @@ module.exports = {
         flags, 
         shop_name, 
         aboutme, 
+        about_shop,
         phone,  
         avatar,     
         address,  
         userId,  
-        kitchenTourFile, 
-        currency, 
-        attachments, 
-        latitude, 
-        longitude, 
+        kitchenTourFile,  
+        attachments,   
         zipcode 
       } = args.profile;
-      var { full_name} = args.user;
+      var { full_name } = args.user;
       var checkProfileOldAvtar = await Profile.findOne({userId: userId}).exec();   
 
       /************************* Upload avtar on S3 Server ********************/
@@ -236,11 +234,9 @@ module.exports = {
           address: address, 
           userId: userId, 
           kitchenTourFile: kitchenTourFile,
-          currency: currency,
+          about_shop: about_shop,
           avatar_url: avatar_url,
-          attachments: attachmentArr,
-          latitude:latitude,
-          longitude:longitude,
+          attachments: attachmentArr, 
           zipcode: zipcode, 
         },
         {

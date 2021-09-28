@@ -61,16 +61,13 @@ module.exports = buildSchema(`
     shop_name: String
     aboutme: String 
     hoursOfOperation: [HoursOfOperation] 
-    heading: String
-    messageForMe: String
-    availibility: Availibility
+    about_shop: String  
     address: Address
     delivery: Delivery
     userId: ID!
     speciality: [Speciality]
     kitchenTourFile: S3Type
-    categories: [UserCategory]
-    currency: String
+    categories: [UserCategory] 
     createdAt: String!
     updatedAt: String!
     avatar_url: S3Type
@@ -247,19 +244,17 @@ module.exports = buildSchema(`
     aboutme: String 
     shop_name: String
     hoursOfOperation: [HoursOfOperationInput] 
-    heading: String
-    messageForMe: String
-    availibility: AvailibilityInput
+    about_shop: String  
     address: AddressInput
     delivery: DeliveryInput
     userId: ID!
     speciality: [SpecialityInput]
-    kitchenTourFile: Upload
-    currency: String
+    kitchenTourFile: Upload 
     attachments: [Upload]
     phone: String
     pause_status: Boolean
     pause_till: String
+    zip_code: String
     payment_details: PaymentDetailInput 
   }
 
@@ -379,6 +374,7 @@ module.exports = buildSchema(`
     status: Boolean 
     product_image: [Upload] 
     old_product_images: [OldProductImageInput]
+    variation_details: VariationInput
     _id: String
   }
 
@@ -420,13 +416,13 @@ module.exports = buildSchema(`
   }
 
   input PackagingInput { 
-    packaging_type: String 
+    number_of_pax: String 
     packaging_size: Int
     package_price: Float
   }
 
   type Packaging { 
-    packaging_type: String 
+    number_of_pax: String 
     packaging_size: Int
     package_price: Float
   }
@@ -454,6 +450,16 @@ module.exports = buildSchema(`
     custom: Boolean
     frequency_type: FrequencyType
     ferquency_value: String
+  }
+
+  input VariationInput {
+     variation_flag: Boolean
+     variation_detail: [VariationDetailInput]
+  } 
+
+  input VariationDetailInput {
+    option_name: String
+    price: Float
   }
 
   type ProductAvailibility { 
