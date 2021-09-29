@@ -313,10 +313,12 @@ module.exports = {
         if(userData.role_id === undefined || userData.role_id === null){
           userData.role_id = 3;
         }
-     
-        if(checkCookProfile.on_boarding === undefined || checkCookProfile.on_boarding === null){
-          checkCookProfile.on_boarding = false;
-        } 
+        if(checkCookProfile !== null){
+          if(checkCookProfile.on_boarding === undefined || checkCookProfile.on_boarding === null){
+            checkCookProfile.on_boarding = false;
+          }
+        }
+         
         return { 
           userData: userData, 
           cookProfile: checkCookProfile, 
