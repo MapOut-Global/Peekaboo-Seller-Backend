@@ -225,8 +225,7 @@ module.exports = {
           } 
         }
       } 
-      
-
+       
 
       if(product_image !== undefined && product_image.length > 0){
         totArrayLength = parseInt(product_image.length) + parseInt(productImageArr.length);

@@ -141,10 +141,12 @@ module.exports = {
         if(user.role_id === undefined || user.role_id === null){
           user.role_id = 2;
         }
-     
-        if(checkCookProfile.on_boarding === undefined || checkCookProfile.on_boarding === null){
-          checkCookProfile.on_boarding = false;
+        if(checkCookProfile != null){
+          if(checkCookProfile.on_boarding === undefined || checkCookProfile.on_boarding === null){
+            checkCookProfile.on_boarding = false;
+          }
         }
+        
         return { 
           userData: user, 
           cookProfile: checkCookProfile,
