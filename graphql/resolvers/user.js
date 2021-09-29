@@ -309,7 +309,14 @@ module.exports = {
         }
       ).exec(); 
       if (userData) { 
-        var checkCookProfile = await Profile.findOne({userId: userData._id}).exec();  
+        var checkCookProfile = await Profile.findOne({userId: userData._id}).exec(); 
+        if(userData.role_id === undefined || userData.role_id === null){
+          userData.role_id = 3;
+        }
+     
+        if(checkCookProfile.on_boarding === undefined || checkCookProfile.on_boarding === null){
+          checkCookProfile.on_boarding = false;
+        } 
         return { 
           userData: userData, 
           cookProfile: checkCookProfile, 
@@ -319,10 +326,12 @@ module.exports = {
           } 
         }  
       } else {
+        role_id = 3;
         const user = new User({
           full_name,
           email,
-          login_type
+          login_type,
+          role_id
         });
         const newUser = await user.save();
         cookProfile.userId = newUser._id;

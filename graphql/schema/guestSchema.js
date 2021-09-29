@@ -366,7 +366,7 @@ module.exports = buildSchema(`
     cuisines: [SpecialityInput] 
     dietary_need: [SpecialityInput] 
     key_ingredients: [SpecialityInput] 
-    packaging_price: PackagingInput
+    packaging_price: [PackagingInput]
     product_availibility: [ProductAvailibilityInput]
     allergens: [SpecialityInput] 
     mood_tags: [SpecialityInput] 
@@ -417,13 +417,13 @@ module.exports = buildSchema(`
 
   input PackagingInput { 
     number_of_pax: String 
-    packaging_size: Int
+    packaging_size: String
     package_price: Float
   }
 
   type Packaging { 
     number_of_pax: String 
-    packaging_size: Int
+    packaging_size: String
     package_price: Float
   }
 
@@ -437,8 +437,10 @@ module.exports = buildSchema(`
     order_start_date: String
     frequency: ItemFrequencyInput
     notice_period_value: Int
-    notice_period_type: NoticePeriodType
-    min_requirment: Int
+    notice_period_type: NoticePeriodType 
+    min_requirment: Boolean
+    total_qty: Int
+    size_per_qty: String
     stock: Int
   } 
 
@@ -476,7 +478,9 @@ module.exports = buildSchema(`
     notice_period_value: Int
     notice_period_type: NoticePeriodType 
     pre_order: Boolean
-    min_requirment: Int
+    min_requirment: Boolean
+    total_qty: Int
+    size_per_qty: String
     stock: Int
   }
 
@@ -519,6 +523,7 @@ module.exports = buildSchema(`
     delivery: Boolean 
     pick_up: Boolean 
   }
+
   type DeliveryDetail { 
     delivery: Boolean 
     pick_up: Boolean 
