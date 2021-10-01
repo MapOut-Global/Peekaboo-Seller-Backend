@@ -546,11 +546,12 @@ module.exports = {
     }
 
     try{
-      let { operating_details, userId} = args;
+      let { operating_details, userId, hoursOfOperation} = args;
       await Profile.findOneAndUpdate(
         {userId: userId},
         {
-          operating_details: operating_details 
+          operating_details: operating_details ,
+          hoursOfOperation: hoursOfOperation
         },
         {
           new: true,
