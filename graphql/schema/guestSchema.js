@@ -465,30 +465,23 @@ module.exports = buildSchema(`
   type ProductAvailibility { 
     avalibility_type: ProuductAvailibilityType
     from_date: String
-    to_date: String
-    from_time: String
-    to_time: String
-    order_start_date: String
-    frequency: FrequencyType
-    ferquency_value: String
-    recurring_end_type: RecurringOrderEndType
-    recurring_end_value: String
+    to_date: String 
+    is_recurring: Boolean 
+    frequency: ItemFrequency
     notice_period_value: Int
     notice_period_type: NoticePeriodType 
-    pre_order: Boolean
     min_requirment: Boolean
     total_qty: Int
     size_per_qty: String
     stock: Int
+    prepration_time: String
+    end_in: EndRecurring
+    end_value: String
   }
 
-  type ItemFrequency {
-    saturday: Boolean
-    sunday: Boolean
-    weekday: Boolean
-    weekend: Boolean
-    custom: Boolean
+  type ItemFrequency { 
     frequency_type: FrequencyType
+    ferquency_value: String
   }
 
   enum RecurringOrderEndType {
