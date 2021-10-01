@@ -258,10 +258,7 @@ module.exports = buildSchema(`
     payment_details: PaymentDetailInput 
   }
 
-  input OperatingDetailInput {
-    large_order: Boolean
-    customisec_order: Boolean
-    other: String
+  input OperatingDetailInput { 
     free_delivery: Boolean
     paid_delivery_amt: Float
     free_devlicery_range: Int
@@ -753,7 +750,7 @@ module.exports = buildSchema(`
     submitSupportTicket(support: SupportInput): Support
     changeProductStatus(_id: String!, status: Boolean!): ResponseStatus
     shopPolicy(shop_policy: ShopPolicyInput, userId: String!): ResponseStatus
-    operatingDetails(operating_details: OperatingDetailInput, userId: String!): ResponseStatus
+    operatingDetails(operating_details: OperatingDetailInput, userId: String!, hoursOfOperation: [HoursOfOperation] ): ResponseStatus
   }
 
   schema {
