@@ -428,11 +428,8 @@ module.exports = buildSchema(`
   input ProductAvailibilityInput { 
     avalibility_type: ProuductAvailibilityType
     from_date: String
-    to_date: String
-    from_time: String
-    to_time: String
-    is_recurring: Boolean
-    order_start_date: String
+    to_date: String 
+    is_recurring: Boolean 
     frequency: ItemFrequencyInput
     notice_period_value: Int
     notice_period_type: NoticePeriodType 
@@ -440,14 +437,17 @@ module.exports = buildSchema(`
     total_qty: Int
     size_per_qty: String
     stock: Int
+    prepration_time: String
+    end_in: EndRecurring
+    end_value: String
   } 
 
+  enum EndRecurring {
+    Never
+    On
+    Occurences
+  }
   input ItemFrequencyInput {
-    saturday: Boolean
-    sunday: Boolean
-    weekday: Boolean
-    weekend: Boolean
-    custom: Boolean
     frequency_type: FrequencyType
     ferquency_value: String
   }
@@ -505,8 +505,7 @@ module.exports = buildSchema(`
   enum FrequencyType {
     Day
     Week
-    Month
-    Year
+    Month 
   }
 
   enum NoticePeriodType {
