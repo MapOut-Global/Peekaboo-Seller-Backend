@@ -431,6 +431,7 @@ module.exports = buildSchema(`
     to_date: String
     from_time: String
     to_time: String
+    is_recurring: Boolean
     order_start_date: String
     frequency: ItemFrequencyInput
     notice_period_value: Int
@@ -497,9 +498,7 @@ module.exports = buildSchema(`
   }
 
   enum ProuductAvailibilityType {
-    OneOffBasis
-    OnRegularBasis
-    PreOrder
+    OneOffBasis 
     MadeUponOrder
   }
 
