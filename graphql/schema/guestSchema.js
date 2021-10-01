@@ -262,8 +262,7 @@ module.exports = buildSchema(`
     free_delivery: Boolean
     paid_delivery_amt: Float
     free_devlicery_range: Int
-    pick_up: Boolean
-    pick_up_timings: [PickUpTimingInput]
+    pick_up: Boolean 
     
   }
 
