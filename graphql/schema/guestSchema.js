@@ -750,7 +750,7 @@ module.exports = buildSchema(`
     submitSupportTicket(support: SupportInput): Support
     changeProductStatus(_id: String!, status: Boolean!): ResponseStatus
     shopPolicy(shop_policy: ShopPolicyInput, userId: String!): ResponseStatus
-    operatingDetails(operating_details: OperatingDetailInput, userId: String!, hoursOfOperation: [HoursOfOperation] ): ResponseStatus
+    operatingDetails(operating_details: OperatingDetailInput, userId: String!, hoursOfOperation: [HoursOfOperationInput] ): ResponseStatus
   }
 
   schema {
