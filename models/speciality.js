@@ -11,6 +11,9 @@ const specialitySchema = new Schema(
     status: {
       type: Boolean,
     },
+    type: {
+      type: String
+    }
   },
   { timestamps: true }
 )
