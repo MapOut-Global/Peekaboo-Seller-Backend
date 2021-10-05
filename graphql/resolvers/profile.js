@@ -31,7 +31,8 @@ module.exports = {
         userId,  
         kitchenTourFile,  
         attachments,   
-        zipcode 
+        zipcode,
+        speciallity
       } = args.profile;
       var { full_name } = args.user;
       var checkProfileOldAvtar = await Profile.findOne({userId: userId}).exec();   
@@ -224,6 +225,32 @@ module.exports = {
         return {  responseStatus : {status: false, message: "Invalid user id"}, userData : null, userId: userId }
       } 
 
+
+      for(const [key, val] of Object.entries(speciallity)) {
+        if(val._id === undefined){
+          let status = false;
+          let type = "speciallity";
+          let name = val.name;
+          let checkSpecialityExist = await Speciality.findOne(
+            {
+              name: name,
+              type: "speciallity"
+            }
+          ).exec();   
+          if(!checkSpecialityExist){
+            const newSpeciality = new Speciality({
+              name,
+              type,
+              status
+            });
+            await newSpeciality.save(); 
+            cuisines[key]['_id'] = newSpeciality._doc._id.toString();
+          }else{ 
+            cuisines[key]['_id'] = checkSpecialityExist._id.toString();
+          } 
+        }
+      } 
+
       await Profile.findOneAndUpdate(
         {userId: userId},
         {
@@ -238,6 +265,7 @@ module.exports = {
           avatar_url: avatar_url,
           attachments: attachmentArr, 
           zipcode: zipcode, 
+          speciallity: speciallity, 
         },
         {
           new: true,
