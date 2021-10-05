@@ -32,7 +32,7 @@ module.exports = {
         kitchenTourFile,  
         attachments,   
         zipcode,
-        speciallity
+        speciality
       } = args.profile;
       var { full_name } = args.user;
       var checkProfileOldAvtar = await Profile.findOne({userId: userId}).exec();   
@@ -226,15 +226,15 @@ module.exports = {
       } 
 
 
-      for(const [key, val] of Object.entries(speciallity)) {
+      for(const [key, val] of Object.entries(speciality)) {
         if(val._id === undefined){
           let status = false;
-          let type = "speciallity";
+          let type = "speciality";
           let name = val.name;
           let checkSpecialityExist = await Speciality.findOne(
             {
               name: name,
-              type: "speciallity"
+              type: "speciality"
             }
           ).exec();   
           if(!checkSpecialityExist){
@@ -244,9 +244,9 @@ module.exports = {
               status
             });
             await newSpeciality.save(); 
-            cuisines[key]['_id'] = newSpeciality._doc._id.toString();
+            speciality[key]['_id'] = newSpeciality._doc._id.toString();
           }else{ 
-            cuisines[key]['_id'] = checkSpecialityExist._id.toString();
+            speciality[key]['_id'] = checkSpecialityExist._id.toString();
           } 
         }
       } 
@@ -265,7 +265,7 @@ module.exports = {
           avatar_url: avatar_url,
           attachments: attachmentArr, 
           zipcode: zipcode, 
-          speciallity: speciallity, 
+          speciality: speciality, 
         },
         {
           new: true,
