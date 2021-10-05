@@ -87,12 +87,13 @@ module.exports = {
           let resultLogin = await asyncAuthenticateUser(cognitoUserLogin, authenticationDetails); 
           var accessToken = resultLogin.getAccessToken().getJwtToken(); 
           var refreshToken = resultLogin.getRefreshToken().getToken();   
-          
+          var role_id = 3;
           const user = new User({
             full_name,
             email, 
             phone,
-            login_type
+            login_type,
+            role_id
           }) 
           
           const newUser = await user.save(); 
