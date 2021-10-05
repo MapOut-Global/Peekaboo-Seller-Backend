@@ -105,10 +105,9 @@ module.exports = {
           
           profileData = newProfile._doc;
           return { userData: newUser._doc, cookProfile:profileData,  token:accessToken, refreshToken: refreshToken, responseStatus : {status: true, message: "Sign up successfully"} }  
-        }
-        
+        } 
       } catch (error) {
-        throw error
+        return { responseStatus : {status: false, message: error.message} }  
       } 
   },  
 
@@ -161,7 +160,7 @@ module.exports = {
         return {  responseStatus : {status: true, message: "Email sent successfully"} }
       } 
     } catch (error) {
-      throw error
+      return { responseStatus : {status: false, message: error.message} }  
     }
   },
 
@@ -209,7 +208,7 @@ module.exports = {
         return { responseStatus : {status: true, message: "Email sent successfully"} };
       }
     } catch (error) {
-      throw error
+      return { responseStatus : {status: false, message: error.message} } 
     }
   },
 
@@ -228,7 +227,7 @@ module.exports = {
         return { responseStatus : {status: false, message: "Invalid OTP"}};
       }
     } catch (error) {
-      throw error
+      return { responseStatus : {status: false, message: error.message} }  
     }
   },
 
@@ -252,7 +251,7 @@ module.exports = {
         return {  responseStatus: { status: true, message: "Token renewed"}, token: result.accessToken.jwtToken, refreshToken: result.refreshToken.token }
  
       } catch (error) {
-        throw error
+        return { responseStatus : {status: false, message: error.message} } 
       }
   },
 
@@ -268,7 +267,7 @@ module.exports = {
         let result = await resetPassword(email);
         return { responseStatus : {status: true, message: "Please check your inbox for verification code"} };
       } catch (error) {
-        throw error
+        return { responseStatus : {status: false, message: error.message} }  
       }
     }else{
       return { responseStatus : {status: false, message: "Email not found"} };
@@ -287,7 +286,7 @@ module.exports = {
         let result = await confirmPassword(email, verificationCode, newPassword );
         return { responseStatus : {status: true, message: "Password has been updated. Please login with new password."} };
       } catch (error) {
-        throw error
+        return { responseStatus : {status: false, message: error.message} }  
       }
     }else{
       return { responseStatus : {status: false, message: "Email not found"} };
@@ -383,7 +382,7 @@ module.exports = {
           
       }
     } catch (error) {
-      throw error
+      return { responseStatus : {status: false, message: error.message} }  
     } 
   },
 
