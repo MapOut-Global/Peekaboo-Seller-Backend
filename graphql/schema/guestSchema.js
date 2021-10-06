@@ -78,8 +78,27 @@ module.exports = buildSchema(`
     shop_policy: ShopPolicy
     payment_details: CookPaymentDetail
     operating_details: OperatingDetail 
+    follower_count: Int
+    followers: [Follower] 
+    is_following: Boolean
+    posts: [Post]
+    reviews: [Review]
+    rating: Float
+    review_counts: Int
   }
   
+  type Review {
+    customerData: User
+    productData: [Product]
+    rating: Int
+    review: String
+    createdAt: String
+  }
+
+  type Follower {
+    userData:User
+  }
+
   type CookPaymentDetail {
     is_bank_account: Boolean
     is_wallet: Boolean
@@ -270,25 +289,7 @@ module.exports = buildSchema(`
   input PickUpTimingInput {
     from: String
     to: String
-  }
-
-  input ConssumeInfoInput {
-    type: ConssumeType,
-    number: Int
-    number_type: NumberType
-  }
-  
-  enum ConssumeType {
-    Immidiately,
-    NumOfDay
-  }
-
-  enum NumberType {
-    Days,
-    Weeks,
-    Months,
-    Years
-  }
+  } 
 
   input PaymentDetailInput {
     is_bank_account: Boolean
@@ -336,25 +337,30 @@ module.exports = buildSchema(`
     cuisines: [Speciality] 
     dietary_need: [Speciality] 
     key_ingredients: [Speciality] 
-    packaging_price: Packaging
+    packaging_price: [Packaging]
     product_availibility: [ProductAvailibility]
     allergens: [Speciality] 
     mood_tags: [Speciality] 
     product_image_url: [ProductImage]
     likes: Int
     userId: ID! 
+    variation_details: [Variation]
     _id: ID!
     status: Boolean 
     createdAt: String
     updatedAt: String
-  }
+  } 
 
-  type ConssumeInfo {
-    type: ConssumeType,
-    number: Int
-    number_type: NumberType
-  }
-  
+  type Variation {
+    variation_flag: Boolean
+    variation_detail: [VariationDetail]
+ } 
+
+ type VariationDetail {
+   option_name: String
+   price: Float
+ }
+
   input ProductInput {
     name: String!, 
     description: String 
@@ -482,13 +488,7 @@ module.exports = buildSchema(`
   type ItemFrequency { 
     frequency_type: FrequencyType
     ferquency_value: String
-  }
-
-  enum RecurringOrderEndType {
-    Never
-    Date
-    Occurrence
-  }
+  } 
 
   enum ProuductAvailibilityType {
     OneOffBasis 
@@ -523,6 +523,7 @@ module.exports = buildSchema(`
     available_date: String
     available_time: String 
   }
+
   type DiscountDetail { 
     discount: Boolean
     days: String 
@@ -712,7 +713,7 @@ module.exports = buildSchema(`
     forgetPassword(email: String): ForgetPassword
     resetPassword(email: String!, verificationCode: String!, newPassword: String!): ResetPassword
     products(categoryId:String, userId:String!, subcategoryId:String): [Product]
-    userProfile(userId:String!): ProfileType
+    userProfile(userId:String!, cookId: String!): ProfileType 
     posts(userId:String):[Post!]
     classes(userId:String):[Class!]
     orders(userId: String!): [Order!]

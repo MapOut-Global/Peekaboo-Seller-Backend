@@ -67,6 +67,9 @@ const profileSchema = new Schema(
     },
     on_boarding: {
       type: Boolean
+    },
+    follower_count: {
+      type: Number
     }
   },
   { timestamps: true }

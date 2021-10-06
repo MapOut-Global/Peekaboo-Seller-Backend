@@ -3,6 +3,11 @@ const Profile = require("../../models/profile")
 const Speciality = require("../../models/speciality") 
 const Product = require("../../models/product") 
 const Class = require("../../models/class") 
+const Follower = require("../../models/follower") 
+const Like = require("../../models/like") 
+const Review = require("../../models/review") 
+const Order = require("../../models/order") 
+const Post = require("../../models/post") 
 var ObjectId = require('mongoose').Types.ObjectId; 
 const { authorizationFunction } = require('../checkCognitoToken'); 
  
@@ -320,15 +325,10 @@ module.exports = {
     return { responseStatus : {status: true, message: "Cook offer updated"} };
   },
 
-  userProfile: async (args, req) => {
-    let checkToken = await authorizationFunction(req); 
-    if(checkToken.client_id === undefined){
-      throw {
-        error: checkToken,
-        status: 401
-      }
-    }
-    let { userId } = args;
+  userProfile: async (args, req) => { 
+    let { userId, cookId } = args;
+    var customerId = userId;
+    userId = cookId; 
     let cookProfile = await Profile.findOne(
       {
         userId: userId
@@ -340,6 +340,80 @@ module.exports = {
         responseStatus: {status: true, message: "Profile saved"}
       };
     } 
+ 
+    const reviewsFetched = await Review.find({userId: userId}, [], {sort: { sort_order: 1}}); 
+    var customerIds = orderIds = productIds = [];
+    reviewsFetched.map(review => { 
+      customerIds.push(review.customerId);
+      orderIds.push(review.orderId);
+    });
+
+    let customerData = await User.find({_id: {$in: customerIds}})
+    let orderData = await Order.find({_id: {$in: orderIds}}) 
+    orderData.map(order => { 
+      order.order_details.map((item) => {
+        productIds.push(item.productId);
+      });
+    });
+
+
+    let reviewProductList = await Product.find({_id: { $in : productIds}})
+    let followerList = await Follower.find({cookId: userId})
+    var followerIds = followers = followerInfo = [];
+    followerList.map( follower => {
+      followerIds.push(follower.userId);
+    })
+
+    followerInformation = await User.find({ _id: {$in: followerIds}});
+
+    followerList.map( follower => {
+      followerInformation.map( (followingUser, followingKey) => {
+        if(followingUser._id.toString() === follower.userId.toString()){  
+          followers[followingKey]['userData'] = followingUser;
+        }
+      })
+    });
+    var reviewList = reviewsFetched.map(review => {  
+      customerArr = productArr = [];
+      customerData.map(customer => {
+        if(customer.id.toString() === review.customerId.toString()){
+          customerArr = customer
+        }
+      });
+
+      orderData.map(order => { 
+        if(order.id.toString() === review.orderId.toString()){
+          order.order_details.map((item) => {
+            reviewProductList.map(product => {
+              if(product.id.toString() === item.productId.toString()){
+                productArr.push(product);
+              }
+            });
+          });
+        }
+      }); 
+      
+      return {
+        customerData: customerArr,
+        productData: productArr,
+        ...review._doc,
+        _id: review.id, 
+        createdAt: new Date(review._doc.createdAt).toISOString(), 
+      }
+    })
+    let checkAlreadyFollowing = null;
+    let myLikes = []
+    if(customerId !== "0"){
+      checkAlreadyFollowing = await Follower.countDocuments({userId: customerId, cookId: userId})
+      myLikes = await Like.find({ userId: customerId}); 
+    }
+    
+    if(checkAlreadyFollowing){
+      is_following = true
+    }else{
+      is_following = false;
+    }
+
     let productList = await Product.find({userId:new ObjectId(userId)});  
     var categoriesArr = [];
     var subCategoryArr = [];
@@ -355,8 +429,44 @@ module.exports = {
       });
     }); 
 
-    classes = await Class.find({userId:new ObjectId(userId)});   
+    
+    let classesArr = await Class.find({userId:new ObjectId(userId)});   
+    let classes = classesArr.map( classObj => {
+      let is_liked = false;
+      myLikes.map( myLike => {
+        if(myLike.type == 'class' && myLike.itemId == classObj._id.toString()){
+          is_liked = true;
+        }
+      })
+      return {
+        ...classObj._doc,
+        is_liked: is_liked
+      }
+    })
 
+    let postArr = await Post.find({userId:new ObjectId(userId)});  
+
+    let postList = postArr.map( ( post ) => {
+      let is_liked = false;
+      myLikes.map( myLike => {
+        if(myLike.type == 'post' && myLike.itemId == post._id.toString()){
+          is_liked = true;
+        }
+      })
+      let productData = [];
+      post.productIds.map( postProduct => {
+        productList.map( product => {
+          if(product._id.toString() === postProduct._id){
+            productData.push(product);
+          }
+        })
+      })
+      return {
+        ...post._doc,
+        is_liked: is_liked,
+        productData: productData
+      } 
+    })
     user = await User.findOne(
       {
         _id: userId
@@ -366,7 +476,7 @@ module.exports = {
       categoriesArr[key] = category; 
       categoriesArr[key]['sub_category'] = [];
       var subCatKey = 0;
-      subCategoryArr.map ( (subCategory) => { 
+      subCategoryArr.map ( (subCategory) => {  
         if(subCategory.parent_id == category._id){ 
           categoriesArr[key]['sub_category'][subCatKey] = subCategory;
           categoriesArr[key]['sub_category'][subCatKey]['productList'] = [];
@@ -375,6 +485,13 @@ module.exports = {
             product.sub_categories.map( (pSubCategory ) => {
               if(subCategory._id == pSubCategory._id){
                 categoriesArr[key]['sub_category'][subCatKey]['productList'][productKey] = product;
+                let is_liked = false;
+                myLikes.map( myLike => {
+                  if(myLike.type == 'product' && myLike.itemId == product._id.toString()){
+                    is_liked = true;
+                  }
+                })
+                categoriesArr[key]['sub_category'][subCatKey]['productList'][productKey]['is_liked'] = is_liked;
                 productKey++;
               }
             })
@@ -384,17 +501,23 @@ module.exports = {
         }
       }) 
     })  
+
     if(user.role_id === undefined || user.role_id === null){
       user.role_id = 2;
     }
      
     if(cookProfile.on_boarding === undefined || cookProfile.on_boarding === null){
       cookProfile.on_boarding = false;
-    }
+    } 
+    cookProfile.classes = classes;
+    cookProfile.posts = postList;
+    cookProfile.followers = followers;
+    cookProfile.is_following = is_following;
     return {  
       userData: user,
       cookProfile: cookProfile, 
       responseStatus: {status: true, message: "Profile saved"}};
+       
   },
 
   removeAttachment: async (args, req) => {
