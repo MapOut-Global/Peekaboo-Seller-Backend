@@ -49,6 +49,9 @@ const productSchema = new Schema(
     }, 
     status: {
       type: Boolean
+    },
+    variation_details: {
+      type: Array
     }
   },
   { timestamps: true }
