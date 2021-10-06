@@ -34,6 +34,7 @@ module.exports = {
         product_availibility, 
         old_product_images,
         userId,    
+        variation_details,
         _id 
       } = args.productData; 
       if(_id !== undefined && _id !== null){
@@ -309,6 +310,7 @@ module.exports = {
             packaging_price: packaging_price,
             product_availibility: product_availibility,
             key_ingredients: key_ingredients, 
+            variation_details: variation_details
           },
           {
             new: true,
@@ -327,7 +329,7 @@ module.exports = {
         const newProduct = new Product({
           name, mood_tags, allergens, description, categories, product_image_url, sub_categories, 
           cuisines, dietary_need, packaging_price, 
-          product_availibility, userId, key_ingredients, status
+          product_availibility, userId, key_ingredients, status,variation_details
         });
         let productData = await newProduct.save(); 
         return { productData: productData._doc, responseStatus : {status: true, message: "Product added successfully"} }  
