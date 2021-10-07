@@ -345,7 +345,7 @@ module.exports = buildSchema(`
     product_image_url: [ProductImage]
     likes: Int
     userId: ID! 
-    variation_details: [Variation]
+    variation_details: Variation
     _id: ID!
     status: Boolean 
     createdAt: String
