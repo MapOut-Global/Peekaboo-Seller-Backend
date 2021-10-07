@@ -51,7 +51,7 @@ const productSchema = new Schema(
       type: Boolean
     },
     variation_details: {
-      type: Array
+      type: Object
     }
   },
   { timestamps: true }
