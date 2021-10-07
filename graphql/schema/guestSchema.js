@@ -186,6 +186,7 @@ module.exports = buildSchema(`
     name: String
     status: Boolean
     type:String
+    icon_url: String
     createdAt: String!
     updatedAt: String!
   }  

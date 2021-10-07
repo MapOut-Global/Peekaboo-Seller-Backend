@@ -13,6 +13,9 @@ const specialitySchema = new Schema(
     },
     type: {
       type: String
+    },
+    icon_url: {
+      type: String
     }
   },
   { timestamps: true }
