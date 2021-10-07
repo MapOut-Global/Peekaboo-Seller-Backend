@@ -511,6 +511,7 @@ module.exports = {
     } 
     cookProfile.classes = classes;
     cookProfile.posts = postList;
+    cookProfile.reviews = reviewList;
     cookProfile.followers = followers;
     cookProfile.is_following = is_following;
     return {  
