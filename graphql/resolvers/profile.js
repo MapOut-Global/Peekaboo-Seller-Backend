@@ -14,6 +14,7 @@ const { authorizationFunction } = require('../checkCognitoToken');
 const path = require('path');
 const util = require('util') ;
 const s3 =  require('../s3FileUploader');   
+const cdnUrl =  require('../s3FileUploader'); 
 const nodemailer = require("nodemailer") 
 module.exports = {  
   updateCookProfile: async (args, req) => { 
