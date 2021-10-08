@@ -8,7 +8,7 @@ const { authorizationFunction } = require('../checkCognitoToken.js');
 const path = require('path');
 const util = require('util') ;
 const s3 =  require('../s3FileUploader'); 
-const cdnUrl = 'https://d24bvnb428s3x7.cloudfront.net';
+const cdnUrl = 'https://d24bvnb428s3x7.cloudfront.net/';
 
 module.exports = {
   addProduct: async (args, req) =>  {
