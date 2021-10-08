@@ -7,4 +7,5 @@ Aws.config.update({
 });
 const s3 = new Aws.S3()
 
-module.exports = s3
+const cdnUrl = 'https://d24bvnb428s3x7.cloudfront.net';
+module.exports = {s3, cdnUrl}

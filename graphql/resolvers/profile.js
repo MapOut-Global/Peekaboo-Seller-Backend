@@ -128,14 +128,14 @@ module.exports = {
 
           let result = await upload(params).catch(console.log); 
           var kitchenTourFile_url_arr = {
-            Location: 'https://d24bvnb428s3x7.cloudfront.net/' + result.Key, 
+            Location: cdnUrl + result.Key, 
             Key: result.Key, 
-            thumbnail: 'https://d24bvnb428s3x7.cloudfront.net/thumbnails/kitchen_tours/' + timestamp + "-0.jpg", 
+            thumbnail: cdnUrl + 'thumbnails/kitchen_tours/' + timestamp + "-0.jpg", 
           }; 
           kitchenTourFile = Object.create(kitchenTourFile_url_arr);
-          kitchenTourFile.Location = 'https://d24bvnb428s3x7.cloudfront.net/' + result.Key;
+          kitchenTourFile.Location = cdnUrl + result.Key;
           kitchenTourFile.Key = result.Key;  
-          kitchenTourFile.thumbnail = 'https://d24bvnb428s3x7.cloudfront.net/thumbnails/kitchen_tours/' + timestamp + "-0.jpg";  
+          kitchenTourFile.thumbnail = cdnUrl + 'thumbnails/kitchen_tours/' + timestamp + "-0.jpg";  
           
           if(checkProfileOldAvtar !== null){
             if(checkProfileOldAvtar.kitchenTourFile !== null && checkProfileOldAvtar.kitchenTourFile !== undefined && checkProfileOldAvtar.kitchenTourFile.Key !== undefined){

@@ -433,31 +433,35 @@ module.exports = buildSchema(`
 
 
   input ProductAvailibilityInput { 
-    avalibility_type: ProuductAvailibilityType
-    from_date: String
-    to_date: String 
-    is_recurring: Boolean 
-    frequency: ItemFrequencyInput
+    avalibility_type: ProuductAvailibilityType  
+    one_off: [OneOffInput]  
     notice_period_value: Int
     notice_period_type: NoticePeriodType 
     min_requirment: Boolean
     total_qty: Int
-    size_per_qty: String
-    stock: Int
-    prepration_time: String
-    end_in: EndRecurring
-    end_value: String
+    size_per_qty: String 
+    prepration_time: String 
   } 
+
+  input OneOffInput {
+    on: String
+    stock: Int
+    is_recuring: Boolean
+    recurring_info: ReccuringInfoInput
+  }
+
+  input ReccuringInfoInput {
+    frequency_type: FrequencyType
+    week_days: String
+    ends: EndRecurring 
+    end_value: String
+  }
 
   enum EndRecurring {
     Never
     On
     Occurences
-  }
-  input ItemFrequencyInput {
-    frequency_type: FrequencyType
-    ferquency_value: String
-  }
+  } 
 
   input VariationInput {
      variation_flag: Boolean
@@ -471,24 +475,27 @@ module.exports = buildSchema(`
 
   type ProductAvailibility { 
     avalibility_type: ProuductAvailibilityType
-    from_date: String
-    to_date: String 
-    is_recurring: Boolean 
-    frequency: ItemFrequency
+    one_off: [OneOff]  
     notice_period_value: Int
     notice_period_type: NoticePeriodType 
     min_requirment: Boolean
     total_qty: Int
-    size_per_qty: String
-    stock: Int
-    prepration_time: String
-    end_in: EndRecurring
-    end_value: String
+    size_per_qty: String 
+    prepration_time: String 
   }
 
-  type ItemFrequency { 
+  type OneOff {
+    on: String
+    stock: Int
+    is_recuring: Boolean
+    recurring_info: ReccuringInfo
+  }
+
+  type ReccuringInfo {
     frequency_type: FrequencyType
-    ferquency_value: String
+    week_days: String
+    ends: EndRecurring 
+    end_value: String
   } 
 
   enum ProuductAvailibilityType {
@@ -498,8 +505,7 @@ module.exports = buildSchema(`
 
   enum FrequencyType {
     Day
-    Week
-    Month 
+    Week 
   }
 
   enum NoticePeriodType {

@@ -8,6 +8,7 @@ const { authorizationFunction } = require('../checkCognitoToken.js');
 const path = require('path');
 const util = require('util') ;
 const s3 =  require('../s3FileUploader'); 
+const cdnUrl =  require('../s3FileUploader'); 
 
 module.exports = {
   addProduct: async (args, req) =>  {
@@ -243,8 +244,7 @@ module.exports = {
           };
           let fileStream = createReadStream();
           // in case of an error, log it.
-          fileStream.on("error", (error) => console.error(error));
-
+          fileStream.on("error", (error) => console.error(error)); 
           // set the body of the object as data to read from the file.
           params.Body = fileStream;
               // get the current time stamp.
@@ -267,16 +267,16 @@ module.exports = {
           let result = await upload(params).catch(console.log);  
           if(file_extension == ".mp4"){
             var productImageArrObj = {
-              Location: 'https://d24bvnb428s3x7.cloudfront.net/' + result.Key, 
+              Location: cdnUrl + result.Key, 
               Key: result.Key, 
               order: imageOrder, 
-              thumbnail: 'https://d24bvnb428s3x7.cloudfront.net/thumbnails/product_images/' + timestamp + "-0.jpg", 
+              thumbnail: cdnUrl + 'thumbnails/product_images/' + timestamp + "-0.jpg", 
             }; 
             product_image_obj = Object.create(productImageArrObj);
-            product_image_obj.Location = 'https://d24bvnb428s3x7.cloudfront.net/' + result.Key;
+            product_image_obj.Location = cdnUrl + result.Key;
             product_image_obj.Key = result.Key;  
             product_image_obj.order = imageOrder;  
-            product_image_obj.thumbnail = 'https://d24bvnb428s3x7.cloudfront.net/thumbnails/product_images/' + timestamp + "-0.jpg";
+            product_image_obj.thumbnail = cdnUrl + 'thumbnails/product_images/' + timestamp + "-0.jpg";
           }else{
             var productImageArrObj = {
               Location: result.Location, 
@@ -284,7 +284,7 @@ module.exports = {
               order: imageOrder, 
             }; 
             product_image_obj = Object.create(productImageArrObj);
-            product_image_obj.Location = 'https://d24bvnb428s3x7.cloudfront.net/' + result.Key;;
+            product_image_obj.Location = cdnUrl + result.Key;;
             product_image_obj.Key = result.Key; 
             product_image_obj.order = imageOrder;  
           }
