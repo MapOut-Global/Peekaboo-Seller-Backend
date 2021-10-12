@@ -362,6 +362,7 @@ module.exports = {
       } 
       
       return productList.map(product => { 
+        console.log(product.product_availibility);
         return {
           ...product._doc,
           _id: product.id,

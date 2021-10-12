@@ -255,6 +255,7 @@ module.exports = buildSchema(`
   input SpecialityInput{
     name: String
     type: String
+    icon_url: String
     _id: ID
   } 
  
