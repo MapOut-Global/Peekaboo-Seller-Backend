@@ -444,6 +444,12 @@ module.exports = {
         is_liked: is_liked
       }
     })
+    
+    user = await User.findOne(
+      {
+        _id: userId
+      }
+    ).exec(); 
 
     let postArr = await Post.find({userId:new ObjectId(userId)});  
 
@@ -470,11 +476,6 @@ module.exports = {
         productData: productData
       } 
     })
-    user = await User.findOne(
-      {
-        _id: userId
-      }
-    ).exec(); 
     cookProfile.categories.map( (category, key) => { 
       categoriesArr[key] = category; 
       categoriesArr[key]['sub_category'] = [];
