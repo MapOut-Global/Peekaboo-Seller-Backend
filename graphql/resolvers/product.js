@@ -277,6 +277,7 @@ module.exports = {
             product_image_obj.Location = cdnUrl + result.Key;
             product_image_obj.Key = result.Key;  
             product_image_obj.order = imageOrder;  
+            product_image_obj.type = "video";  
             product_image_obj.thumbnail = cdnUrl + 'thumbnails/product_images/' + timestamp + "-0.jpg";
           }else{
             var productImageArrObj = {
@@ -287,7 +288,8 @@ module.exports = {
             }; 
             product_image_obj = Object.create(productImageArrObj);
             product_image_obj.Location = cdnUrl + result.Key;;
-            product_image_obj.Key = result.Key; 
+            product_image_obj.Key = result.Key;  
+            product_image_obj.type = "image";  
             product_image_obj.order = imageOrder;  
           }
           
