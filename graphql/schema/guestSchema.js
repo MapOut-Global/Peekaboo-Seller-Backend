@@ -136,6 +136,7 @@ module.exports = buildSchema(`
     Key: String
     thumbnail: String
     order: Int
+    type: String
   }
 
   type Flag{

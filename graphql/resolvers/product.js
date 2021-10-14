@@ -270,6 +270,7 @@ module.exports = {
               Location: cdnUrl + result.Key, 
               Key: result.Key, 
               order: imageOrder, 
+              type: "video",
               thumbnail: cdnUrl + 'thumbnails/product_images/' + timestamp + "-0.jpg", 
             }; 
             product_image_obj = Object.create(productImageArrObj);
@@ -281,6 +282,7 @@ module.exports = {
             var productImageArrObj = {
               Location: result.Location, 
               Key: result.Key, 
+              type: "image",
               order: imageOrder, 
             }; 
             product_image_obj = Object.create(productImageArrObj);
