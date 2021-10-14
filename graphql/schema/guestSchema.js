@@ -588,6 +588,8 @@ module.exports = buildSchema(`
     facebook_flag: Boolean
     instagram_flag: Boolean
     watsapp_flag: Boolean
+    full_name: String 
+    avatar_url: S3Type
     createdAt: String
     updatedAt: String
   }

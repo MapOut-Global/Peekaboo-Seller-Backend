@@ -465,6 +465,8 @@ module.exports = {
       return {
         ...post._doc,
         is_liked: is_liked,
+        full_name: user.full_name,
+        avatar_url: cookProfile.avatar_url,
         productData: productData
       } 
     })
