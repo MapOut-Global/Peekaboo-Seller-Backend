@@ -90,7 +90,7 @@ module.exports = {
 
       for(const [key, val] of Object.entries(sub_categories)) {
         if(val._id === undefined){
-          let status = false;
+          let status = true;
           let name = val.name;
           let parent_id = val.parent_id;
           const newSubCategories = new Category({
