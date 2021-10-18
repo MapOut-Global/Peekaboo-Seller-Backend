@@ -3,13 +3,7 @@ const { authorizationFunction } = require('../checkCognitoToken.js');
 
 module.exports = {
   categories: async (args, req) =>  {
-    let checkToken = await authorizationFunction(req);
-    if(checkToken.client_id === undefined){
-      throw {
-        error: checkToken,
-        status: 401
-      }
-    }
+     
     try {
       let { parentIds } = args;
       var searchById = [];
@@ -17,13 +11,22 @@ module.exports = {
         searchById.push(val._id);
       }  
       const categoriesFetched = await Category.find({parent_id : { $in : searchById}, status:true}); 
-      return categoriesFetched.map(category => {
+      const subcategoriesFetched = await Category.find({parent_id : { $ne : "0"}, status:true}); 
+      let categoryList = categoriesFetched.map(category => {
+        var subCatArr = [];
+        subcategoriesFetched.map( subCat => {
+          if(subCat.parent_id == category._id){
+            subCatArr.push(subCat);
+          }
+        })
         return {
           ...category._doc,
           _id: category.id,
+          sub_category: subCatArr,
           createdAt: new Date(category._doc.createdAt).toISOString(),
         }
-      })
+      }) 
+      return { categoryList: categoryList, responseStatus: {status: true, message: "Category fetched"}} 
     } catch (error) {
       throw error
     }

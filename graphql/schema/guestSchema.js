@@ -590,6 +590,8 @@ module.exports = buildSchema(`
     watsapp_flag: Boolean
     full_name: String 
     avatar_url: S3Type
+    likes: Int
+    is_liked: Boolean
     createdAt: String
     updatedAt: String
   }
@@ -714,10 +716,14 @@ module.exports = buildSchema(`
     responseStatus: ResponseStatus
   }
 
+  type CategoryList {
+    categoryList: [Category]
+    responseStatus: ResponseStatus
+  }
 
   type Query { 
     specialities(type:String!):[Speciality!]
-    categories(parentIds:[CategoryFindInput]):[Category!]
+    categories(parentIds:[CategoryFindInput]):CategoryList!
     verifyEmail(verify:EmailVerifyInput): EmailVerify
     verifyOtp(verify:OtpVerifyInput): OtpVerify
     renewJwtToken(refreshToken: String): RefreshToken
