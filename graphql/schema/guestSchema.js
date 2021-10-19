@@ -390,6 +390,7 @@ module.exports = buildSchema(`
     Key: String
     order: Int
     thumbnail: String
+    type: String
   }
 
   input CategoryInput {
