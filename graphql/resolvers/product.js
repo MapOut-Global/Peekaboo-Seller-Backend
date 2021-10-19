@@ -255,7 +255,7 @@ module.exports = {
           let file_extension = path.extname(filename);
           var imageOrder = 1; 
           // set the key as a combination of the folder name, timestamp, and the file extension of the object.
-          params.Key = `product_images/${timestamp}${file_extension}`;
+          params.Key = `product_images/${filename}`;
 
           let upload = util.promisify(s3.upload.bind(s3));
 
