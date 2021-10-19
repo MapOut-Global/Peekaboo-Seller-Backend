@@ -13,6 +13,7 @@ const { authorizationFunction } = require('../checkCognitoToken');
  
 const path = require('path');
 const util = require('util') ;
+const https = require('https')
 const s3 =  require('../s3FileUploader');   
 const cdnUrl = 'https://d24bvnb428s3x7.cloudfront.net/';
 const nodemailer = require("nodemailer") 
@@ -716,8 +717,8 @@ module.exports = {
       ); 
       return { status: true, message: "Operating details updated" };
     }catch (error){
-      throw error;
+      return { responseStatus : {status: false, message: error.message} }  
     }
-  }
+  }, 
 }
  

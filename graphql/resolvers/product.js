@@ -254,9 +254,10 @@ module.exports = {
           // get the file extension.
           let file_extension = path.extname(filename);
           imageOrder = 1;
-          old_product_images.map( imageArr => {
+          old_product_images.map( (imageArrKey, imageArr) => {
             if(imageArr.Key == filename){
-              imageOrder = imageArr.order; 
+              imageOrder = imageArr.order;
+              imageKey =  imageArrKey;
             }
           })
           // set the key as a combination of the folder name, timestamp, and the file extension of the object.
@@ -297,7 +298,7 @@ module.exports = {
               main_image_arr.Key = result.Key;   
             }
           } 
-          productImageArr[i] = product_image_obj;
+          productImageArr[imageArrKey] = product_image_obj;
           j++;
         };
       } 

@@ -742,6 +742,7 @@ module.exports = buildSchema(`
     orders(userId: String!): [Order!]
     switchRole(userId: String, roleId: Int): ProfileType
     productDetail(product_id: String!): ProductOutput
+    locationFromPostcode(postcode: String!): ResponseStatus
   }
 
   type Mutation {
