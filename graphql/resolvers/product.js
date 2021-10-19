@@ -277,9 +277,9 @@ module.exports = {
 
             productImageArr.map( (imageArr, imageArrKey) => {
               if(imageArr.Key == filename){
-                product_image_obj.imageArrKey =  product_image_obj;
+                productImageArr[imageArrKey] =  product_image_obj; 
               }
-            }) 
+            })  
           }else{
             var productImageArrObj = {
               Location: result.Location, 
@@ -300,8 +300,7 @@ module.exports = {
             var message;
             productImageArr.map( (imageArr, imageArrKey) => {
               if(imageArr.Key == filename){
-                productImageArr[imageArrKey] =  product_image_obj;
-                message = JSON.stringify(productImageArr);
+                productImageArr[imageArrKey] =  product_image_obj; 
               }
             }) 
           } 
@@ -338,7 +337,7 @@ module.exports = {
             _id: _id
           }
         ).exec();
-        return { productData: productData, responseStatus : {status: true, message: message} }  
+        return { productData: productData, responseStatus : {status: true, message: "Product updated successfully"} }  
       }else{
         let status = true;
         product_image_url = productImageArr;
