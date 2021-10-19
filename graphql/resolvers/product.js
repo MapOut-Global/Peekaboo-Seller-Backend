@@ -297,7 +297,7 @@ module.exports = {
               main_image_arr.Location = cdnUrl + result.Key;;
               main_image_arr.Key = result.Key;   
             }
-            productImageArr.map( (imageArrKey, imageArr) => {
+            productImageArr.map( (imageArr, imageArrKey) => {
               if(imageArr.Key == filename){
                 product_image_obj.imageArrKey =  product_image_obj;
               }
