@@ -275,7 +275,7 @@ module.exports = {
             product_image_obj.type = "video";  
             product_image_obj.thumbnail = cdnUrl + 'thumbnails/product_images/' + timestamp + "-0.jpg";
 
-            productImageArr.map( (imageArrKey, imageArr) => {
+            productImageArr.map( (imageArr, imageArrKey) => {
               if(imageArr.Key == filename){
                 product_image_obj.imageArrKey =  product_image_obj;
               }
