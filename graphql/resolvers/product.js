@@ -300,8 +300,8 @@ module.exports = {
             var message;
             productImageArr.map( (imageArr, imageArrKey) => {
               if(imageArr.Key == filename){
-                message = "into loop";
-                product_image_obj[imageArrKey] =  product_image_obj;
+                productImageArr[imageArrKey] =  product_image_obj;
+                message = JSON.stringify(productImageArr);
               }
             }) 
           } 
