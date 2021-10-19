@@ -297,13 +297,14 @@ module.exports = {
               main_image_arr.Location = cdnUrl + result.Key;;
               main_image_arr.Key = result.Key;   
             }
+            var message;
             productImageArr.map( (imageArr, imageArrKey) => {
               if(imageArr.Key == filename){
+                message = "into loop";
                 product_image_obj[imageArrKey] =  product_image_obj;
               }
             }) 
           } 
-          
           j++;
         };
       } 
@@ -337,7 +338,7 @@ module.exports = {
             _id: _id
           }
         ).exec();
-        return { productData: productData, responseStatus : {status: true, message: "Product updated successfully"} }  
+        return { productData: productData, responseStatus : {status: true, message: message} }  
       }else{
         let status = true;
         product_image_url = productImageArr;
