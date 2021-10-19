@@ -253,14 +253,7 @@ module.exports = {
           filename = filename.replace(" ", "-");
           // get the file extension.
           let file_extension = path.extname(filename);
-          var imageOrder = 1;
-          var imageKey = i;
-          old_product_images.map( (imageArrKey, imageArr) => {
-            if(imageArr.Key == filename){
-              imageOrder = imageArr.order;
-              imageKey =  imageArrKey;
-            }
-          })
+          var imageOrder = 1; 
           // set the key as a combination of the folder name, timestamp, and the file extension of the object.
           params.Key = `product_images/${timestamp}${file_extension}`;
 
@@ -281,6 +274,12 @@ module.exports = {
             product_image_obj.order = imageOrder;  
             product_image_obj.type = "video";  
             product_image_obj.thumbnail = cdnUrl + 'thumbnails/product_images/' + timestamp + "-0.jpg";
+
+            productImageArr.map( (imageArrKey, imageArr) => {
+              if(imageArr.Key == filename){
+                product_image_obj.imageArrKey =  product_image_obj;
+              }
+            }) 
           }else{
             var productImageArrObj = {
               Location: result.Location, 
@@ -298,8 +297,13 @@ module.exports = {
               main_image_arr.Location = cdnUrl + result.Key;;
               main_image_arr.Key = result.Key;   
             }
+            productImageArr.map( (imageArrKey, imageArr) => {
+              if(imageArr.Key == filename){
+                product_image_obj.imageArrKey =  product_image_obj;
+              }
+            }) 
           } 
-          productImageArr[imageKey] = product_image_obj;
+          
           j++;
         };
       } 
