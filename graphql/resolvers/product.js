@@ -228,7 +228,7 @@ module.exports = {
         }
       } 
        
-
+      var main_image_arr = [];
       if(product_image !== undefined && product_image.length > 0){
         totArrayLength = parseInt(product_image.length) + parseInt(productImageArr.length);
         j=0;
@@ -291,8 +291,12 @@ module.exports = {
             product_image_obj.Key = result.Key;  
             product_image_obj.type = "image";  
             product_image_obj.order = imageOrder;  
-          }
-          
+
+            if(main_image_arr.length === 0){
+              main_image_arr.Location = cdnUrl + result.Key;;
+              main_image_arr.Key = result.Key;   
+            }
+          } 
           productImageArr[i] = product_image_obj;
           j++;
         };
@@ -314,7 +318,8 @@ module.exports = {
             packaging_price: packaging_price,
             product_availibility: product_availibility,
             key_ingredients: key_ingredients, 
-            variation_details: variation_details
+            variation_details: variation_details,
+            main_image: main_image_arr
           },
           {
             new: true,
@@ -469,4 +474,25 @@ module.exports = {
     );  
     return { responseStatus: {status: true, message: "Media removed"}, Key:Key };
   },
+
+  productDetail: async (args, req) => {
+    let checkToken = await authorizationFunction(req); 
+    if(checkToken.client_id === undefined){
+      throw {
+        error: checkToken,
+        status: 401
+      }
+    }
+    try{
+      let { product_id } = args;
+      let productData = Product.findOne({_id: product_id});
+      if(productData !== null){
+        return { responseStatus: { status: true, message: "Product detail fetched"}, productData: productData}
+      }else{
+        return { responseStatus: { status: false, message: "Invalid Product ID"}}
+      }
+    } catch (error) {
+      return { responseStatus : {status: false, message: "Invalid Product ID"} }  
+    }
+  }
 }

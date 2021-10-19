@@ -345,6 +345,7 @@ module.exports = buildSchema(`
     allergens: [Speciality] 
     mood_tags: [Speciality] 
     product_image_url: [ProductImage]
+    main_image: S3Type
     likes: Int
     userId: ID! 
     variation_details: Variation
@@ -721,6 +722,11 @@ module.exports = buildSchema(`
     responseStatus: ResponseStatus
   }
 
+  type ProductOutput {
+    productData: Product
+    responseStatus: ResponseStatus
+  }
+
   type Query { 
     specialities(type:String!):[Speciality!]
     categories(parentIds:[CategoryFindInput]):CategoryList!
@@ -735,6 +741,7 @@ module.exports = buildSchema(`
     classes(userId:String):[Class!]
     orders(userId: String!): [Order!]
     switchRole(userId: String, roleId: Int): ProfileType
+    productDetail(product_id: String!): ProductOutput
   }
 
   type Mutation {

@@ -50,6 +50,9 @@ const productSchema = new Schema(
     status: {
       type: Boolean
     },
+    main_image: {
+      type: Object
+    },
     variation_details: {
       type: Object
     }
