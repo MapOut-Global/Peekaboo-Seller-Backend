@@ -299,7 +299,7 @@ module.exports = {
             }
             productImageArr.map( (imageArr, imageArrKey) => {
               if(imageArr.Key == filename){
-                product_image_obj.imageArrKey =  product_image_obj;
+                product_image_obj[imageArrKey] =  product_image_obj;
               }
             }) 
           } 
