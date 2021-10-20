@@ -306,8 +306,8 @@ module.exports = {
           main_image_arr.Location = imageArr.thumbnail;;
           main_image_arr.Key = imageArr.Key;    
         } 
-      })
-
+      });
+      message = JSON.stringify(main_image_arr);
       if(_id !== undefined && _id !== null){
         await Product.findOneAndUpdate(
           {_id: _id},
@@ -344,7 +344,8 @@ module.exports = {
         const newProduct = new Product({
           name, mood_tags, allergens, description, categories, product_image_url, sub_categories, 
           cuisines, dietary_need, packaging_price, 
-          product_availibility, userId, key_ingredients, status,variation_details
+          product_availibility, userId, key_ingredients, status,variation_details,
+          main_image: main_image_arr
         });
         let productData = await newProduct.save(); 
         return { productData: productData._doc, responseStatus : {status: true, message: "Product added successfully"} }  

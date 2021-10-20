@@ -32,7 +32,7 @@ const productSchema = new Schema(
       type: Array
     },
     packaging_price: {
-      type: Object,
+      type: Array,
     }, 
     product_availibility: {
       type: Array, 
