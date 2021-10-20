@@ -337,7 +337,7 @@ module.exports = {
             _id: _id
           }
         ).exec();
-        return { productData: productData, responseStatus : {status: true, message: "Product updated successfully"} }  
+        return { productData: productData, responseStatus : {status: true, message: message} }  
       }else{
         let status = true;
         product_image_url = productImageArr;
@@ -348,7 +348,7 @@ module.exports = {
           main_image: main_image_arr
         });
         let productData = await newProduct.save(); 
-        return { productData: productData._doc, responseStatus : {status: true, message: "Product added successfully"} }  
+        return { productData: productData._doc, responseStatus : {status: true, message: message} }  
       }
       
       
