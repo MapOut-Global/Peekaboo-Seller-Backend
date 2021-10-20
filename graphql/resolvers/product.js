@@ -77,8 +77,7 @@ module.exports = {
           new: true,
           upsert: true
         }
-      ); 
-
+      );  
       for(const [key, val] of Object.entries(sub_categories)) {
         if(val._id === undefined){
           let status = true;
@@ -291,24 +290,30 @@ module.exports = {
           } 
           j++;
         };
-      } 
+      }  
       productImageArr.map( (imageArr, imageArrKey) => {
         if(main_image_arr.length === 0 && imageArr.type == 'image'){
+          var productImageArrObj = {
+            Location: imageArr.Location, 
+            Key: imageArr.Key,  
+          }; 
           main_image_arr = Object.create(productImageArrObj);
-          main_image_arr.Location = imageArr.Location;;
+          main_image_arr.Location = imageArr.Location;
           main_image_arr.Key = imageArr.Key;   
         } 
       })
 
       productImageArr.map( (imageArr, imageArrKey) => {
         if(main_image_arr.length === 0){
+          var productImageArrObj = {
+            Location: imageArr.Location, 
+            Key: imageArr.Key,  
+          }; 
           main_image_arr = Object.create(productImageArrObj);
           main_image_arr.Location = imageArr.thumbnail;;
           main_image_arr.Key = imageArr.Key;    
         } 
-      });
-      message = JSON.stringify(main_image_arr);
-      return { responseStatus: { message: message}}
+      }); 
       if(_id !== undefined && _id !== null){
         await Product.findOneAndUpdate(
           {_id: _id},
