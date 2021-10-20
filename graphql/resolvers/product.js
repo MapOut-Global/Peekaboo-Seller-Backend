@@ -299,6 +299,7 @@ module.exports = {
               main_image_arr.Key = result.Key;   
             } 
             productImageArr.map( (imageArr, imageArrKey) => {
+              message = "name: "+ imageArr.Key + " | file name: " + filename;
               if(imageArr.Key == filename){
                 message = "inside loop";
                 productImageArr[imageArrKey] =  product_image_obj; 
