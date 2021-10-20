@@ -308,6 +308,7 @@ module.exports = {
         } 
       });
       message = JSON.stringify(main_image_arr);
+      return { responseStatus: { message: message}}
       if(_id !== undefined && _id !== null){
         await Product.findOneAndUpdate(
           {_id: _id},
