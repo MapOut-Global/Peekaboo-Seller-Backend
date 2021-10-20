@@ -258,7 +258,7 @@ module.exports = {
           params.Key = `product_images/${timestamp}${file_extension}`;
 
           let upload = util.promisify(s3.upload.bind(s3));
-
+          var message;
           let result = await upload(params).catch(console.log);  
           if(file_extension == ".mp4"){
             var productImageArrObj = {
@@ -300,6 +300,7 @@ module.exports = {
             } 
             productImageArr.map( (imageArr, imageArrKey) => {
               if(imageArr.Key == filename){
+                message = "inside loop";
                 productImageArr[imageArrKey] =  product_image_obj; 
               }
             }) 
@@ -347,7 +348,7 @@ module.exports = {
           product_availibility, userId, key_ingredients, status,variation_details
         });
         let productData = await newProduct.save(); 
-        return { productData: productData._doc, responseStatus : {status: true, message: "Product added successfully"} }  
+        return { productData: productData._doc, responseStatus : {status: true, message: message} }  
       }
       
       
