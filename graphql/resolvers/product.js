@@ -298,6 +298,7 @@ module.exports = {
               main_image_arr.Location = cdnUrl + result.Key;;
               main_image_arr.Key = result.Key;   
             } 
+            message = JSON.stringify(productImageArr);
             productImageArr.map( (imageArr, imageArrKey) => {
               if(imageArr.Key == filename){
                 message = "inside loop";
@@ -308,7 +309,6 @@ module.exports = {
           j++;
         };
       } 
-      message = JSON.stringify(old_product_images);
        
       if(_id !== undefined && _id !== null){
         await Product.findOneAndUpdate(
