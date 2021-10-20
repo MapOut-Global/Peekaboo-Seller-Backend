@@ -294,10 +294,10 @@ module.exports = {
             product_image_obj.order = imageOrder;  
 
             if(main_image_arr.length === 0){
+              main_image_arr = Object.create(productImageArrObj);
               main_image_arr.Location = cdnUrl + result.Key;;
               main_image_arr.Key = result.Key;   
-            }
-            var message;
+            } 
             productImageArr.map( (imageArr, imageArrKey) => {
               if(imageArr.Key == filename){
                 productImageArr[imageArrKey] =  product_image_obj; 
