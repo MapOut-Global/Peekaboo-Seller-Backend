@@ -130,7 +130,8 @@ module.exports = {
         return {
           ...classData._doc,
           _id: classData.id, 
-          createdAt: new Date(classData._doc.createdAt).toISOString(), 
+          createdAt: new Date(classData._doc.createdAt).toISOString(),
+          date: new Date(classData._doc.date).toISOString(),
         }
       })
     } catch (error) {
