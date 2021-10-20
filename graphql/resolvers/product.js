@@ -96,7 +96,7 @@ module.exports = {
 
       for(const [key, val] of Object.entries(cuisines)) {
         if(val._id === undefined){
-          let status = false;
+          let status = true;
           let type = "cuisine";
           let name = val.name;
           let checkSpecialityExist = await Speciality.findOne(
@@ -121,7 +121,7 @@ module.exports = {
 
       for(const [key, val] of Object.entries(dietary_need)) {
         if(val._id === undefined){
-          let status = false;
+          let status = true;
           let type = "dietary_need";
           let name = val.name;
           let checkSpecialityExist = await Speciality.findOne(
@@ -146,7 +146,7 @@ module.exports = {
 
       for(const [key, val] of Object.entries(key_ingredients)) {
         if(val._id === undefined){
-          let status = false;
+          let status = true;
           let type = "key_ingredients";
           let name = val.name;
           let checkSpecialityExist = await Speciality.findOne(
@@ -171,7 +171,7 @@ module.exports = {
 
       for(const [key, val] of Object.entries(allergens)) {
         if(val._id === undefined){
-          let status = false;
+          let status = true;
           let type = "allergens";
           let name = val.name;
           let checkSpecialityExist = await Speciality.findOne(
@@ -196,7 +196,7 @@ module.exports = {
 
       for(const [key, val] of Object.entries(mood_tags)) {
         if(val._id === undefined){
-          let status = false;
+          let status = true;
           let type = "mood_tags";
           let name = val.name;
           let checkSpecialityExist = await Speciality.findOne(
