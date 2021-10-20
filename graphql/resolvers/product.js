@@ -38,16 +38,7 @@ module.exports = {
         variation_details,
         _id 
       } = args.productData; 
-      if(_id !== undefined && _id !== null){
-        var checkProductData = await Product.findById(_id);  
-        if(old_product_images !== null && old_product_images!== undefined){
-          var productImageArr = old_product_images; 
-        }else{
-          var productImageArr = []; 
-        } 
-      }else{
-        var productImageArr = []; 
-      }
+      var productImageArr = old_product_images; 
 
       var categoryData = await Profile.findOne({ userId: userId }, 'categories').exec();
 
@@ -297,11 +288,9 @@ module.exports = {
               main_image_arr = Object.create(productImageArrObj);
               main_image_arr.Location = cdnUrl + result.Key;;
               main_image_arr.Key = result.Key;   
-            } 
-            message = JSON.stringify(productImageArr);
+            }  
             productImageArr.map( (imageArr, imageArrKey) => {
-              if(imageArr.Key == filename){
-                message = "inside loop";
+              if(imageArr.Key == filename){ 
                 productImageArr[imageArrKey] =  product_image_obj; 
               }
             }) 
@@ -349,7 +338,7 @@ module.exports = {
           product_availibility, userId, key_ingredients, status,variation_details
         });
         let productData = await newProduct.save(); 
-        return { productData: productData._doc, responseStatus : {status: true, message: message} }  
+        return { productData: productData._doc, responseStatus : {status: true, message: "Product added successfully"} }  
       }
       
       
