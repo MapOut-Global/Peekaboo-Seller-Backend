@@ -282,13 +282,7 @@ module.exports = {
             product_image_obj.Location = cdnUrl + result.Key;;
             product_image_obj.Key = result.Key;  
             product_image_obj.type = "image";  
-            product_image_obj.order = imageOrder;  
-
-            if(main_image_arr.length === 0){
-              main_image_arr = Object.create(productImageArrObj);
-              main_image_arr.Location = cdnUrl + result.Key;;
-              main_image_arr.Key = result.Key;   
-            }  
+            product_image_obj.order = imageOrder;   
             productImageArr.map( (imageArr, imageArrKey) => {
               if(imageArr.Key == filename){ 
                 productImageArr[imageArrKey] =  product_image_obj; 
@@ -298,7 +292,22 @@ module.exports = {
           j++;
         };
       } 
-       
+      productImageArr.map( (imageArr, imageArrKey) => {
+        if(main_image_arr.length === 0 && imageArr.type == 'image'){
+          main_image_arr = Object.create(productImageArrObj);
+          main_image_arr.Location = imageArr.Location;;
+          main_image_arr.Key = imageArr.Key;   
+        } 
+      })
+
+      productImageArr.map( (imageArr, imageArrKey) => {
+        if(main_image_arr.length === 0){
+          main_image_arr = Object.create(productImageArrObj);
+          main_image_arr.Location = imageArr.thumbnail;;
+          main_image_arr.Key = imageArr.Key;    
+        } 
+      })
+
       if(_id !== undefined && _id !== null){
         await Product.findOneAndUpdate(
           {_id: _id},
