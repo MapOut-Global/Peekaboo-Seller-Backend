@@ -481,14 +481,7 @@ module.exports = {
     return { responseStatus: {status: true, message: "Media removed"}, Key:Key };
   },
 
-  productDetail: async (args, req) => {
-    let checkToken = await authorizationFunction(req); 
-    if(checkToken.client_id === undefined){
-      throw {
-        error: checkToken,
-        status: 401
-      }
-    }
+  productDetail: async (args, req) => { 
     try{
       let { product_id } = args;
       let productData = Product.findOne({_id: product_id});
