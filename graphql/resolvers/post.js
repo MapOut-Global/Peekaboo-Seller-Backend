@@ -5,6 +5,8 @@ const { authorizationFunction } = require('../checkCognitoToken.js');
 const path = require('path');
 const util = require('util') ;
 const s3 =  require('../s3FileUploader'); 
+const cdnUrl = 'https://d24bvnb428s3x7.cloudfront.net/';
+
 module.exports = {  
   addPost: async (args, req) =>  {
     let checkToken = await authorizationFunction(req);
@@ -51,8 +53,14 @@ module.exports = {
 
         let result = await upload(params).catch(console.log);    
         image = {};
-        image.Location = result.Location;
-        image.Key = result.Key;  
+        image.Location = cdnUrl + result.Key;
+        image.Key = result.Key; 
+        if(file_extension == ".mp4"){  
+          image.type = "video";  
+          image.thumbnail = cdnUrl + 'thumbnails/post_images/' + timestamp + "-0.jpg";
+        }else{
+          image.type = "image";  
+        }
         if(checkPostOldImage.image !== null && checkPostOldImage.image !== undefined && checkPostOldImage.image.Key !== undefined){
           oldKey = checkPostOldImage.image.Key;
           const deleteParams = {

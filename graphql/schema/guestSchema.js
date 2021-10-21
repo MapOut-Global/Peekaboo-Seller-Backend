@@ -584,7 +584,7 @@ module.exports = buildSchema(`
   type Post {
     _id: String
     description: String
-    image: S3Type
+    image: ProductImage
     productData: [Product]
     userId: String!
     facebook_flag: Boolean
