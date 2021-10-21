@@ -68,6 +68,7 @@ module.exports = buildSchema(`
     speciality: [Speciality]
     kitchenTourFile: S3Type
     categories: [UserCategory] 
+    user_categories: [UserCategory] 
     createdAt: String!
     updatedAt: String!
     avatar_url: S3Type

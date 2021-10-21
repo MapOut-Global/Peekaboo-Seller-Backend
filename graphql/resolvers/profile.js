@@ -419,6 +419,7 @@ module.exports = {
 
     let productList = await Product.find({userId:new ObjectId(userId)});  
     var categoriesArr = [];
+    var userCategoriesArr = [];
     var subCategoryArr = [];
     var addeddSubCatId = [];
     var sKey = 0;
@@ -435,8 +436,7 @@ module.exports = {
           sKey++;
         } 
       });
-    }); 
-
+    });  
     
     let classesArr = await Class.find({userId:new ObjectId(userId)});   
     let classes = classesArr.map( classObj => {
@@ -483,6 +483,10 @@ module.exports = {
         productData: productData
       } 
     })
+    var userCategory = cookProfile.categories;
+
+
+
     cookProfile.categories.map( (category, key) => { 
       if(category.parent_id !== undefined && category.parent_id != null && category.parent_id !== "0"){
         cookProfile.categories.splice(key, 1);
@@ -521,18 +525,40 @@ module.exports = {
       }) 
     })  
 
+    userCategory.map( (category, key) => { 
+      if(category.parent_id !== undefined && category.parent_id != null && category.parent_id !== "0"){
+        userCategory.splice(key, 1);
+        return
+      }
+      userCategoriesArr[key] = category; 
+      userCategoriesArr[key]['sub_category'] = [];
+      var subCatKey = 0;
+      subCategoryArr.map ( (subCategory) => {  
+        if(subCategory.parent_id == category._id){  
+          userCategoriesArr[key]['sub_category'][subCatKey] = subCategory;
+          if(!subCategory.availibility_flag && subCategory.availibility_flag !== null && subCategory.availibility_flag !== undefined){
+            userCategoriesArr[key]['sub_category'][subCatKey]['availibility_flag'] = false;
+          } else { 
+            userCategoriesArr[key]['sub_category'][subCatKey]['availibility_flag'] = true;
+          } 
+          subCatKey++;
+        }
+      }) 
+    }) 
+
     if(user.role_id === undefined || user.role_id === null){
       user.role_id = 2;
     }
      
     if(cookProfile.on_boarding === undefined || cookProfile.on_boarding === null){
       cookProfile.on_boarding = false;
-    } 
+    }  
     cookProfile.classes = classes;
     cookProfile.posts = postList;
     cookProfile.reviews = reviewList;
     cookProfile.followers = followers;
     cookProfile.is_following = is_following;
+    cookProfile.user_categories = userCategoriesArr;
     return {  
       userData: user,
       cookProfile: cookProfile, 
