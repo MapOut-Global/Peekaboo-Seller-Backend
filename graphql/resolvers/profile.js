@@ -8,6 +8,7 @@ const Like = require("../../models/like")
 const Review = require("../../models/review") 
 const Order = require("../../models/order") 
 const Post = require("../../models/post") 
+const Category = require("../../models/category") 
 var ObjectId = require('mongoose').Types.ObjectId; 
 const { authorizationFunction } = require('../checkCognitoToken'); 
  
@@ -424,6 +425,11 @@ module.exports = {
     productList.map((product, pKey)  => {
       product.sub_categories.map( (pSubCategory) => { 
         if(addeddSubCatId.indexOf(pSubCategory._id) == -1){ 
+          cookProfile.categories.map( (category, key) => { 
+            if(category._id == pSubCategory._id.toString()){
+              pSubCategory.availibility_flag = category.availibility_flag !== null ? category.availibility_flag : true;
+            }
+          })
           subCategoryArr[sKey] = pSubCategory;
           addeddSubCatId.push(pSubCategory._id);
           sKey++;
@@ -478,12 +484,20 @@ module.exports = {
       } 
     })
     cookProfile.categories.map( (category, key) => { 
+      if(category.parent_id !== undefined && category.parent_id != null && category.parent_id !== "0"){
+        cookProfile.categories.splice(key, 1);
+        return
+      }
       categoriesArr[key] = category; 
       categoriesArr[key]['sub_category'] = [];
       var subCatKey = 0;
       subCategoryArr.map ( (subCategory) => {  
-        if(subCategory.parent_id == category._id){ 
+        if(subCategory.parent_id == category._id){  
+          if(!subCategory.availibility_flag && subCategory.availibility_flag !== null && subCategory.availibility_flag !== undefined){
+            return;
+          } 
           categoriesArr[key]['sub_category'][subCatKey] = subCategory;
+          categoriesArr[key]['sub_category'][subCatKey]['availibility_flag'] = true;
           categoriesArr[key]['sub_category'][subCatKey]['productList'] = [];
           var productKey = 0;
           productList.map((product)  => {
@@ -570,15 +584,31 @@ module.exports = {
     }
     let { userId, categoryId, status } = args;
     var updateCat = {};
+    var statusUpdated = false;
     var categoryData = await Profile.findOne({ userId: userId }, 'categories').exec();
+    var i = 0;
     for(const [key, val] of Object.entries(categoryData.categories)) {
       if(val._id == categoryId){  
         updateCat._id = val._id;
         updateCat.name = val.name;   
+        if(val.parent_id !== undefined){
+          updateCat.parent_id = val.parent_id;   
+        } 
         updateCat.availibility_flag = status;
         categoryData.categories[key] = updateCat
+        statusUpdated = true;
       }
+      i++;
     }  
+
+    if(!statusUpdated){ 
+      let subCategoryData = await Category.findById(categoryId); 
+      updateCat._id = subCategoryData._id;
+      updateCat.name = subCategoryData.name;   
+      updateCat.parent_id = subCategoryData.parent_id;   
+      updateCat.availibility_flag = status;
+      categoryData.categories[i] = updateCat
+    }
     await Profile.findOneAndUpdate(
       {userId: userId},
       {

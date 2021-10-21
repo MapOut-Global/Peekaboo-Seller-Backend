@@ -413,7 +413,7 @@ module.exports = buildSchema(`
     name: String
     parent_id: String
     availibility_flag: Boolean
-    sub_category: [Category]
+    sub_category: [UserCategory]
     productList: [Product]
     product_count: Int
   }
