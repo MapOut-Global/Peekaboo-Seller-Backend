@@ -55,6 +55,9 @@ const productSchema = new Schema(
     },
     variation_details: {
       type: Object
+    },
+    dicsount_details: {
+      type: Object
     }
   },
   { timestamps: true }

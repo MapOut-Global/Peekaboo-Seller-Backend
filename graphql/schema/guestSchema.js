@@ -350,6 +350,7 @@ module.exports = buildSchema(`
     likes: Int
     userId: ID! 
     variation_details: Variation
+    discount_details: DiscountDetail
     _id: ID!
     status: Boolean 
     createdAt: String
@@ -383,6 +384,7 @@ module.exports = buildSchema(`
     product_image: [Upload] 
     old_product_images: [OldProductImageInput]
     variation_details: VariationInput
+    discount_details: DiscountDetailInput
     _id: String
   }
 
@@ -531,14 +533,14 @@ module.exports = buildSchema(`
 
   input DiscountDetailInput { 
     discount: Boolean
-    days: String 
+    value: String 
     available_date: String
     available_time: String 
   }
 
   type DiscountDetail { 
     discount: Boolean
-    days: String 
+    value: String 
     available_date: String
     available_time: String 
   }
