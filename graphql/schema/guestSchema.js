@@ -61,6 +61,7 @@ module.exports = buildSchema(`
     shop_name: String
     aboutme: String 
     hoursOfOperation: [HoursOfOperation] 
+    workingTimings: [HoursOfOperationFeed] 
     about_shop: String  
     address: Address
     delivery: Delivery
@@ -86,6 +87,10 @@ module.exports = buildSchema(`
     reviews: [Review]
     rating: Float
     review_counts: Int
+  }
+
+  type HoursOfOperationFeed{
+    workings: String
   }
   
   type Review {

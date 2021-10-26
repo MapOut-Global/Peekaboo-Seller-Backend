@@ -553,6 +553,60 @@ module.exports = {
     if(cookProfile.on_boarding === undefined || cookProfile.on_boarding === null){
       cookProfile.on_boarding = false;
     }  
+
+    const weekDayArr = {
+      "1": "Mon",
+      "2": "Tue",
+      "3": "Wed",
+      "4": "Thu",
+      "5": "Fri",
+      "6": "Sat",
+      "7": "Sun",
+    };
+    if(cookProfile.hoursOfOperation.length > 0){
+      var workingsTime = [];
+      cookProfile.hoursOfOperation.map( workingDetails => {
+        var timingStr = "";
+        timingStrArr = [];
+        workingDetails.dayOfWeek.map( weekDay => {
+          for(var i=1; i<=7; i++){
+            if(weekDay.dayNumber == i){ 
+              timingStrArr.push(weekDayArr[i]);
+            }
+          }
+        })  
+        timingStr = timingStrArr.join(", "); 
+        
+        var from = workingDetails.timeOfDay.from;
+        var hours = Number(from.match(/^(\d+)/)[1]);
+        var minutes = Number(from.match(/:(\d+)/)[1]);
+        var AMPM = from.match(/\s(.*)$/)[1];
+        if(AMPM == "PM" && hours<12) hours = hours+12;
+        if(AMPM == "AM" && hours==12) hours = hours-12;
+        var sHours = hours.toString();
+        var sMinutes = minutes.toString();
+        if(hours<10) sHours = "0" + sHours;
+        if(minutes<10) sMinutes = "0" + sMinutes; 
+        timingStr += " " + sHours + ":" + sMinutes;
+
+        var to = workingDetails.timeOfDay.to;
+        var endhours = Number(to.match(/^(\d+)/)[1]);
+        var endminutes = Number(to.match(/:(\d+)/)[1]);
+        var AMPM = to.match(/\s(.*)$/)[1];
+        if(AMPM == "PM" && endhours<12) endhours = endhours+12;
+        if(AMPM == "AM" && endhours==12) endhours = endhours-12;
+        var eHours = endhours.toString();
+        var eMinutes = endminutes.toString();
+        if(endhours<10) eHours = "0" + eHours;
+        if(endminutes<10) eMinutes = "0" + eMinutes; 
+        timingStr += " | " + eHours + ":" + eMinutes;
+        var workingTempArr = {};
+        workingTempArr['workings'] = timingStr;
+        workingsTime.push(workingTempArr);
+      })
+    }
+
+    cookProfile.workingTimings = workingsTime;
     cookProfile.classes = classes;
     cookProfile.posts = postList;
     cookProfile.reviews = reviewList;
