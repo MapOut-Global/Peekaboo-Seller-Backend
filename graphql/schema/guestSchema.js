@@ -738,7 +738,7 @@ module.exports = buildSchema(`
 
   type Query { 
     specialities(type:String!):[Speciality!]
-    categories(parentIds:[CategoryFindInput]):CategoryList!
+    categories(parentIds:[CategoryFindInput], userId: String):CategoryList!
     verifyEmail(verify:EmailVerifyInput): EmailVerify
     verifyOtp(verify:OtpVerifyInput): OtpVerify
     renewJwtToken(refreshToken: String): RefreshToken
