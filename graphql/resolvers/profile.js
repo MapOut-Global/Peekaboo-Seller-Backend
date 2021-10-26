@@ -221,7 +221,7 @@ module.exports = {
         } 
       /************************* Upload attachments on S3 Server ********************/
       
-        User.findOneAndUpdate(
+        await User.findOneAndUpdate(
         { _id: userId },
         {
           full_name: full_name,
