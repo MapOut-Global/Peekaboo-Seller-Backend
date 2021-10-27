@@ -26,7 +26,7 @@ module.exports = {
         if(profile !== null){ 
           profile.categories.map( (uCategory, key) => { 
             if(uCategory._id == category._id.toString()){
-              parent_availibility_flag = uCategory.availibility_flag;
+              parent_availibility_flag = uCategory.availibility_flag != null ? uCategory.availibility_flag : true;
             }
           });
         }
