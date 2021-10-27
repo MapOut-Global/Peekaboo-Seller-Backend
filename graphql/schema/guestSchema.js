@@ -423,6 +423,7 @@ module.exports = buildSchema(`
     _id:String
     name: String
     parent_id: String
+    availibility_flag: Boolean
     sub_category: [Category]
     productList: [Product]
     product_count: Int

@@ -1,5 +1,6 @@
 const Category = require("../../models/category") 
 const Product = require("../../models/product") 
+const Profile = require("../../models/profile") 
 var ObjectId = require('mongoose').Types.ObjectId; 
 const { authorizationFunction } = require('../checkCognitoToken.js'); 
 
@@ -13,27 +14,47 @@ module.exports = {
         searchById.push(val._id);
       }  
       let productList = null
+      let profile = null
       if(userId != null && userId != '0'){
         productList = await Product.find( { userId: new ObjectId(userId)});
+        profile = await Profile.findOne( { userId:  new ObjectId(userId)});
       } 
       const categoriesFetched = await Category.find({parent_id : { $in : searchById}, status:true}); 
       const subcategoriesFetched = await Category.find({parent_id : { $ne : "0"}, status:true}); 
       let categoryList = categoriesFetched.map(category => {
+        var parent_availibility_flag = true;
+        if(profile !== null){ 
+          profile.categories.map( (uCategory, key) => { 
+            if(uCategory._id == category._id.toString()){
+              parent_availibility_flag = uCategory.availibility_flag;
+            }
+          });
+        }
+        
         var subCatArr = [];
         mainProductCount = 0;
         subcategoriesFetched.map( subCat => {
+          var availibility_flag = true;
           if(subCat.parent_id == category._id){
             var productCount = 0;
             if(productList !== null){ 
               productList.map( product => {
-                product.sub_categories.map( pSubCat => {
+                product.sub_categories.map( pSubCat => {  
                   if(pSubCat._id === subCat._id.toString()){
                     productCount++; 
                   }
                 })
               })
             } 
-            subCat.product_count = productCount;
+            if(profile !== null){
+              profile.categories.map( (uCategory, key) => { 
+                if(uCategory._id.toString() == subCat._id.toString()){
+                  availibility_flag = uCategory.availibility_flag;
+                }
+              })
+            }
+            subCat.product_count = productCount; 
+            subCat.availibility_flag = availibility_flag; 
             subCatArr.push(subCat);
           }
         });
@@ -50,6 +71,7 @@ module.exports = {
           ...category._doc,
           _id: category.id,
           product_count: mainProductCount,
+          availibility_flag: parent_availibility_flag,
           sub_category: subCatArr,
           createdAt: new Date(category._doc.createdAt).toISOString(),
         }
