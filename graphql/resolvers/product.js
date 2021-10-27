@@ -251,7 +251,7 @@ module.exports = {
           let upload = util.promisify(s3.upload.bind(s3));
           var message;
           let result = await upload(params).catch(console.log);  
-          if(file_extension == ".mp4"){
+          if(file_extension.toLowerCase() == ".mp4" || file_extension.toLowerCase() == ".mov"){
             var productImageArrObj = {
               Location: cdnUrl + result.Key, 
               Key: result.Key, 
