@@ -173,12 +173,18 @@ module.exports = buildSchema(`
   }  
 
   type Address{ 
+    block_number: String
+    unit_number: String
+    floor_number: String
     address1: String
     address2: String 
+    address3: String 
     latitude: Float
     longitude: Float
     postcode: String
   }
+
+
 
   type Delivery{ 
     address: Address
@@ -246,8 +252,12 @@ module.exports = buildSchema(`
   }  
 
   input AddressInput{ 
+    block_number: String
+    unit_number: String
+    floor_number: String
     address1: String
-    address2: String
+    address2: String 
+    address3: String 
     latitude: Float
     longitude: Float
     postcode: String
