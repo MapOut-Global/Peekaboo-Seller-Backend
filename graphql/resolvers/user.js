@@ -132,6 +132,9 @@ module.exports = {
         email: email
       }
     ).exec();
+    if(user === null){
+      return { responseStatus : {status: false, message: "Invalid email address"} }  
+    }
     try { 
       let result = await asyncAuthenticateUser(cognitoUser, authenticationDetails);
       if ('idToken' in result) {
