@@ -539,15 +539,13 @@ module.exports = buildSchema(`
   input DiscountDetailInput { 
     discount: Boolean
     value: String 
-    available_date: String
-    available_time: String 
+    available_till: String 
   }
 
   type DiscountDetail { 
     discount: Boolean
     value: String 
-    available_date: String
-    available_time: String 
+    available_till: String 
   }
 
   type AddProduct{
