@@ -56,7 +56,7 @@ const productSchema = new Schema(
     variation_details: {
       type: Object
     },
-    dicsount_details: {
+    discount_details: {
       type: Object
     }
   },

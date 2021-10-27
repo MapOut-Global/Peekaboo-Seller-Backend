@@ -36,7 +36,7 @@ module.exports = {
         old_product_images,
         userId,    
         variation_details,
-        dicsount_details,
+        discount_details,
         _id 
       } = args.productData; 
       var productImageArr = old_product_images; 
@@ -332,7 +332,7 @@ module.exports = {
             product_availibility: product_availibility,
             key_ingredients: key_ingredients, 
             variation_details: variation_details,
-            dicsount_details: dicsount_details,
+            discount_details: discount_details,
             main_image: main_image_arr
           },
           {
@@ -353,7 +353,7 @@ module.exports = {
           name, mood_tags, allergens, description, categories, product_image_url, sub_categories, 
           cuisines, dietary_need, packaging_price, 
           product_availibility, userId, key_ingredients, status,variation_details,
-          main_image: main_image_arr, dicsount_details
+          main_image: main_image_arr, discount_details
         });
         let productData = await newProduct.save(); 
         return { productData: productData._doc, responseStatus : {status: true, message: message} }  
