@@ -177,6 +177,7 @@ module.exports = buildSchema(`
     address2: String 
     latitude: Float
     longitude: Float
+    postcode: String
   }
 
   type Delivery{ 
@@ -249,6 +250,7 @@ module.exports = buildSchema(`
     address2: String
     latitude: Float
     longitude: Float
+    postcode: String
   }
 
   input DeliveryInput{ 
