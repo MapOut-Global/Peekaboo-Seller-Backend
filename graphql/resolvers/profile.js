@@ -489,7 +489,22 @@ module.exports = {
         cookProfile.categories.splice(key, 1);
         return
       }
-      categoriesArr[key] = category; 
+      var mainProductCount = 0;
+      
+      if(productList !== null){ 
+        productList.map( product => {
+          product.categories.map( pCat => {
+            if(pCat._id === category._id.toString()){
+              mainProductCount++; 
+            }
+          })
+        })
+      } 
+      if(mainProductCount == 0){
+        return 
+      }
+      categoriesArr[key] = category;
+      categoriesArr[key]['product_count'] = mainProductCount;
       categoriesArr[key]['sub_category'] = [];
       var subCatKey = 0;
       subCategoryArr.map ( (subCategory) => {  
@@ -610,6 +625,7 @@ module.exports = {
     cookProfile.followers = followers;
     cookProfile.is_following = is_following;
     cookProfile.user_categories = userCategoriesArr;
+    cookProfile.categories = categoriesArr;
     return {  
       userData: user,
       cookProfile: cookProfile, 
