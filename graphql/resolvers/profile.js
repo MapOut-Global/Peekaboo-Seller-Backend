@@ -484,11 +484,10 @@ module.exports = {
     })
     var userCategory = cookProfile.categories; 
 
-    cookProfile.categories.map( (category, key) => { 
-      if(category.parent_id !== undefined && category.parent_id != null && category.parent_id !== "0"){
-        cookProfile.categories.splice(key, 1);
+    cookProfile.categories.map( (category, key) => {   
+      if(category.parent_id !== undefined && category.parent_id != null && category.parent_id != "0"){  
         return
-      } 
+      }  
       var mainProductCount = 0;
       
       if(productList !== null){ 
@@ -499,7 +498,7 @@ module.exports = {
             }
           })
         })
-      } 
+      }  
       if(mainProductCount == 0){
         return 
       }
@@ -536,6 +535,7 @@ module.exports = {
         }
       }) 
     })   
+    categoriesArr = categoriesArr.filter(function(val){if(val !== undefined)return val}); 
     var userCategoriesArr = [];
     /*userCategory.map( (category, key) => { 
       if(category.parent_id !== undefined && category.parent_id != null && category.parent_id !== "0"){
