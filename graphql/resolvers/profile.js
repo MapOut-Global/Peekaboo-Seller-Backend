@@ -419,7 +419,6 @@ module.exports = {
 
     let productList = await Product.find({userId:new ObjectId(userId)});  
     var categoriesArr = [];
-    var userCategoriesArr = [];
     var subCategoryArr = [];
     var addeddSubCatId = [];
     var sKey = 0;
@@ -483,9 +482,7 @@ module.exports = {
         productData: productData
       } 
     })
-    var userCategory = cookProfile.categories;
-
-
+    var userCategory = cookProfile.categories; 
 
     cookProfile.categories.map( (category, key) => { 
       if(category.parent_id !== undefined && category.parent_id != null && category.parent_id !== "0"){
@@ -523,9 +520,9 @@ module.exports = {
           subCatKey++;
         }
       }) 
-    })  
-
-    userCategory.map( (category, key) => { 
+    })   
+    var userCategoriesArr = [];
+    /*userCategory.map( (category, key) => { 
       if(category.parent_id !== undefined && category.parent_id != null && category.parent_id !== "0"){
         userCategory.splice(key, 1);
         return
@@ -544,8 +541,8 @@ module.exports = {
           subCatKey++;
         }
       }) 
-    }) 
-
+    })  */
+    
     if(user.role_id === undefined || user.role_id === null){
       user.role_id = 2;
     }
