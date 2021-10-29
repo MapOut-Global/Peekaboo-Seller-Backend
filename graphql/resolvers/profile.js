@@ -626,8 +626,7 @@ module.exports = {
     cookProfile.is_following = is_following;
     cookProfile.user_categories = categoriesArr;
     return {  
-      userData: user,
-      cookProfile: cookProfile, 
+      userData: user, 
       responseStatus: {status: true, message: "Profile saved"}};
        
   },
