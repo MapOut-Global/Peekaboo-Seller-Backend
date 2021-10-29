@@ -624,8 +624,7 @@ module.exports = {
     cookProfile.reviews = reviewList;
     cookProfile.followers = followers;
     cookProfile.is_following = is_following;
-    cookProfile.user_categories = userCategoriesArr;
-    cookProfile.categories = categoriesArr;
+    cookProfile.user_categories = categoriesArr;
     return {  
       userData: user,
       cookProfile: cookProfile, 
