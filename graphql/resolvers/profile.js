@@ -44,7 +44,13 @@ module.exports = {
       } = args.profile;
       var { full_name } = args.user;
       var checkProfileOldAvtar = await Profile.findOne({userId: userId}).exec();   
-
+      var geo_points = {
+        "type": "Point",
+        "coordinates": [
+          address.longitude,
+          address.latitude,
+        ]
+      }
       /************************* Upload avtar on S3 Server ********************/
         if (avatar) { 
           let { file } = await avatar;  
@@ -273,6 +279,7 @@ module.exports = {
           avatar_url: avatar_url,
           attachments: attachmentArr, 
           zipcode: zipcode, 
+          geo_points: geo_points,
           speciality: speciality, 
         },
         {
@@ -536,28 +543,7 @@ module.exports = {
       }) 
     })   
     categoriesArr = categoriesArr.filter(function(val){if(val !== undefined)return val}); 
-    var userCategoriesArr = [];
-    /*userCategory.map( (category, key) => { 
-      if(category.parent_id !== undefined && category.parent_id != null && category.parent_id !== "0"){
-        userCategory.splice(key, 1);
-        return
-      }
-      userCategoriesArr[key] = category; 
-      userCategoriesArr[key]['sub_category'] = [];
-      var subCatKey = 0;
-      subCategoryArr.map ( (subCategory) => {  
-        if(subCategory.parent_id == category._id){  
-          userCategoriesArr[key]['sub_category'][subCatKey] = subCategory;
-          if(!subCategory.availibility_flag && subCategory.availibility_flag !== null && subCategory.availibility_flag !== undefined){
-            userCategoriesArr[key]['sub_category'][subCatKey]['availibility_flag'] = false;
-          } else { 
-            userCategoriesArr[key]['sub_category'][subCatKey]['availibility_flag'] = true;
-          } 
-          subCatKey++;
-        }
-      }) 
-    })  */
-    
+    var userCategoriesArr = []; 
     if(user.role_id === undefined || user.role_id === null){
       user.role_id = 2;
     }

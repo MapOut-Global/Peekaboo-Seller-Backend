@@ -70,6 +70,16 @@ const profileSchema = new Schema(
     },
     follower_count: {
       type: Number
+    },
+    geo_points: {
+      type: {
+        type: String, // Don't do `{ location: { type: String } }`
+        enum: ['Point'], // 'location.type' must be 'Point' 
+      },
+      coordinates: {
+        type: [Number],
+        required: true
+      }
     }
   },
   { timestamps: true }
