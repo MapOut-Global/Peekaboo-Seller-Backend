@@ -168,59 +168,59 @@ module.exports = {
               key_ingredients[key]['_id'] = checkSpecialityExist._id.toString();
             } 
           }
+        } 
+
+        for(const [key, val] of Object.entries(allergens)) {
+          if(val._id === undefined){
+            let status = true;
+            let type = "allergens";
+            let name = val.name;
+            let checkSpecialityExist = await Speciality.findOne(
+              {
+                name: name,
+                type: "allergens"
+              }
+            ).exec();   
+            if(!checkSpecialityExist){
+              const newSpeciality = new Speciality({
+                name,
+                type,
+                status
+              });
+              await newSpeciality.save(); 
+              allergens[key]['_id'] = newSpeciality._doc._id.toString();
+            }else{ 
+              allergens[key]['_id'] = checkSpecialityExist._id.toString();
+            } 
+          }
         }  
+
+        for(const [key, val] of Object.entries(mood_tags)) {
+          if(val._id === undefined){
+            let status = true;
+            let type = "mood_tags";
+            let name = val.name;
+            let checkSpecialityExist = await Speciality.findOne(
+              {
+                name: name,
+                type: "mood_tags"
+              }
+            ).exec();   
+            if(!checkSpecialityExist){
+              const newSpeciality = new Speciality({
+                name,
+                type,
+                status
+              });
+              await newSpeciality.save(); 
+              mood_tags[key]['_id'] = newSpeciality._doc._id.toString();
+            }else{ 
+              mood_tags[key]['_id'] = checkSpecialityExist._id.toString();
+            } 
+          }
+        } 
+        
       */
-
-      for(const [key, val] of Object.entries(allergens)) {
-        if(val._id === undefined){
-          let status = true;
-          let type = "allergens";
-          let name = val.name;
-          let checkSpecialityExist = await Speciality.findOne(
-            {
-              name: name,
-              type: "allergens"
-            }
-          ).exec();   
-          if(!checkSpecialityExist){
-            const newSpeciality = new Speciality({
-              name,
-              type,
-              status
-            });
-            await newSpeciality.save(); 
-            allergens[key]['_id'] = newSpeciality._doc._id.toString();
-          }else{ 
-            allergens[key]['_id'] = checkSpecialityExist._id.toString();
-          } 
-        }
-      }  
-
-      for(const [key, val] of Object.entries(mood_tags)) {
-        if(val._id === undefined){
-          let status = true;
-          let type = "mood_tags";
-          let name = val.name;
-          let checkSpecialityExist = await Speciality.findOne(
-            {
-              name: name,
-              type: "mood_tags"
-            }
-          ).exec();   
-          if(!checkSpecialityExist){
-            const newSpeciality = new Speciality({
-              name,
-              type,
-              status
-            });
-            await newSpeciality.save(); 
-            mood_tags[key]['_id'] = newSpeciality._doc._id.toString();
-          }else{ 
-            mood_tags[key]['_id'] = checkSpecialityExist._id.toString();
-          } 
-        }
-      } 
-       
       var main_image_arr = [];
       if(product_image !== undefined && product_image.length > 0){
         totArrayLength = parseInt(product_image.length) + parseInt(productImageArr.length);
