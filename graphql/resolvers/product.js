@@ -43,131 +43,133 @@ module.exports = {
 
       var categoryData = await Profile.findOne({ userId: userId }, 'categories').exec();
 
-      for(const [key, val] of Object.entries(categories)) {
-        if(val._id === undefined){
-          let status = false;
-          let name = val.name;
-          const newCategories = new Category({
-            name,
-            status
-          });
-          await newCategories.save(); 
-          categories[key]['_id'] = newCategories._doc._id.toString();
-          catId = newCategories._doc._id.toString();
-        }else{
-          catId = val._id
-        }
-        categoryExist = false;
+      /* 
+        for(const [key, val] of Object.entries(categories)) {
+          if(val._id === undefined){
+            let status = false;
+            let name = val.name;
+            const newCategories = new Category({
+              name,
+              status
+            });
+            await newCategories.save(); 
+            categories[key]['_id'] = newCategories._doc._id.toString();
+            catId = newCategories._doc._id.toString();
+          }else{
+            catId = val._id
+          }
+          categoryExist = false;
 
-        for(const [profileKey, profileCat] of Object.entries(categoryData.categories)) {
-          if(profileCat._id == catId){  
-            categoryExist = true;
+          for(const [profileKey, profileCat] of Object.entries(categoryData.categories)) {
+            if(profileCat._id == catId){  
+              categoryExist = true;
+            }
+          }  
+
+          if(!categoryExist){
+            categoryData.categories.push(categories[key]);
+          }
+        }  
+        await Profile.findOneAndUpdate(
+          {userId: userId},
+          {
+            categories: categoryData.categories
+          },
+          {
+            new: true,
+            upsert: true
+          }
+        );  
+        for(const [key, val] of Object.entries(sub_categories)) {
+          if(val._id === undefined){
+            let status = true;
+            let name = val.name;
+            let parent_id = val.parent_id;
+            const newSubCategories = new Category({
+              name,
+              parent_id,
+              status
+            });
+            await newSubCategories.save(); 
+            sub_categories[key]['_id'] = newSubCategories._doc._id.toString();
+          }
+        } 
+
+        for(const [key, val] of Object.entries(cuisines)) {
+          if(val._id === undefined){
+            let status = true;
+            let type = "cuisine";
+            let name = val.name;
+            let checkSpecialityExist = await Speciality.findOne(
+              {
+                name: name,
+                type: "cuisine"
+              }
+            ).exec();   
+            if(!checkSpecialityExist){
+              const newSpeciality = new Speciality({
+                name,
+                type,
+                status
+              });
+              await newSpeciality.save(); 
+              cuisines[key]['_id'] = newSpeciality._doc._id.toString();
+            }else{ 
+              cuisines[key]['_id'] = checkSpecialityExist._id.toString();
+            } 
+          }
+        } 
+
+        for(const [key, val] of Object.entries(dietary_need)) {
+          if(val._id === undefined){
+            let status = true;
+            let type = "dietary_need";
+            let name = val.name;
+            let checkSpecialityExist = await Speciality.findOne(
+              {
+                name: name,
+                type: "dietary_need"
+              }
+            ).exec();   
+            if(!checkSpecialityExist){
+              const newSpeciality = new Speciality({
+                name,
+                type,
+                status
+              });
+              await newSpeciality.save(); 
+              dietary_need[key]['_id'] = newSpeciality._doc._id.toString();
+            }else{ 
+              dietary_need[key]['_id'] = checkSpecialityExist._id.toString();
+            } 
           }
         }  
 
-        if(!categoryExist){
-          categoryData.categories.push(categories[key]);
-        }
-      }  
-      await Profile.findOneAndUpdate(
-        {userId: userId},
-        {
-          categories: categoryData.categories
-        },
-        {
-          new: true,
-          upsert: true
-        }
-      );  
-      for(const [key, val] of Object.entries(sub_categories)) {
-        if(val._id === undefined){
-          let status = true;
-          let name = val.name;
-          let parent_id = val.parent_id;
-          const newSubCategories = new Category({
-            name,
-            parent_id,
-            status
-          });
-          await newSubCategories.save(); 
-          sub_categories[key]['_id'] = newSubCategories._doc._id.toString();
-        }
-      } 
-
-      for(const [key, val] of Object.entries(cuisines)) {
-        if(val._id === undefined){
-          let status = true;
-          let type = "cuisine";
-          let name = val.name;
-          let checkSpecialityExist = await Speciality.findOne(
-            {
-              name: name,
-              type: "cuisine"
-            }
-          ).exec();   
-          if(!checkSpecialityExist){
-            const newSpeciality = new Speciality({
-              name,
-              type,
-              status
-            });
-            await newSpeciality.save(); 
-            cuisines[key]['_id'] = newSpeciality._doc._id.toString();
-          }else{ 
-            cuisines[key]['_id'] = checkSpecialityExist._id.toString();
-          } 
-        }
-      } 
-
-      for(const [key, val] of Object.entries(dietary_need)) {
-        if(val._id === undefined){
-          let status = true;
-          let type = "dietary_need";
-          let name = val.name;
-          let checkSpecialityExist = await Speciality.findOne(
-            {
-              name: name,
-              type: "dietary_need"
-            }
-          ).exec();   
-          if(!checkSpecialityExist){
-            const newSpeciality = new Speciality({
-              name,
-              type,
-              status
-            });
-            await newSpeciality.save(); 
-            dietary_need[key]['_id'] = newSpeciality._doc._id.toString();
-          }else{ 
-            dietary_need[key]['_id'] = checkSpecialityExist._id.toString();
-          } 
-        }
-      }  
-
-      for(const [key, val] of Object.entries(key_ingredients)) {
-        if(val._id === undefined){
-          let status = true;
-          let type = "key_ingredients";
-          let name = val.name;
-          let checkSpecialityExist = await Speciality.findOne(
-            {
-              name: name,
-              type: "key_ingredients"
-            }
-          ).exec();   
-          if(!checkSpecialityExist){
-            const newSpeciality = new Speciality({
-              name,
-              type,
-              status
-            });
-            await newSpeciality.save(); 
-            key_ingredients[key]['_id'] = newSpeciality._doc._id.toString();
-          }else{ 
-            key_ingredients[key]['_id'] = checkSpecialityExist._id.toString();
-          } 
-        }
-      }  
+        for(const [key, val] of Object.entries(key_ingredients)) {
+          if(val._id === undefined){
+            let status = true;
+            let type = "key_ingredients";
+            let name = val.name;
+            let checkSpecialityExist = await Speciality.findOne(
+              {
+                name: name,
+                type: "key_ingredients"
+              }
+            ).exec();   
+            if(!checkSpecialityExist){
+              const newSpeciality = new Speciality({
+                name,
+                type,
+                status
+              });
+              await newSpeciality.save(); 
+              key_ingredients[key]['_id'] = newSpeciality._doc._id.toString();
+            }else{ 
+              key_ingredients[key]['_id'] = checkSpecialityExist._id.toString();
+            } 
+          }
+        }  
+      */
 
       for(const [key, val] of Object.entries(allergens)) {
         if(val._id === undefined){
