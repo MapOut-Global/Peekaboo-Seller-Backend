@@ -2,14 +2,7 @@ const Speciality = require("../../models/speciality")
 const { authorizationFunction } = require('../checkCognitoToken.js'); 
 
 module.exports = {
-  specialities: async (args, req) =>  {
-    let checkToken = await authorizationFunction(req);
-    if(checkToken.client_id === undefined){
-      throw {
-        error: checkToken,
-        status: 401
-      }
-    }
+  specialities: async (args, req) =>  { 
     try {
       let { type } = args;
       var typeArr = type.split(","); 
