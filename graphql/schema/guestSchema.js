@@ -82,6 +82,7 @@ module.exports = buildSchema(`
     operating_details: OperatingDetail 
     follower_count: Int
     followers: [Follower] 
+    followings: [Follower] 
     is_following: Boolean
     posts: [Post]
     reviews: [Review]
@@ -103,6 +104,7 @@ module.exports = buildSchema(`
 
   type Follower {
     userData:User
+    cookData: Profile
   }
 
   type CookPaymentDetail {

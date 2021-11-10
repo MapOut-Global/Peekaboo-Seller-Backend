@@ -369,20 +369,47 @@ module.exports = {
 
     let reviewProductList = await Product.find({_id: { $in : productIds}})
     let followerList = await Follower.find({cookId: userId})
+    let followingList = await Follower.find({userId: userId})
     var followerIds = followers = followerInfo = [];
+    var followingIds = followings = followingInfo = [];
     followerList.map( follower => {
       followerIds.push(follower.userId);
     })
 
-    followerInformation = await User.find({ _id: {$in: followerIds}});
+    followingList.map( following => {
+      followingIds.push(following.cookId);
+    })
 
+    followerInformation = await User.find({ _id: {$in: followerIds}});
+    followerImage = await Profile.find({ userId: {$in: followerIds}}, [ 'avatar_url']);
+    followingInformation = await User.find({ _id: {$in: followingIds}});
+    followingImage = await Profile.find({ userId: {$in: followingIds}}, [ 'avatar_url']); 
     followerList.map( follower => {
       followerInformation.map( (followingUser, followingKey) => {
         if(followingUser._id.toString() === follower.userId.toString()){  
           followers[followingKey]['userData'] = followingUser;
         }
-      })
+        followerImage.map( followingProfile => {
+          if(followingProfile._id.toString() === follower.userId.toString()){  
+            followers[followingKey]['cookProfile'] = followingProfile;
+          }
+        })
+      }) 
     });
+
+    followingList.map( following => {
+      followingInformation.map( (followerUser, followingKey) => {
+        if(followerUser._id.toString() === following.userId.toString()){  
+          followings[followingKey]['userData'] = followerUser;
+        }
+        followingImage.map( followerProfile => {
+          if(followerProfile._id.toString() === following.userId.toString()){  
+            followings[followingKey]['cookProfile'] = followerProfile;
+          }
+        })
+      }) 
+    });
+
     var reviewList = reviewsFetched.map(review => {  
       customerArr = productArr = [];
       customerData.map(customer => {
@@ -609,6 +636,7 @@ module.exports = {
     cookProfile.posts = postList;
     cookProfile.reviews = reviewList;
     cookProfile.followers = followers;
+    cookProfile.followings = followings;
     cookProfile.is_following = is_following;
     cookProfile.categories = categoriesArr;
     return {  
