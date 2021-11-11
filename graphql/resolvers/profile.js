@@ -399,13 +399,13 @@ module.exports = {
 
     followingList.map( following => {
       followingInformation.map( (followerUser, followingKey) => {
-        if(followerUser._id.toString() === following.userId.toString()){  
+        if(followerUser._id.toString() === following.cookId.toString()){  
           followings[followingKey]['userData'] = followerUser;
         }
         followingImage.map( followerProfile => {
           console.log(followerProfile);
           console.log(following);
-          if(followerProfile.userId.toString() === following.userId.toString()){  
+          if(followerProfile.userId.toString() === following.cookId.toString()){  
             followings[followingKey]['cookData'] = followerProfile;
           }
         })
