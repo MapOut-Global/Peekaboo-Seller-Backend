@@ -2,6 +2,7 @@ const Product = require("../../models/product")
 const Profile = require("../../models/profile")   
 const Speciality = require("../../models/speciality")   
 const Category = require("../../models/category")   
+const Like = require("../../models/like")   
 var ObjectId = require('mongoose').Types.ObjectId; 
 const { authorizationFunction } = require('../checkCognitoToken.js'); 
 
@@ -494,8 +495,13 @@ module.exports = {
 
   productDetail: async (args, req) => { 
     try{
-      let { product_id } = args;
-      let productData = Product.findOne({_id: product_id});
+      let { product_id, userId } = args;
+
+      if(userId != "0"){
+        checkLiked = await Like.countDocuments({ userId: userId, itemId: product_id, type: "product"});  
+      }
+      let productData = await Product.findById(product_id);  
+      productData.is_liked =  checkLiked ? true : false;
       if(productData !== null){
         return { responseStatus: { status: true, message: "Product detail fetched"}, productData: productData}
       }else{

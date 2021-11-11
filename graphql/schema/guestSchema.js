@@ -368,6 +368,7 @@ module.exports = buildSchema(`
     main_image: S3Type
     likes: Int
     userId: ID! 
+    is_liked: Boolean
     variation_details: Variation
     discount_details: DiscountDetail
     _id: ID!
@@ -763,7 +764,7 @@ module.exports = buildSchema(`
     classes(userId:String):[Class!]
     orders(userId: String!): [Order!]
     switchRole(userId: String, roleId: Int): ProfileType
-    productDetail(product_id: String!): ProductOutput
+    productDetail(product_id: String!, userId: String): ProductOutput
     locationFromPostcode(postcode: String!): ResponseStatus
   }
 
