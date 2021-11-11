@@ -381,17 +381,17 @@ module.exports = {
     })
 
     followerInformation = await User.find({ _id: {$in: followerIds}});
-    followerImage = await Profile.find({ userId: {$in: followerIds}}, [ 'avatar_url']);
+    followerImage = await Profile.find({ userId: {$in: followerIds}}, [ 'avatar_url', 'userId']); 
     followingInformation = await User.find({ _id: {$in: followingIds}});
-    followingImage = await Profile.find({ userId: {$in: followingIds}}, [ 'avatar_url']); 
+    followingImage = await Profile.find({ userId: {$in: followingIds}}, [ 'avatar_url', 'userId']);  
     followerList.map( follower => {
       followerInformation.map( (followingUser, followingKey) => {
         if(followingUser._id.toString() === follower.userId.toString()){  
           followers[followingKey]['userData'] = followingUser;
         }
         followerImage.map( followingProfile => {
-          if(followingProfile._id.toString() === follower.userId.toString()){  
-            followers[followingKey]['cookProfile'] = followingProfile;
+          if(followingProfile.userId.toString() === follower.userId.toString()){  
+            followers[followingKey]['cookData'] = followingProfile;
           }
         })
       }) 
@@ -403,8 +403,10 @@ module.exports = {
           followings[followingKey]['userData'] = followerUser;
         }
         followingImage.map( followerProfile => {
-          if(followerProfile._id.toString() === following.userId.toString()){  
-            followings[followingKey]['cookProfile'] = followerProfile;
+          console.log(followerProfile);
+          console.log(following);
+          if(followerProfile.userId.toString() === following.userId.toString()){  
+            followings[followingKey]['cookData'] = followerProfile;
           }
         })
       }) 
