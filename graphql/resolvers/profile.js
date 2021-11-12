@@ -107,7 +107,7 @@ module.exports = {
       /************************* Upload avtar on S3 Server ********************/ 
 
 
-      /************************* Upload avtar on S3 Server ********************/
+      /************************* Upload kitchen tour file on S3 Server ********************/
         if (kitchenTourFile) { 
           let {file} = await kitchenTourFile; 
           let { createReadStream,  filename} = file;
@@ -169,7 +169,7 @@ module.exports = {
             kitchenTourFile = checkProfileOldAvtar.kitchenTourFile; 
           }
         }  
-      /************************* Upload avtar on S3 Server ********************/
+      /************************* Upload kitchen tour file on S3 Server ********************/
 
       /************************* Upload attachments on S3 Server ********************/
         if(checkProfileOldAvtar !== null){
@@ -768,10 +768,16 @@ module.exports = {
     }
     try {
       let  { attachment, problem, userId, description} = args.support;
-      let { file } = await attachment;  
-      let { createReadStream,  filename} = file;
-      // read the data from the file.
-      let fileStream = createReadStream();  
+
+      if(attachment){
+        let { file } = await attachment;  
+        let { createReadStream,  filename} = file;
+        // read the data from the file.
+        var fileStream = createReadStream();  
+      }else{
+        var fileStraem = null;
+      }
+      
       let user = await User.findById(userId);
       const transporter = nodemailer.createTransport({
         host: "smtpout.secureserver.net",
@@ -858,5 +864,98 @@ module.exports = {
       return { responseStatus : {status: false, message: error.message} }  
     }
   }, 
+
+  updateKitchenTourFile: async (args, req) => {
+    let checkToken = await authorizationFunction(req); 
+    if(checkToken.client_id === undefined){
+      throw {
+        error: checkToken,
+        status: 401
+      }
+    }
+
+    try{
+      let { kitchenTourFile, userId } = args;
+
+      var checkProfileOldAvtar = await Profile.findOne({userId: userId}).exec();   
+      /************************* Upload kitchen tour file on S3 Server ********************/
+      if (kitchenTourFile) { 
+        let {file} = await kitchenTourFile; 
+        let { createReadStream,  filename} = file;
+        // read the data from the file.
+        let fileStream = createReadStream();
+        const params = {
+            Bucket:"peekaboo2",
+            Key:'',
+            Body:'',
+            ACL:'public-read'
+        };
+        // in case of an error, log it.
+        fileStream.on("error", (error) => console.error(error));
+
+        // set the body of the object as data to read from the file.
+        params.Body = fileStream;
+            // get the current time stamp.
+        let timestamp = new Date().getTime();
+
+        // get the file extension.
+        let file_extension = path.extname(filename);
+
+        // set the key as a combination of the folder name, timestamp, and the file extension of the object.
+        params.Key = `kitchen_tours/${timestamp}${file_extension}`;
+
+        let upload = util.promisify(s3.upload.bind(s3));
+
+        let result = await upload(params).catch(console.log); 
+        var kitchenTourFile_url_arr = {
+          Location: cdnUrl + result.Key, 
+          Key: result.Key, 
+          thumbnail: cdnUrl + 'thumbnails/kitchen_tours/' + timestamp + "-0.jpg", 
+        }; 
+        kitchenTourFile = Object.create(kitchenTourFile_url_arr);
+        kitchenTourFile.Location = cdnUrl + result.Key;
+        kitchenTourFile.Key = result.Key;  
+        kitchenTourFile.thumbnail = cdnUrl + 'thumbnails/kitchen_tours/' + timestamp + "-0.jpg";  
+        
+        if(checkProfileOldAvtar !== null){
+          if(checkProfileOldAvtar.kitchenTourFile !== null && checkProfileOldAvtar.kitchenTourFile !== undefined && checkProfileOldAvtar.kitchenTourFile.Key !== undefined){
+            oldKey = checkProfileOldAvtar.kitchenTourFile.Key;
+            const deleteParams = {
+                Bucket:"peekaboo2", 
+                Key:oldKey, 
+            };
+            let removeObject = util.promisify(s3.deleteObject.bind(s3));
+            await removeObject(deleteParams).catch(console.log); 
+
+            thumbnailKey = 'thumbnails/' + checkProfileOldAvtar.kitchenTourFile.Key;
+            const deleteThumbnailParams = {
+                Bucket:"peekaboo2", 
+                Key:thumbnailKey, 
+            }; 
+            await removeObject(deleteThumbnailParams).catch(console.log); 
+          } 
+        }
+      }else{  
+        if(checkProfileOldAvtar.kitchenTourFile !== "" ){
+          kitchenTourFile = checkProfileOldAvtar.kitchenTourFile; 
+        }
+      }  
+    /************************* Upload kitchen tour file on S3 Server ********************/
+
+    await Profile.findOneAndUpdate(
+      {userId: userId},
+      {
+        kitchenTourFile: kitchenTourFile,
+      },
+      {
+        new: true,
+        upsert: true
+      }
+    ); 
+    return { status: true, message: "Kitchen tour updated successfully"} 
+    }catch (error){
+      return { status: false, message: error.message} 
+    }
+  },
 }
  
