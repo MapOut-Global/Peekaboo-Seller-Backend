@@ -772,11 +772,11 @@ module.exports = {
 
       if(attachment){
         let { file } = await attachment;  
-        let { createReadStream,  filename} = file;
+        var { createReadStream,  filename} = file;
         // read the data from the file.
         var fileStream = createReadStream();  
       }else{
-        var fileStraem = null;
+        var filename = null;
       }
       
       let user = await User.findById(userId);
@@ -805,7 +805,7 @@ module.exports = {
       }); 
       return { responseStatus : {status: true, message: "Support submitted successfully"} };
     } catch(error) {
-
+      return { responseStatus : {status: false, message: error.message} }
     }
   },
 
@@ -1006,7 +1006,7 @@ module.exports = {
 
       return { status: true, message: "You have successfully unblocked user."};
     } catch( error ){
-      throw error
+      return { status: false, message: error.message} 
     }
   }, 
 }
