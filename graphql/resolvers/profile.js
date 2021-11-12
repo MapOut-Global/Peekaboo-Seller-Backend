@@ -9,6 +9,7 @@ const Review = require("../../models/review")
 const Order = require("../../models/order") 
 const Post = require("../../models/post") 
 const Category = require("../../models/category") 
+const Block = require("../../models/block") 
 var ObjectId = require('mongoose').Types.ObjectId; 
 const { authorizationFunction } = require('../checkCognitoToken'); 
  
@@ -952,10 +953,61 @@ module.exports = {
         upsert: true
       }
     ); 
-    return { status: true, message: "Kitchen tour updated successfully"} 
+      return { status: true, message: "Kitchen tour updated successfully"} 
     }catch (error){
       return { status: false, message: error.message} 
     }
   },
+
+  blockUser: async (args, req) => {
+    let checkToken = await authorizationFunction(req); 
+    if(checkToken.client_id === undefined){
+      throw {
+        error: checkToken,
+        status: 401
+      }
+    }
+
+    try{
+      let { userId, blockUserId } = args;
+      let checkAlreadyBlocked = await Block.findOne({userId: userId, blockUserId: blockUserId}).exec();  
+      if(checkAlreadyBlocked){
+        return { status: false, message: "Already blocked this user"};
+      }else{
+        const blockRec = new Block({
+          userId,
+          blockUserId, 
+        });
+        await blockRec.save(); 
+        return { status: true, message: "User blocked successfully"} 
+      }
+    }catch (error){
+      return { status: false, message: error.message} 
+    }
+  },
+
+  unblockUser: async (args, req) => {
+    let checkToken = await authorizationFunction(req); 
+    if(checkToken.client_id === undefined){
+      throw {
+        error: checkToken,
+        status: 401
+      }
+    }
+
+    try {
+      let { userId, blockUserId } = args
+      let checkAlreadyBlocked = await Block.countDocuments({userId: userId, blockUserId: blockUserId}) 
+      if(!checkAlreadyBlocked){
+        return { status: false, message: "User does not blocked"};
+      }
+ 
+      await Block.deleteOne({ userId: userId, blockUserId: blockUserId}); 
+
+      return { status: true, message: "You have successfully unblocked user."};
+    } catch( error ){
+      throw error
+    }
+  }, 
 }
  

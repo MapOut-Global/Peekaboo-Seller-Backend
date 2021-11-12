@@ -792,6 +792,8 @@ module.exports = buildSchema(`
     shopPolicy(shop_policy: ShopPolicyInput, userId: String!): ResponseStatus
     updateKitchenTourFile(kitchenTourFile:Upload, userId: String!): ResponseStatus
     operatingDetails(operating_details: OperatingDetailInput, userId: String!, hoursOfOperation: [HoursOfOperationInput] ): ResponseStatus
+    blockUser(userId: String!, blockUserId: String!): ResponseStatus
+    unblockUser(userId: String!, blockUserId: String!): ResponseStatus
   }
 
   schema {
