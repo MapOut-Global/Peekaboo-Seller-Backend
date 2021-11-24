@@ -346,8 +346,16 @@ module.exports = {
       }
     ).exec(); 
     if(cookProfile === null){ 
-      return {   
-        userId:userId,  
+      user = await User.findOne(
+        {
+          _id: userId
+        }
+      ).exec(); 
+      let cookProfileTemp = {};
+      cookProfileTemp.userId = userId; 
+      return {  
+        userData: user,
+        cookProfile: cookProfileTemp, 
         responseStatus: {status: true, message: "Profile saved"}
       };
     } 
@@ -645,7 +653,8 @@ module.exports = {
     return {  
       userData: user,
       cookProfile: cookProfile, 
-      responseStatus: {status: true, message: "Profile saved"}};
+      responseStatus: {status: true, message: "Profile saved"}
+    };
        
   },
 
