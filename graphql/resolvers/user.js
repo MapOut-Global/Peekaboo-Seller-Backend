@@ -340,6 +340,7 @@ module.exports = {
           login_type,
           role_id
         });
+        let cookProfile;
         const newUser = await user.save();
         cookProfile.userId = newUser._id;
         return { userData: newUser._doc, cookProfile: cookProfile , responseStatus : {status: true, message: "Login successfully"} } 
