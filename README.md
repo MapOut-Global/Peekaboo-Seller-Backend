@@ -13,7 +13,7 @@
 1. Clone the repository and install the dependencies:
 
 ```sh
-https://gitlab.com/mapout/peekaboo-customer-backend.git
+https://gitlab.com/prakharbhardwaj/peekaboo-backend.git
 ```
 
 
