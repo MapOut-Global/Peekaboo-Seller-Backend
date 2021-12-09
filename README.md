@@ -1,4 +1,4 @@
-<h1 align="center"><strong>Peekaboo Customer Backend</strong></h1>
+<h1 align="center"><strong>Peekaboo Seller Backend</strong></h1>
 
 <br />
 
@@ -34,10 +34,8 @@ npm install
 .
 ├── graphql
 │   ├── resolvers
-│   │   ├── banner.js
 │   │   ├── category.js
-│   │   ├── class.js
-│   │   └── feeds.js
+│   │   ├── class.js 
 │   │   ├── guestResolver.js
 │   │   ├── order.js
 │   │   ├── post.js
@@ -45,27 +43,22 @@ npm install
 │   │   ├── speciality.js
 │   │   ├── user.js
 │   └── schema
-│       ├── fuestSchema.js
+│       ├── guestSchema.js
 │   ├── checkCognitoToken.js
 │   ├── s3FileUploader.js
 ├── models
-│   ├── banner.js
-│   ├── cart.js
+│   ├── block.js 
 │   ├── category.js
-│   ├── class.js
-│   ├── class_user.js
-│   ├── follower.js
-│   ├── kaboom.js
+│   ├── class.js 
+│   ├── follower.js 
 │   ├── like.js
 │   ├── order.js
 │   ├── otp_verification.js
 │   ├── post.js
 │   ├── product.js
-│   ├── profile.js
-│   ├── review.js
+│   ├── profile.js 
 │   ├── speciality.js
-│   ├── user.js
-│   ├── user_profile.js 
+│   ├── user.js 
 ├── index.js
 ├── README.md
 ├── package-lock.json
