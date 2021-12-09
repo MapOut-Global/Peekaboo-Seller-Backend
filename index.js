@@ -23,7 +23,7 @@ app.use(
     
   })
 ); 
-const uri = `mongodb+srv://peekaboo:peekaboo@peekaboodb.fvnfz.mongodb.net/peekaboodb?retryWrites=true&w=majority`; 
+const uri = `mongodb+srv://<username>:<host-name>/<database>?retryWrites=true&w=majority`; 
 const options = { useNewUrlParser: true, useUnifiedTopology: true  };
 mongoose.connect(uri, options)
 .then(() => app.listen(3000, console.log("Server is running")))
