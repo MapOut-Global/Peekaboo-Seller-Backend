@@ -9,7 +9,7 @@ ENV CI=true
 COPY ./package*.json .
 
 
-RUN npm i
+RUN npm install --legacy-peer-deps
 
 COPY . .
 

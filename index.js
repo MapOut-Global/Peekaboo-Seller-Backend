@@ -8,6 +8,7 @@ const { graphqlUploadExpress } = require('graphql-upload');
 const expressPlayground = require('graphql-playground-middleware-express')
   .default
 const app = express() 
+app.get('/',(req,res)=>res.status(200).send("Peekaboo Seller backend HealthCheck Route"))
 app.get('/playground', expressPlayground({ endpoint: '/graphql' })) 
 app.use(
   "/graphql",
