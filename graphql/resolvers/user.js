@@ -2,6 +2,7 @@ const User = require("../../models/user")
 const OtpVerification = require("../../models/otp_verification") 
 const Profile = require("../../models/profile")  
 const { authorizationFunction } = require('../checkCognitoToken.js'); 
+const  axios  = require("axios");
 
 const path = require('path');
 const util = require('util') ;
@@ -191,23 +192,33 @@ module.exports = {
         });
         await otpDoc.save();
 
-        const transporter = nodemailer.createTransport({
-          host: "smtpout.secureserver.net",
-          port: 587,
-          secure: false, // upgrade later with STARTTLS
-          auth: {
-            user: "info@knowledgly.com",
-            pass: "knowledgly@2020",
-          },
-        });
-                // send mail with defined transport object
-        let info = await transporter.sendMail({
-          from: '"Peekaboo" <info@peekaboo.com>', // sender address
-          to: email, // list of receivers
-          subject: "Verify your email on Peekaboo", // Subject line
-          text: "Your one time password for Peekaboo is " + otp, // plain text body
-          html: "Dear Sir / Madam<br/><br/>Your One Time Password(OTP) is :<br/><br/>"+otp, 
-        });
+        try{
+          await axios.post(`https://dev.api-gateway.mapout.com/notify-node/api/notify/mapout`, {
+              "type": 6,
+              "email": email,
+              "otp": otp
+          });
+      } catch(err){
+          throw err;
+      }
+
+        // const transporter = nodemailer.createTransport({
+        //   host: "smtpout.secureserver.net",
+        //   port: 587,
+        //   secure: false, // upgrade later with STARTTLS
+        //   auth: {
+        //     user: "info@knowledgly.com",
+        //     pass: "knowledgly@2020",
+        //   },
+        // });
+        //         // send mail with defined transport object
+        // let info = await transporter.sendMail({
+        //   from: '"Peekaboo" <info@peekaboo.com>', // sender address
+        //   to: email, // list of receivers
+        //   subject: "Verify your email on Peekaboo", // Subject line
+        //   text: "Your one time password for Peekaboo is " + otp, // plain text body
+        //   html: "Dear Sir / Madam<br/><br/>Your One Time Password(OTP) is :<br/><br/>"+otp, 
+        // });
 
         return { responseStatus : {status: true, message: "Email sent successfully"} };
       }
